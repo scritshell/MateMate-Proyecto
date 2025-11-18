@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/inicioFragment">
+
+    <fragment
+        android:id="@+id/inicioFragment"
+        android:name="com.example.proyectoajedrez.fragments.InicioFragment"
+        android:label="Inicio"
+        tools:layout="@layout/fragment_inicio">
+
+        <action
+            android:id="@+id/action_inicioFragment_to_aperturasFragment"
+            app:destination="@id/aperturasFragment" />
+        <action
+            android:id="@+id/action_inicioFragment_to_tacticasFragment"
+            app:destination="@id/tacticasFragment" />
+        <action
+            android:id="@+id/action_inicioFragment_to_chessBoardFragment"
+            app:destination="@id/chessBoardFragment" />
+        <action
+            android:id="@+id/action_inicioFragment_to_blocNotasFragment"
+            app:destination="@id/blocNotasFragment" />
+        <action
+            android:id="@+id/action_inicioFragment_to_socialFragment"
+            app:destination="@id/socialFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/aperturasFragment"
+        android:name="com.example.proyectoajedrez.fragments.AperturasFragment"
+        android:label="Aperturas"
+        tools:layout="@layout/fragment_aperturas">
+
+        <action
+            android:id="@+id/action_aperturasFragment_to_chessBoardFragment"
+            app:destination="@id/chessBoardFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/tacticasFragment"
+        android:name="com.example.proyectoajedrez.fragments.TacticasFragment"
+        android:label="Tácticas"
+        tools:layout="@layout/fragment_tacticas">
+
+        <action
+            android:id="@+id/action_tacticasFragment_to_chessBoardFragment"
+            app:destination="@id/chessBoardFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/blocNotasFragment"
+        android:name="com.example.proyectoajedrez.fragments.BlocNotasFragment"
+        android:label="Bloc de Notas"
+        tools:layout="@layout/fragment_bloc_notas">
+
+        <action
+            android:id="@+id/action_blocNotasFragment_to_chessBoardFragment"
+            app:destination="@id/chessBoardFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/socialFragment"
+        android:name="com.example.proyectoajedrez.fragments.SocialFragment"
+        android:label="Comunidad"
+        tools:layout="@layout/fragment_social" />
+
+    <fragment
+        android:id="@+id/chessBoardFragment"
+        android:name="com.example.proyectoajedrez.fragments.ChessBoardFragment"
+        android:label="Tablero de Ajedrez"
+        tools:layout="@layout/fragment_chess_board">
+
+        <argument
+            android:name="modo"
+            app:argType="string"
+            android:defaultValue="libre" />
+        <argument
+            android:name="aperturaNombre"
+            app:argType="string"
+            android:defaultValue="" />
+    </fragment>
+
+</navigation>

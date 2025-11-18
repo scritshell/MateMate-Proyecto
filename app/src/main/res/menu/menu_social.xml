@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_search_social"
+        android:icon="@android:drawable/ic_menu_search"
+        android:title="Buscar"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_notifications_social"
+        android:icon="@android:drawable/ic_popup_reminder"
+        android:title="Notificaciones"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_settings_social"
+        android:title="Ajustes"
+        app:showAsAction="never" />
+
+</menu>
