@@ -10,7 +10,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Header de Bienvenida -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -42,7 +41,6 @@
 
         </androidx.cardview.widget.CardView>
 
-        <!-- Estadísticas Rápidas -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -60,8 +58,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/textElo"
@@ -70,6 +68,7 @@
                         android:text="1250"
                         android:textSize="20sp"
                         android:textStyle="bold" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -120,7 +119,6 @@
 
         </androidx.cardview.widget.CardView>
 
-        <!-- Acciones Rápidas -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -135,7 +133,6 @@
             android:columnCount="2"
             android:rowCount="3">
 
-            <!-- Botón Tácticas -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/btnTacticas"
                 android:layout_width="0dp"
@@ -154,7 +151,6 @@
                     android:clickable="true"
                     android:focusable="true">
 
-                    <!-- ✅ ID ÚNICO -->
                     <TextView
                         android:id="@+id/emoji_tacticas"
                         android:layout_width="wrap_content"
@@ -162,7 +158,6 @@
                         android:text="🎯"
                         android:textSize="24sp" />
 
-                    <!-- ✅ ID ÚNICO -->
                     <TextView
                         android:id="@+id/titulo_tacticas"
                         android:layout_width="wrap_content"
@@ -192,7 +187,6 @@
                     android:clickable="true"
                     android:focusable="true">
 
-                    <!-- ✅ ID ÚNICO -->
                     <TextView
                         android:id="@+id/emoji_aperturas"
                         android:layout_width="wrap_content"
@@ -200,7 +194,6 @@
                         android:text="♟️"
                         android:textSize="24sp" />
 
-                    <!-- ✅ ID ÚNICO -->
                     <TextView
                         android:id="@+id/titulo_aperturas"
                         android:layout_width="wrap_content"
@@ -211,7 +204,6 @@
 
             </androidx.cardview.widget.CardView>
 
-            <!-- Botón Bloc de Notas -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/btnBlocNotas"
                 android:layout_width="0dp"
@@ -249,7 +241,6 @@
 
             </androidx.cardview.widget.CardView>
 
-            <!-- Botón Social -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/btnComunidad"
                 android:layout_width="0dp"
@@ -268,7 +259,6 @@
                     android:clickable="true"
                     android:focusable="true">
 
-                    <!-- ✅ ID ÚNICO -->
                     <TextView
                         android:id="@+id/emoji_comunidad"
                         android:layout_width="wrap_content"
@@ -276,7 +266,6 @@
                         android:text="👥"
                         android:textSize="24sp" />
 
-                    <!-- ✅ ID ÚNICO -->
                     <TextView
                         android:id="@+id/titulo_comunidad"
                         android:layout_width="wrap_content"
@@ -287,7 +276,6 @@
 
             </androidx.cardview.widget.CardView>
 
-            <!-- Botón Práctica Libre -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/btnPracticaLibre"
                 android:layout_width="0dp"
@@ -306,7 +294,6 @@
                     android:clickable="true"
                     android:focusable="true">
 
-                    <!-- ✅ ID ÚNICO -->
                     <TextView
                         android:id="@+id/emoji_practica_libre"
                         android:layout_width="wrap_content"
@@ -314,7 +301,6 @@
                         android:text="♜"
                         android:textSize="24sp" />
 
-                    <!-- ✅ ID ÚNICO -->
                     <TextView
                         android:id="@+id/titulo_practica_libre"
                         android:layout_width="wrap_content"
