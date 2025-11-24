@@ -12,7 +12,7 @@ Navegación fluida entre todas las pantallas
 Módulos de Estudio:
 Aperturas: Catálogo completo de aperturas de ajedrez
 
-Tácticas: Ejercicios de mate en 1, 2 y tácticas avanzadas
+Tácticas: Ejercicios de mate en 1, 2, 3
 
 Bloc de Notas: Gestión de análisis y partidas personales
 
@@ -58,7 +58,7 @@ Navegación al tablero de práctica
 - TacticasFragment
 Ejercicios organizados por dificultad
 
-Niveles: Mate en 1, Mate en 2, Avanzados
+Niveles: Mate en 1, Mate en 2, Mate en 3
 
 Seguimiento de estadísticas
 
@@ -89,14 +89,6 @@ Modo offline para estudio sin conexión
 
 Exportación de partidas en formato PGN
 
-Instalación y Desarrollo
-Requisitos: 
-Android Studio
-
-SDK Android API 21+
-
-Dispositivo o emulador con Android 5.0+
-
 Compilación:
 Clona el repositorio
 
@@ -111,10 +103,4 @@ Este proyecto está en activo desarrollo como aplicación educativa para el estu
 
 Características técnicas:
 
-- Arquitectura MVVM (en implementación)
-
-- Clean Architecture (planeado)
-
-- Bases de datos remota
-
-- Inyección de dependencias con Hilt (planeado)
+- Bases de datos remota (Firebase)
