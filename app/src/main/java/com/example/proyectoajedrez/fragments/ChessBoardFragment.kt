@@ -85,7 +85,7 @@ class ChessBoardFragment : Fragment() {
 
                 // Generar notación ANTES de mover (para tener el contexto)
                 // Nota: chesslib requiere configuración extra para SAN perfecto,
-                // pero move.toString() nos da algo básico tipo "e2e4" por ahora.
+                // pero move.toString() nos da algo básico tipo "e2e4"
                 val moveText = "${chessBoard.moveCounter}. $move"
 
                 // A. Mover en el CEREBRO (Lógica)
@@ -109,10 +109,10 @@ class ChessBoardFragment : Fragment() {
         }
     }
 
-    // Función auxiliar para mapear tus índices (0=A8) a la librería
+    // Función auxiliar para mapear índices (0=A8) a la librería
     private fun getSquareFromIndex(index: Int): Square {
-        // Tu tablero empieza en 0 (A8) y termina en 63 (H1)
-        // chesslib usa Square.values() pero hay que asegurar el orden.
+        // El tablero empieza en 0 (A8) y termina en 63 (H1)
+        // chesslib usa Square.values(). hay que asegurar el orden.
         // Fila 0 de tu Grid = Rank 8 del Ajedrez
 
         val col = index % 8
@@ -132,6 +132,5 @@ class ChessBoardFragment : Fragment() {
             chessBoard.loadFromFen(com.github.bhlangonijr.chesslib.Constants.startStandardFENPosition)
             Toast.makeText(context, "Partida Reiniciada", Toast.LENGTH_SHORT).show()
         }
-        // ... otros botones ...
     }
 }
