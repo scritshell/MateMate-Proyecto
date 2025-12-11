@@ -1,12 +1,17 @@
 package com.example.proyectoajedrez.fragments
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.Spinner
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,122 +21,124 @@ import com.example.proyectoajedrez.model.Nota
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 class BlocNotasFragment : Fragment() {
 
     private var _binding: FragmentBlocNotasBinding? = null
     private val binding get() = _binding!!
-
-    // Referencias a Firebase
     private val db = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
-    private val listaNotas = mutableListOf<Nota>() // Lista dinámica
+    private val listaNotas = mutableListOf<Nota>()
     private lateinit var adapter: NotasAdapter
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentBlocNotasBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        // 1. Configurar RecyclerView
         setupRecyclerView()
-
-        // 2. Cargar notas desde Firebase (READ)
         cargarNotasEnTiempoReal()
-
-        // 3. Botón para crear nueva nota (CREATE)
-        binding.cardNuevaNota.setOnClickListener {
-            mostrarDialogoNota(null) // null significa "Nueva Nota"
-        }
+        binding.cardNuevaNota.setOnClickListener { mostrarDialogoNota(null) }
     }
 
     private fun setupRecyclerView() {
-        // Inicializamos el adapter con la lista vacía y la función de click para EDITAR
-        adapter = NotasAdapter(listaNotas) { notaSeleccionada ->
-            mostrarDialogoNota(notaSeleccionada) // Pasamos la nota para Editarla
-        }
+        adapter = NotasAdapter(listaNotas) { nota -> mostrarDialogoNota(nota) }
         binding.recyclerViewNotas.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewNotas.adapter = adapter
     }
 
-    // --- LECTURA DE DATOS (READ) ---
     private fun cargarNotasEnTiempoReal() {
-        val userId = auth.currentUser?.uid ?: return // Si no hay usuario, no cargamos nada
-
-        // Escuchamos la colección "notas" donde el userId coincida con el actual
-        db.collection("notas")
-            .whereEqualTo("userId", userId)
-            .orderBy("fecha", Query.Direction.DESCENDING) // Ordenar por fecha (más nueva arriba)
+        val userId = auth.currentUser?.uid ?: return
+        db.collection("notas").whereEqualTo("userId", userId)
+            .orderBy("fecha", Query.Direction.DESCENDING)
             .addSnapshotListener { snapshots, e ->
-                if (e != null) {
-                    Toast.makeText(context, "Error al cargar notas", Toast.LENGTH_SHORT).show()
-                    return@addSnapshotListener
-                }
-
+                if (e != null) return@addSnapshotListener
                 if (snapshots != null) {
-                    listaNotas.clear() // Limpiamos la lista vieja
+                    listaNotas.clear()
                     for (document in snapshots) {
-                        // Convertimos el documento a objeto Nota
                         val nota = document.toObject(Nota::class.java)
-                        nota.id = document.id // Guardamos el ID del documento
+                        nota.id = document.id
                         listaNotas.add(nota)
                     }
-                    adapter.notifyDataSetChanged() // Avisamos al adaptador que hay datos nuevos
-                    actualizarUI()
+                    adapter.notifyDataSetChanged()
                 }
             }
     }
 
-    // --- DIÁLOGO PARA CREAR Y EDITAR ---
+    // EL DIALOGO
     private fun mostrarDialogoNota(notaExistente: Nota?) {
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle(if (notaExistente == null) "Nueva Nota" else "Editar Nota")
 
-        // Layout simple dentro del código para no crear XMLs extra
         val layout = LinearLayout(requireContext())
         layout.orientation = LinearLayout.VERTICAL
-        layout.setPadding(50, 20, 50, 10)
+        layout.setPadding(50, 40, 50, 10)
 
+        // 1. TÍTULO
         val inputTitulo = EditText(requireContext())
         inputTitulo.hint = "Título"
-        inputTitulo.setText(notaExistente?.titulo ?: "") // Si existe, ponemos el texto
+        inputTitulo.setText(notaExistente?.titulo ?: "")
         layout.addView(inputTitulo)
 
+        // 2. SPINNER
+        val tvCategoria = TextView(requireContext())
+        tvCategoria.text = "Categoría:"
+        tvCategoria.setPadding(0, 20, 0, 5)
+        layout.addView(tvCategoria)
+
+        val spinner = Spinner(requireContext())
+        val opciones = listOf("General", "Apertura", "Partida", "Análisis", "Torneo")
+        val adapterSpinner = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, opciones)
+        spinner.adapter = adapterSpinner
+
+        // Seleccionar la categoría guardada si existe
+        if (notaExistente != null) {
+            val position = opciones.indexOf(notaExistente.categoria)
+            if (position >= 0) spinner.setSelection(position)
+        }
+        layout.addView(spinner)
+
+        // 3. INPUT CONTENIDO
         val inputContenido = EditText(requireContext())
-        inputContenido.hint = "Escribe tu análisis..."
-        inputContenido.minLines = 3
+        inputContenido.hint = "Escribe aquí..."
+        inputContenido.minLines = 4
         inputContenido.setText(notaExistente?.contenido ?: "")
         layout.addView(inputContenido)
 
+        // 4. BOTÓN COMPARTIR
+        if (notaExistente != null) {
+            val btnShare = Button(requireContext())
+            btnShare.text = "📤 Compartir Nota"
+            btnShare.setOnClickListener {
+                val textoACompartir = "📌 ${inputTitulo.text}\n\n${inputContenido.text}\n\n- Vía MateMate App"
+                val sendIntent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_TEXT, textoACompartir)
+                    type = "text/plain"
+                }
+                startActivity(Intent.createChooser(sendIntent, "Compartir con:"))
+            }
+            layout.addView(btnShare)
+        }
+
         builder.setView(layout)
 
-        // Botón GUARDAR
+        // BOTONES DEL DIÁLOGO
         builder.setPositiveButton("Guardar") { _, _ ->
             val titulo = inputTitulo.text.toString()
             val contenido = inputContenido.text.toString()
+            val categoria = spinner.selectedItem.toString() // Cogemos el valor del Spinner
 
             if (titulo.isNotEmpty()) {
-                guardarEnFirebase(notaExistente?.id, titulo, contenido)
-            } else {
-                Toast.makeText(context, "El título no puede estar vacío", Toast.LENGTH_SHORT).show()
+                guardarEnFirebase(notaExistente?.id, titulo, contenido, categoria)
             }
         }
-
-        // Botón CANCELAR
         builder.setNegativeButton("Cancelar", null)
 
-        // Botón BORRAR (Solo si estamos editando una nota existente)
         if (notaExistente != null) {
-            builder.setNeutralButton("Borrar") { _, _ ->
+            builder.setNeutralButton("🗑️ Borrar") { _, _ ->
                 confirmarBorrado(notaExistente.id)
             }
         }
@@ -139,57 +146,26 @@ class BlocNotasFragment : Fragment() {
         builder.show()
     }
 
-    // --- GUARDADO (CREATE / UPDATE) ---
-    private fun guardarEnFirebase(idNota: String?, titulo: String, contenido: String) {
+    private fun guardarEnFirebase(id: String?, titulo: String, contenido: String, categoria: String) {
         val userId = auth.currentUser?.uid ?: return
-        val fechaActual = System.currentTimeMillis()
-
-        val datosNota = hashMapOf(
+        val datos = hashMapOf(
             "userId" to userId,
             "titulo" to titulo,
             "contenido" to contenido,
-            "fecha" to fechaActual
+            "categoria" to categoria,
+            "fecha" to System.currentTimeMillis()
         )
 
-        if (idNota == null) {
-            // CREAR (Create)
-            db.collection("notas")
-                .add(datosNota)
-                .addOnSuccessListener {
-                    Toast.makeText(context, "Nota guardada", Toast.LENGTH_SHORT).show()
-                }
+        if (id == null) {
+            db.collection("notas").add(datos)
         } else {
-            // ACTUALIZAR (Update)
-            db.collection("notas").document(idNota)
-                .update(datosNota as Map<String, Any>)
-                .addOnSuccessListener {
-                    Toast.makeText(context, "Nota actualizada", Toast.LENGTH_SHORT).show()
-                }
+            db.collection("notas").document(id).update(datos as Map<String, Any>)
         }
     }
 
-    // --- BORRADO (DELETE) ---
-    private fun confirmarBorrado(idNota: String) {
-        AlertDialog.Builder(requireContext())
-            .setTitle("¿Eliminar nota?")
-            .setMessage("Esta acción no se puede deshacer.")
-            .setPositiveButton("Sí, eliminar") { _, _ ->
-                db.collection("notas").document(idNota).delete()
-                    .addOnSuccessListener {
-                        Toast.makeText(context, "Nota eliminada", Toast.LENGTH_SHORT).show()
-                    }
-            }
-            .setNegativeButton("No", null)
-            .show()
-    }
-
-    private fun actualizarUI() {
-        if (listaNotas.isEmpty()) {
-            // Podrías mostrar un texto de "No hay notas" si quieres
-            // binding.tvSinNotas.visibility = View.VISIBLE
-        } else {
-            // binding.tvSinNotas.visibility = View.GONE
-        }
+    private fun confirmarBorrado(id: String) {
+        db.collection("notas").document(id).delete()
+            .addOnSuccessListener { Toast.makeText(context, "Nota eliminada", Toast.LENGTH_SHORT).show() }
     }
 
     override fun onDestroyView() {
