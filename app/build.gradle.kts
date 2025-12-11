@@ -39,7 +39,13 @@ android {
 }
 
 dependencies {
-
+// Retrofit (Para llamar a la API)
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+// Corrutinas (Para hacerlo en segundo plano)
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
+// Glide (Para cargar las imágenes de las noticias)
+    implementation("com.github.bumptech.glide:glide:4.15.1")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

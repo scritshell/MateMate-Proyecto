@@ -3,6 +3,7 @@ package com.example.proyectoajedrez.activities
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -59,9 +60,29 @@ class MainActivity : AppCompatActivity() {
         toggle.syncState()
     }
 
+    // --- AQUÍ ESTÁ EL CAMBIO PARA LOS 3 PUNTOS ---
+
+    // 1. Inflamos el NUEVO menú (menu_toolbar) en lugar del menu_main
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
+        menuInflater.inflate(R.menu.menu_toolbar, menu)
         return true
+    }
+
+    // 2. Gestionamos los clics en las opciones de los 3 puntos
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_login -> {
+                // Aquí irá la lógica de abrir LoginActivity más adelante
+                Toast.makeText(this, "Opción: Iniciar Sesión", Toast.LENGTH_SHORT).show()
+                true
+            }
+            R.id.action_settings -> {
+                // Aquí irá la lógica de abrir Ajustes/Preferencias
+                Toast.makeText(this, "Opción: Ajustes", Toast.LENGTH_SHORT).show()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
