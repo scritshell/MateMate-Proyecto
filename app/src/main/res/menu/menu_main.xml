@@ -24,6 +24,11 @@
             android:id="@+id/socialFragment"
             android:icon="@android:drawable/ic_menu_share"
             android:title="Comunidad" />
+
+        <item
+            android:id="@+id/chessBoardFragment"
+            android:icon="@android:drawable/ic_menu_rotate"
+            android:title="Práctica Libre" />
     </group>
 
 </menu>

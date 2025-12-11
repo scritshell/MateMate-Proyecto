@@ -5,11 +5,16 @@
     <item
         android:id="@+id/action_login"
         android:title="Iniciar Sesión"
-        android:icon="@android:drawable/ic_menu_my_calendar"
         app:showAsAction="never" />
+
     <item
         android:id="@+id/action_settings"
         android:title="Ajustes"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_logout"
+        android:title="Cerrar Sesión"
         app:showAsAction="never" />
 
 </menu>

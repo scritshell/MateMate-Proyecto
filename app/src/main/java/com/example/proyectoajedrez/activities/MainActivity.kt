@@ -13,25 +13,26 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.proyectoajedrez.R
 import com.example.proyectoajedrez.databinding.ActivityMainBinding
+import com.example.proyectoajedrez.fragments.LoginDialogFragment
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+    private lateinit var session: SessionManager // Nuestra sesión
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        // Toolbar funcional
         setSupportActionBar(binding.toolbar)
 
-        // NavController
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
+        // Inicializar Sesión
+        session = SessionManager(this)
 
-        // Drawer + destinos de nivel superior
+        // Configuración de Navegación
+        val navController = findNavController(R.id.nav_host_fragment_content_main)
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.inicioFragment,
@@ -45,10 +46,27 @@ class MainActivity : AppCompatActivity() {
 
         setupActionBarWithNavController(navController, appBarConfiguration)
 
-        // Menú lateral conectado al NavController
+        // 1. Configuración estándar del menú lateral
         binding.navView.setupWithNavController(navController)
 
-        // Hamburguesa (abre/cierra menú lateral)
+        // 2. CORRECCIÓN DEL BUG DEL MENÚ LATERAL (¡ESTO FALTABA!)
+        binding.navView.setNavigationItemSelectedListener { item ->
+            if (item.itemId == R.id.inicioFragment) {
+                // Si pulsamos Inicio, limpiamos la pila hasta el principio
+                navController.popBackStack(R.id.inicioFragment, false)
+                binding.drawerLayout.closeDrawers()
+                true
+            } else {
+                // Para el resto, comportamiento normal
+                val handled = androidx.navigation.ui.NavigationUI.onNavDestinationSelected(item, navController)
+                if (handled) {
+                    binding.drawerLayout.closeDrawers()
+                }
+                handled
+            }
+        }
+
+        // Configuración del botón hamburguesa
         val toggle = ActionBarDrawerToggle(
             this,
             binding.drawerLayout,
@@ -58,27 +76,61 @@ class MainActivity : AppCompatActivity() {
         )
         binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
+
+        // LÓGICA DE INICIO: ¿Está logueado?
+        checkLoginStatus()
     }
 
-    // --- AQUÍ ESTÁ EL CAMBIO PARA LOS 3 PUNTOS ---
+    private fun checkLoginStatus() {
+        if (!session.isLoggedIn()) {
+            mostrarLoginDialog()
+        }
+    }
 
-    // 1. Inflamos el NUEVO menú (menu_toolbar) en lugar del menu_main
+    private fun mostrarLoginDialog() {
+        val loginDialog = LoginDialogFragment()
+        // Evitamos que se pueda cancelar pulsando fuera (isCancelable = false en el fragment)
+        loginDialog.isCancelable = false
+        loginDialog.show(supportFragmentManager, "LoginDialog")
+    }
+
+    // Método público para que el Dialog nos avise de actualizar el menú
+    fun actualizarMenu() {
+        invalidateOptionsMenu() // Esto fuerza a Android a llamar a onPrepareOptionsMenu de nuevo
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_toolbar, menu)
         return true
     }
 
-    // 2. Gestionamos los clics en las opciones de los 3 puntos
+    // AQUÍ ES DONDE OCULTAMOS/MOSTRAMOS OPCIONES
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        val isLoggedIn = session.isLoggedIn()
+
+        // Si está logueado: Ocultar Login, Mostrar Logout y Ajustes
+        menu?.findItem(R.id.action_login)?.isVisible = !isLoggedIn
+        menu?.findItem(R.id.action_logout)?.isVisible = isLoggedIn
+        menu?.findItem(R.id.action_settings)?.isVisible = isLoggedIn
+
+        return super.onPrepareOptionsMenu(menu)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_login -> {
-                // Aquí irá la lógica de abrir LoginActivity más adelante
-                Toast.makeText(this, "Opción: Iniciar Sesión", Toast.LENGTH_SHORT).show()
+                mostrarLoginDialog()
+                true
+            }
+            R.id.action_logout -> {
+                session.logoutUser() // Borramos sesión
+                actualizarMenu()     // Actualizamos menú (ahora saldrá "Iniciar sesión")
+                mostrarLoginDialog() // Pedimos login de nuevo
+                Toast.makeText(this, "Sesión cerrada", Toast.LENGTH_SHORT).show()
                 true
             }
             R.id.action_settings -> {
-                // Aquí irá la lógica de abrir Ajustes/Preferencias
-                Toast.makeText(this, "Opción: Ajustes", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Ajustes (Próximamente)", Toast.LENGTH_SHORT).show()
                 true
             }
             else -> super.onOptionsItemSelected(item)

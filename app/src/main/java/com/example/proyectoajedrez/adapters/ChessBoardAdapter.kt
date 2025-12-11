@@ -15,95 +15,96 @@ class ChessBoardAdapter(private val context: Context) : BaseAdapter() {
         ChessSquare(col = it % 8, row = it / 8)
     }
 
+    private var selectedPosition: Int = -1
+
     init {
         setupInitialPosition()
     }
 
     override fun getCount(): Int = 64
-
     override fun getItem(position: Int): ChessSquare = squares[position]
-
     override fun getItemId(position: Int): Long = position.toLong()
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+        // Usamos ImageView en lugar de TextView
         val squareView = (convertView as? ImageView) ?: ImageView(context).apply {
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
+                120 // Altura fija aproximada
             )
-            scaleType = ImageView.ScaleType.CENTER_INSIDE
+            scaleType = ImageView.ScaleType.FIT_CENTER
+            setPadding(8, 8, 8, 8) // Un poco de margen para que la pieza no toque los bordes
         }
 
         val square = squares[position]
 
-        // Configurar color de fondo
-        squareView.setBackgroundColor(
-            if (square.isLightSquare)
-                Color.parseColor("#F0D9B5")  // Casilla clara
-            else
-                Color.parseColor("#B58863")   // Casilla oscura
-        )
+        // 1. Configurar color de fondo (Tablero + Selección)
+        if (position == selectedPosition) {
+            squareView.setBackgroundColor(Color.parseColor("#829769")) // Verde selección (tipo Chess.com)
+        } else {
+            squareView.setBackgroundColor(
+                if (square.isLightSquare) Color.parseColor("#EEEED2")  // Casilla clara
+                else Color.parseColor("#769656")   // Casilla oscura
+            )
+        }
 
-        // TODO: Configurar imagen de la pieza cuando tengamos los drawables
-        // Por ahora podemos usar el símbolo como contenido descriptivo
-        squareView.contentDescription = "${square.position} - ${square.piece.pieceType}"
+        // 2. Pintar la pieza (Imagen)
+        if (square.piece != ChessPiece.EMPTY) {
+            squareView.setImageResource(square.piece.drawableRes)
+            squareView.alpha = 1.0f
+        } else {
+            squareView.setImageDrawable(null) // Limpiar imagen si está vacía
+        }
 
         return squareView
     }
 
+    // --- Lógica del Juego ---
+
+    fun setSelectedPosition(position: Int) {
+        selectedPosition = position
+        notifyDataSetChanged()
+    }
+
+    fun getSelectedPosition(): Int = selectedPosition
+
+    fun movePiece(fromPosition: Int, toPosition: Int) {
+        val pieceToMove = squares[fromPosition].piece
+        squares[toPosition].piece = pieceToMove
+        squares[fromPosition].piece = ChessPiece.EMPTY
+        notifyDataSetChanged()
+    }
+
     fun resetBoard() {
-        // Limpiar todas las piezas
         squares.forEach { it.piece = ChessPiece.EMPTY }
         setupInitialPosition()
+        selectedPosition = -1
         notifyDataSetChanged()
     }
 
     private fun setupInitialPosition() {
-        // Posición inicial del ajedrez
-        for (col in 0 until 8) {
-            // Peones negros (fila 1)
-            squares[1 * 8 + col].piece = ChessPiece.BLACK_PAWN
-            // Peones blancos (fila 6)
-            squares[6 * 8 + col].piece = ChessPiece.WHITE_PAWN
-        }
+        // Configuración estándar del tablero (Fila 0 = Arriba/Negras)
 
-        // Torres
-        squares[0 * 8 + 0].piece = ChessPiece.BLACK_ROOK  // a8
-        squares[0 * 8 + 7].piece = ChessPiece.BLACK_ROOK  // h8
-        squares[7 * 8 + 0].piece = ChessPiece.WHITE_ROOK  // a1
-        squares[7 * 8 + 7].piece = ChessPiece.WHITE_ROOK  // h1
+        // NEGRAS
+        squares[0].piece = ChessPiece.BLACK_ROOK
+        squares[1].piece = ChessPiece.BLACK_KNIGHT
+        squares[2].piece = ChessPiece.BLACK_BISHOP
+        squares[3].piece = ChessPiece.BLACK_QUEEN
+        squares[4].piece = ChessPiece.BLACK_KING
+        squares[5].piece = ChessPiece.BLACK_BISHOP
+        squares[6].piece = ChessPiece.BLACK_KNIGHT
+        squares[7].piece = ChessPiece.BLACK_ROOK
+        for (i in 8..15) squares[i].piece = ChessPiece.BLACK_PAWN
 
-        // Caballos
-        squares[0 * 8 + 1].piece = ChessPiece.BLACK_KNIGHT  // b8
-        squares[0 * 8 + 6].piece = ChessPiece.BLACK_KNIGHT  // g8
-        squares[7 * 8 + 1].piece = ChessPiece.WHITE_KNIGHT  // b1
-        squares[7 * 8 + 6].piece = ChessPiece.WHITE_KNIGHT  // g1
-
-        // Alfiles
-        squares[0 * 8 + 2].piece = ChessPiece.BLACK_BISHOP  // c8
-        squares[0 * 8 + 5].piece = ChessPiece.BLACK_BISHOP  // f8
-        squares[7 * 8 + 2].piece = ChessPiece.WHITE_BISHOP  // c1
-        squares[7 * 8 + 5].piece = ChessPiece.WHITE_BISHOP  // f1
-
-        // Reinas y Reyes
-        squares[0 * 8 + 3].piece = ChessPiece.BLACK_QUEEN   // d8
-        squares[0 * 8 + 4].piece = ChessPiece.BLACK_KING    // e8
-        squares[7 * 8 + 3].piece = ChessPiece.WHITE_QUEEN   // d1
-        squares[7 * 8 + 4].piece = ChessPiece.WHITE_KING    // e1
-    }
-
-    fun getSquareAt(row: Int, col: Int): ChessSquare? {
-        return squares.getOrNull(row * 8 + col)
-    }
-
-    fun updateSquare(row: Int, col: Int, piece: ChessPiece) {
-        getSquareAt(row, col)?.let { square ->
-            square.piece = piece
-            notifyDataSetChanged()
-        }
-    }
-
-    fun getSquareByPosition(position: String): ChessSquare? {
-        return squares.find { it.position == position }
+        // BLANCAS
+        for (i in 48..55) squares[i].piece = ChessPiece.WHITE_PAWN
+        squares[56].piece = ChessPiece.WHITE_ROOK
+        squares[57].piece = ChessPiece.WHITE_KNIGHT
+        squares[58].piece = ChessPiece.WHITE_BISHOP
+        squares[59].piece = ChessPiece.WHITE_QUEEN
+        squares[60].piece = ChessPiece.WHITE_KING
+        squares[61].piece = ChessPiece.WHITE_BISHOP
+        squares[62].piece = ChessPiece.WHITE_KNIGHT
+        squares[63].piece = ChessPiece.WHITE_ROOK
     }
 }
