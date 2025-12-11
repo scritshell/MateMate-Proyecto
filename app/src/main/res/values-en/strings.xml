@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">MateMate</string>
+    <string name="navigation_drawer_close">Close menu</string>
+    <string name="titulo_ajustes">Settings</string>
+    <string name="apariencia">Appearance</string>
+    <string name="modo_oscuro">Dark Mode</string>
+    <string name="idioma">Language</string>
+    <string name="navigation_drawer_open">Open menu</string>
+    <string name="menu_inicio">Home</string>
+    <string name="menu_tacticas">Tactics</string>
+</resources>

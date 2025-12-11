@@ -5,7 +5,9 @@ import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.FrameLayout
 import android.widget.ImageView
+import com.example.proyectoajedrez.R
 import com.example.proyectoajedrez.model.ChessPiece
 import com.example.proyectoajedrez.models.ChessSquare
 
@@ -17,6 +19,9 @@ class ChessBoardAdapter(private val context: Context) : BaseAdapter() {
 
     private var selectedPosition: Int = -1
 
+    // NUEVO: Lista de índices donde es legal moverse
+    private var legalMovePositions: List<Int> = emptyList()
+
     init {
         setupInitialPosition()
     }
@@ -26,40 +31,84 @@ class ChessBoardAdapter(private val context: Context) : BaseAdapter() {
     override fun getItemId(position: Int): Long = position.toLong()
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        // Usamos ImageView en lugar de TextView
-        val squareView = (convertView as? ImageView) ?: ImageView(context).apply {
-            layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                120 // Altura fija aproximada
-            )
-            scaleType = ImageView.ScaleType.FIT_CENTER
-            setPadding(8, 8, 8, 8) // Un poco de margen para que la pieza no toque los bordes
+        // Usamos un FrameLayout para poder apilar capas (Fondo + Pieza + Punto de ayuda)
+        val container = (convertView as? FrameLayout) ?: FrameLayout(context).apply {
+            layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 120)
         }
+
+        // Limpiamos vistas anteriores si se recicla
+        container.removeAllViews()
 
         val square = squares[position]
 
-        // 1. Configurar color de fondo (Tablero + Selección)
+        // 1. FONDO (Tablero)
+        val bgView = View(context)
         if (position == selectedPosition) {
-            squareView.setBackgroundColor(Color.parseColor("#829769")) // Verde selección (tipo Chess.com)
+            bgView.setBackgroundColor(Color.parseColor("#829769")) // Verde Selección
         } else {
-            squareView.setBackgroundColor(
-                if (square.isLightSquare) Color.parseColor("#EEEED2")  // Casilla clara
-                else Color.parseColor("#769656")   // Casilla oscura
+            bgView.setBackgroundColor(
+                if (square.isLightSquare) Color.parseColor("#EEEED2")
+                else Color.parseColor("#769656")
             )
         }
+        container.addView(bgView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
 
-        // 2. Pintar la pieza (Imagen)
+        // 2. PIEZA (ImageView)
+        val pieceView = ImageView(context)
+        pieceView.scaleType = ImageView.ScaleType.FIT_CENTER
+        pieceView.setPadding(8, 8, 8, 8)
+
         if (square.piece != ChessPiece.EMPTY) {
-            squareView.setImageResource(square.piece.drawableRes)
-            squareView.alpha = 1.0f
-        } else {
-            squareView.setImageDrawable(null) // Limpiar imagen si está vacía
+            pieceView.setImageResource(square.piece.drawableRes)
+        }
+        container.addView(pieceView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+
+        // 3. NUEVO: INDICADOR DE MOVIMIENTO LEGAL (Círculo)
+        if (legalMovePositions.contains(position)) {
+            val indicator = View(context)
+
+            // Lógica visual:
+            // - Si está vacío: Un punto pequeño gris.
+            // - Si hay una pieza (Captura): Un marco o círculo rojo/transparente grande.
+
+            val size = if (square.piece == ChessPiece.EMPTY) 40 else 100 // Tamaño
+            val params = FrameLayout.LayoutParams(size, size)
+            params.gravity = android.view.Gravity.CENTER
+
+            val indicatorDrawable = android.graphics.drawable.GradientDrawable()
+            indicatorDrawable.shape = android.graphics.drawable.GradientDrawable.OVAL
+
+            if (square.piece == ChessPiece.EMPTY) {
+                // Casilla vacía: Punto gris semitransparente
+                indicatorDrawable.setColor(Color.parseColor("#80666666"))
+            } else {
+                // Captura: Anillo rojo semitransparente
+                indicatorDrawable.setColor(Color.TRANSPARENT)
+                indicatorDrawable.setStroke(10, Color.parseColor("#80FF0000"))
+            }
+
+            indicator.background = indicatorDrawable
+            indicator.layoutParams = params
+            container.addView(indicator)
         }
 
-        return squareView
+        return container
     }
 
-    // --- Lógica del Juego ---
+    // NUEVO: Método para actualizar los movimientos legales desde el Fragment
+    fun setLegalMoves(positions: List<Int>) {
+        this.legalMovePositions = positions
+        notifyDataSetChanged()
+    }
+
+    // Al mover o cancelar, limpiamos los puntos
+    fun clearLegalMoves() {
+        this.legalMovePositions = emptyList()
+        notifyDataSetChanged()
+    }
+
+    // ... (El resto de métodos: setSelectedPosition, movePiece, resetBoard... se quedan igual) ...
+    // Solo recuerda llamar a clearLegalMoves() dentro de movePiece y setSelectedPosition(-1)
 
     fun setSelectedPosition(position: Int) {
         selectedPosition = position
@@ -72,6 +121,11 @@ class ChessBoardAdapter(private val context: Context) : BaseAdapter() {
         val pieceToMove = squares[fromPosition].piece
         squares[toPosition].piece = pieceToMove
         squares[fromPosition].piece = ChessPiece.EMPTY
+
+        // Limpiamos selección y sugerencias tras mover
+        selectedPosition = -1
+        clearLegalMoves()
+
         notifyDataSetChanged()
     }
 
@@ -79,13 +133,15 @@ class ChessBoardAdapter(private val context: Context) : BaseAdapter() {
         squares.forEach { it.piece = ChessPiece.EMPTY }
         setupInitialPosition()
         selectedPosition = -1
+        clearLegalMoves()
         notifyDataSetChanged()
     }
 
-    private fun setupInitialPosition() {
-        // Configuración estándar del tablero (Fila 0 = Arriba/Negras)
+    // ... (setupInitialPosition igual que antes) ...
 
-        // NEGRAS
+    private fun setupInitialPosition() {
+        // ... (Tu código existente de setupInitialPosition) ...
+        // Configuración estándar del tablero (Fila 0 = Arriba/Negras)
         squares[0].piece = ChessPiece.BLACK_ROOK
         squares[1].piece = ChessPiece.BLACK_KNIGHT
         squares[2].piece = ChessPiece.BLACK_BISHOP

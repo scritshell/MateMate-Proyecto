@@ -130,7 +130,9 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             R.id.action_settings -> {
-                Toast.makeText(this, "Ajustes (Próximamente)", Toast.LENGTH_SHORT).show()
+                // Navegar al fragmento de ajustes
+                val navController = findNavController(R.id.nav_host_fragment_content_main)
+                navController.navigate(R.id.settingsFragment)
                 true
             }
             else -> super.onOptionsItemSelected(item)

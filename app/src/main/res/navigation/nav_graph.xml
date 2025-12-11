@@ -83,4 +83,10 @@
             android:defaultValue="" />
     </fragment>
 
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.proyectoajedrez.fragments.SettingsFragment"
+        android:label="@string/titulo_ajustes"
+        tools:layout="@layout/fragment_settings" />
+
 </navigation>

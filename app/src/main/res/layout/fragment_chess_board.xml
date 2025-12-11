@@ -27,8 +27,7 @@
         android:verticalSpacing="0dp"
         android:horizontalSpacing="0dp"
         android:stretchMode="columnWidth"
-        android:background="#000000"
-        android:layout_marginBottom="8dp" />
+        android:background="@android:color/transparent"  android:layout_marginBottom="8dp" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"

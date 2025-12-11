@@ -51,29 +51,48 @@ class InicioFragment : Fragment() {
             try {
                 val apiKey = "fd08253831f2472582d2a03585f4f834"
 
-                Log.d(TAG, "Conectando con NewsAPI...")
+                // 1. DETECTAR IDIOMA DEL MÓVIL
+                // Obtenemos el código de idioma actual (ej: "es", "en", "fr")
+                val idiomaActual = java.util.Locale.getDefault().language
 
-                // Llamada a la API buscando "ajedrez"
-                val respuesta = RetrofitClient.instance.getChessNews("ajedrez", apiKey)
+                // 2. CONFIGURAR BÚSQUEDA SEGÚN IDIOMA
+                // Si el móvil está en inglés, buscamos "chess" y pedimos noticias en inglés ("en")
+                // Para cualquier otro caso, buscamos "ajedrez" en español ("es")
+                val queryBusqueda = if (idiomaActual == "en") "chess" else "ajedrez"
+                val idiomaApi = if (idiomaActual == "en") "en" else "es"
 
-                // Volvemos al Hilo Principal (Main) para actualizar la pantalla
+                Log.d(TAG, "🌍 Conectando con NewsAPI... Buscando: $queryBusqueda ($idiomaApi)")
+
+                // 3. LLAMADA A LA API CON PARÁMETROS DINÁMICOS
+                val respuesta = RetrofitClient.instance.getChessNews(
+                    query = queryBusqueda,
+                    apiKey = apiKey,
+                    language = idiomaApi
+                )
+
+                // 4. ACTUALIZAR PANTALLA (Hilo Principal)
                 withContext(Dispatchers.Main) {
-                    if (respuesta.status == "ok") {
-                        Log.d(TAG, "Noticias recibidas: ${respuesta.totalResults}")
+                    // Verificamos 'isAdded' para evitar crashes si el usuario sale rápido de la pantalla
+                    if (isAdded) {
+                        if (respuesta.status == "ok") {
+                            Log.d(TAG, "✅ Noticias recibidas: ${respuesta.totalResults}")
 
-                        // Crear y asignar el adaptador con la lista de noticias
-                        val adapter = NewsAdapter(respuesta.articles)
-                        binding.recyclerNoticias.adapter = adapter
-                    } else {
-                        Log.e(TAG, "Error en API: ${respuesta.status}")
-                        Toast.makeText(context, "Error cargando noticias", Toast.LENGTH_SHORT).show()
+                            // Crear y asignar el adaptador con la lista de noticias
+                            val adapter = NewsAdapter(respuesta.articles)
+                            binding.recyclerNoticias.adapter = adapter
+                        } else {
+                            Log.e(TAG, "❌ Error en API: ${respuesta.status}")
+                            Toast.makeText(context, "Error cargando noticias", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             } catch (e: Exception) {
                 // Manejo de errores (sin internet, api key mal, etc.)
                 Log.e(TAG, "🔥 Excepción cargando noticias", e)
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(context, "Fallo de conexión", Toast.LENGTH_SHORT).show()
+                    if (isAdded) {
+                        Toast.makeText(context, "Fallo de conexión", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
