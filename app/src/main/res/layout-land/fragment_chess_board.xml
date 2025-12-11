@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Layout horizontal para el tablero de ajedrez -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -9,22 +10,20 @@
     android:baselineAligned="false"
     tools:context=".fragments.ChessBoardFragment">
 
+    <!-- Panel izquierdo: Tablero de ajedrez (60% del ancho) -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1.5">
 
+        <!-- GridView de 8x8 para el tablero -->
         <GridView
             android:id="@+id/chessBoard"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:numColumns="8"
             android:stretchMode="columnWidth"
-            android:gravity="center"
             android:background="@android:color/transparent"
-            android:listSelector="@android:color/transparent"
-            android:scrollbars="none"
-            android:overScrollMode="never"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -33,6 +32,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- Panel derecho: Controles y herramientas (40% del ancho) -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -40,6 +40,7 @@
         android:orientation="vertical"
         android:paddingStart="12dp">
 
+        <!-- Título del tablero -->
         <TextView
             android:id="@+id/titleTextView"
             android:layout_width="match_parent"
@@ -50,6 +51,7 @@
             android:gravity="center"
             android:layout_marginBottom="4dp" />
 
+        <!-- Card para historial de movimientos -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -72,6 +74,7 @@
                     android:textSize="12sp"
                     android:gravity="center"/>
 
+                <!-- RecyclerView para mostrar movimientos -->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerHistory"
                     android:layout_width="match_parent"
@@ -80,6 +83,7 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
+        <!-- Sección de configuración de IA -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -95,6 +99,7 @@
                 android:textStyle="bold"
                 android:textSize="12sp"/>
 
+            <!-- Spinner para seleccionar tiempo de la IA -->
             <Spinner
                 android:id="@+id/spinnerTime"
                 android:layout_width="match_parent"
@@ -102,6 +107,7 @@
                 android:layout_marginBottom="4dp"
                 android:minHeight="40dp" />
 
+            <!-- Etiqueta del nivel de dificultad -->
             <TextView
                 android:id="@+id/tvDifficultyLabel"
                 android:layout_width="wrap_content"
@@ -110,6 +116,7 @@
                 android:textStyle="bold"
                 android:textSize="12sp"/>
 
+            <!-- SeekBar para ajustar dificultad -->
             <SeekBar
                 android:id="@+id/seekBarDifficulty"
                 android:layout_width="match_parent"
@@ -119,11 +126,14 @@
                 android:thumbTint="#673AB7"
                 android:progressTint="#673AB7"/>
         </LinearLayout>
+
+        <!-- Sección de botones de control -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <!-- Fila de botones: Atrás y Reiniciar -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -150,6 +160,7 @@
                     android:backgroundTint="#F44336"/>
             </LinearLayout>
 
+            <!-- Botón para guardar partida -->
             <Button android:id="@+id/btnSave"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
