@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.proyectoajedrez.databinding.FragmentInicioBinding
 import com.example.proyectoajedrez.network.RetrofitClient
 import com.example.proyectoajedrez.adapters.NewsAdapter
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,6 +22,10 @@ class InicioFragment : Fragment() {
 
     private var _binding: FragmentInicioBinding? = null
     private val binding get() = _binding!!
+
+    // Instancias de Firebase
+    private val auth = FirebaseAuth.getInstance()
+    private val db = FirebaseFirestore.getInstance()
 
     private companion object {
         const val TAG = "InicioFragment"
@@ -36,64 +42,71 @@ class InicioFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d(TAG, "🎬 Vista creada: Iniciando carga de noticias...")
+        Log.d(TAG, "🎬 Vista creada: Iniciando...")
 
-        // 1. Configurar el RecyclerView (Diseño vertical)
+        // 1. Configurar RecyclerView
         binding.recyclerNoticias.layoutManager = LinearLayoutManager(context)
 
-        // 2. Llamar a la API para cargar datos
+        // 2. Cargar Datos del Usuario (Firebase)
+        cargarDatosUsuario()
+
+        // 3. Cargar Noticias (API)
         cargarNoticias()
     }
 
+    private fun cargarDatosUsuario() {
+        val userId = auth.currentUser?.uid
+
+        if (userId != null) {
+            // Escuchamos en tiempo real los cambios en el perfil
+            db.collection("usuarios").document(userId)
+                .addSnapshotListener { document, e ->
+                    if (e != null) {
+                        Log.e(TAG, "Error al escuchar datos de usuario", e)
+                        return@addSnapshotListener
+                    }
+
+                    if (document != null && document.exists()) {
+                        val username = document.getString("username") ?: "Jugador"
+                        val elo = document.getLong("elo") ?: 1200
+
+                        // Actualizamos la UI con DATOS REALES
+                        binding.tvBienvenidaSubtitulo.text = "¡Hola, $username!"
+                        binding.textElo.text = elo.toString()
+
+                        // Datos simulados (para no mostrar números falsos aleatorios)
+                        binding.textPorcentajeTacticas.text = "0%" // A implementar
+                        binding.textAmigos.text = "0" // A implementar
+                    }
+                }
+        } else {
+            binding.tvBienvenidaSubtitulo.text = "Modo Invitado"
+            binding.textElo.text = "-"
+        }
+    }
+
     private fun cargarNoticias() {
-        // Usamos Corrutinas para hacer la petición en segundo plano (Hilo IO)
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val apiKey = "fd08253831f2472582d2a03585f4f834"
-
-                // 1. DETECTAR IDIOMA DEL MÓVIL
-                // Obtenemos el código de idioma actual (ej: "es", "en", "fr")
                 val idiomaActual = java.util.Locale.getDefault().language
-
-                // 2. CONFIGURAR BÚSQUEDA SEGÚN IDIOMA
-                // Si el móvil está en inglés, buscamos "chess" y pedimos noticias en inglés ("en")
-                // Para cualquier otro caso, buscamos "ajedrez" en español ("es")
                 val queryBusqueda = if (idiomaActual == "en") "chess" else "ajedrez"
                 val idiomaApi = if (idiomaActual == "en") "en" else "es"
 
-                Log.d(TAG, "🌍 Conectando con NewsAPI... Buscando: $queryBusqueda ($idiomaApi)")
-
-                // 3. LLAMADA A LA API CON PARÁMETROS DINÁMICOS
                 val respuesta = RetrofitClient.instance.getChessNews(
                     query = queryBusqueda,
                     apiKey = apiKey,
                     language = idiomaApi
                 )
 
-                // 4. ACTUALIZAR PANTALLA (Hilo Principal)
                 withContext(Dispatchers.Main) {
-                    // Verificamos 'isAdded' para evitar crashes si el usuario sale rápido de la pantalla
-                    if (isAdded) {
-                        if (respuesta.status == "ok") {
-                            Log.d(TAG, "✅ Noticias recibidas: ${respuesta.totalResults}")
-
-                            // Crear y asignar el adaptador con la lista de noticias
-                            val adapter = NewsAdapter(respuesta.articles)
-                            binding.recyclerNoticias.adapter = adapter
-                        } else {
-                            Log.e(TAG, "❌ Error en API: ${respuesta.status}")
-                            Toast.makeText(context, "Error cargando noticias", Toast.LENGTH_SHORT).show()
-                        }
+                    if (isAdded && respuesta.status == "ok") {
+                        val adapter = NewsAdapter(respuesta.articles)
+                        binding.recyclerNoticias.adapter = adapter
                     }
                 }
             } catch (e: Exception) {
-                // Manejo de errores (sin internet, api key mal, etc.)
-                Log.e(TAG, "🔥 Excepción cargando noticias", e)
-                withContext(Dispatchers.Main) {
-                    if (isAdded) {
-                        Toast.makeText(context, "Fallo de conexión", Toast.LENGTH_SHORT).show()
-                    }
-                }
+                Log.e(TAG, "Error cargando noticias", e)
             }
         }
     }

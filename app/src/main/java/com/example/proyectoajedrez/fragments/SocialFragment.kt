@@ -44,7 +44,7 @@ class SocialFragment : Fragment() {
     }
 
     private fun setupToolbarMenu() {
-        binding.toolbarSocial.setOnMenuItemClickListener { menuItem ->
+        binding.toolbarSocial?.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.action_search_social -> {
                     showToast("Búsqueda en comunidad - Próximamente")

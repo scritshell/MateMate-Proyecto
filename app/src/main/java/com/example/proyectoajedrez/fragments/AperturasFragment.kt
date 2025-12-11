@@ -29,16 +29,15 @@ class AperturasFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val listaAperturas = listOf(
-            Apertura("Apertura Italiana", "1.e4 e5 2.Cf3 Cc6 3.Ac4", "♟️"),
-            Apertura("Defensa Siciliana", "1.e4 c5", "⚔️"),
-            Apertura("Apertura Española", "1.e4 e5 2.Cf3 Cc6 3.Ab5", "🏰"),
-            Apertura("Defensa Francesa", "1.e4 e6", "🛡️"),
-            Apertura("Gambito de Dama", "1.d4 d5 2.c4", "♛"),
-            Apertura("Defensa India de Rey", "1.d4 Cf6 2.c4 g6", "🌄")
+            Apertura(getString(R.string.apertura_italiana), "1.e4 e5 2.Cf3 Cc6 3.Ac4", "♟️"),
+            Apertura(getString(R.string.defensa_siciliana), "1.e4 c5", "⚔️"),
+            Apertura(getString(R.string.apertura_espanola), "1.e4 e5 2.Cf3 Cc6 3.Ab5", "🏰"),
+            Apertura(getString(R.string.defensa_francesa), "1.e4 e6", "🛡️"),
+            Apertura(getString(R.string.gambito_dama), "1.d4 d5 2.c4", "♛"),
+            Apertura(getString(R.string.defensa_india), "1.d4 Cf6 2.c4 g6", "🌄")
         )
 
         val adapter = AperturasAdapter(listaAperturas) { apertura ->
-            // Navegar al ChessBoardFragment con la apertura seleccionada
             navigateToChessBoard(apertura)
         }
 

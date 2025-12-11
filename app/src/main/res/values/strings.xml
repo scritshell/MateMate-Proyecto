@@ -7,7 +7,71 @@
     <string name="apariencia">Apariencia</string>
     <string name="modo_oscuro">Modo Oscuro</string>
     <string name="idioma">Idioma</string>
+    <string name="lang_es">Español</string>
+    <string name="lang_en">English</string>
 
     <string name="menu_inicio">Inicio</string>
+    <string name="menu_aperturas">Aperturas</string>
     <string name="menu_tacticas">Tácticas</string>
+    <string name="menu_bloc_notas">Bloc de Notas</string>
+    <string name="menu_comunidad">Comunidad</string>
+    <string name="menu_practica">Práctica Libre</string>
+
+    <string name="login_titulo">Iniciar Sesión</string>
+    <string name="registro_titulo">Crear Cuenta</string>
+    <string name="usuario">Nombre de Usuario</string>
+    <string name="email_usuario">Email o Usuario</string>
+    <string name="email">Email</string>
+    <string name="password">Contraseña</string>
+    <string name="btn_entrar">Entrar</string>
+    <string name="btn_registrarse">Registrarse</string>
+    <string name="ir_a_registro">¿No tienes cuenta? Regístrate AQUÍ</string>
+    <string name="ir_a_login">¿Ya tienes cuenta? Inicia Sesión</string>
+
+    <string name="bienvenida_titulo">¡Bienvenido a MateMate!</string>
+    <string name="bienvenida_subtitulo">Tu compañero de estudio de ajedrez</string>
+    <string name="texto_elo">ELO</string>
+    <string name="texto_puzzle">Puzzle</string>
+    <string name="texto_tacticas">Tácticas</string>
+    <string name="texto_amigos">Amigos</string>
+    <string name="titulo_noticias">Noticias de Ajedrez</string>
+
+    <string name="apertura_italiana">Apertura Italiana</string>
+    <string name="defensa_siciliana">Defensa Siciliana</string>
+    <string name="apertura_espanola">Apertura Española</string>
+    <string name="defensa_francesa">Defensa Francesa</string>
+    <string name="gambito_dama">Gambito de Dama</string>
+    <string name="defensa_india">Defensa India de Rey</string>
+
+    <string name="titulo_tablero">Tablero de Ajedrez</string>
+    <string name="titulo_historial">Historial de Partida</string>
+    <string name="btn_deshacer">Deshacer</string>
+    <string name="btn_reiniciar">Reiniciar</string>
+    <string name="btn_guardar">Guardar</string>
+    <string name="btn_atras">Atrás</string>
+    <string name="modo_estudio">Modo: Estudio</string>
+
+    <string name="titulo_bloc_notas">Bloc de Notas</string>
+    <string name="subtitulo_bloc_notas">Guarda tus ideas, análisis y partidas</string>
+    <string name="nueva_nota">Nueva Nota</string>
+    <string name="notas_recientes">Notas Recientes</string>
+    <string name="sin_notas">No hay notas aún</string>
+    <string name="crea_primera_nota">Crea tu primera nota para empezar</string>
+
+    <string name="titulo_comunidad">Comunidad</string>
+    <string name="tab_feed">Feed</string>
+    <string name="tab_amigos">Amigos</string>
+    <string name="tab_mensajes">Mensajes</string>
+
+    <string name="titulo_aperturas">Aperturas</string>
+    <string name="titulo_tacticas">Ejercicios Tácticos</string>
+    <string name="subtitulo_tacticas">Mejora tu visión táctica resolviendo problemas</string>
+    <string name="mate_1">Mate en 1</string>
+    <string name="mate_2">Mate en 2</string>
+    <string name="nivel_facil">Nivel: Fácil</string>
+    <string name="nivel_medio">Nivel: Medio</string>
+    <string name="nivel_dificil">Nivel: Difícil</string>
+    <string name="tacticas_avanzadas">Tácticas Avanzadas</string>
+    <string name="mis_estadisticas">Mis Estadísticas</string>
+    <string name="porcentaje_correctas">85% correctas</string>
 </resources>

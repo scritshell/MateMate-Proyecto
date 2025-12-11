@@ -1,11 +1,77 @@
 <resources>
     <string name="app_name">MateMate</string>
+    <string name="navigation_drawer_open">Open menu</string>
     <string name="navigation_drawer_close">Close menu</string>
+
     <string name="titulo_ajustes">Settings</string>
     <string name="apariencia">Appearance</string>
     <string name="modo_oscuro">Dark Mode</string>
     <string name="idioma">Language</string>
-    <string name="navigation_drawer_open">Open menu</string>
+    <string name="lang_es">Español</string>
+    <string name="lang_en">English</string>
+
     <string name="menu_inicio">Home</string>
+    <string name="menu_aperturas">Openings</string>
     <string name="menu_tacticas">Tactics</string>
+    <string name="menu_bloc_notas">Notes</string>
+    <string name="menu_comunidad">Community</string>
+    <string name="menu_practica">Free Practice</string>
+
+    <string name="login_titulo">Sign In</string>
+    <string name="registro_titulo">Sign Up</string>
+    <string name="usuario">Username</string>
+    <string name="email_usuario">Email or User</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="btn_entrar">Login</string>
+    <string name="btn_registrarse">Register</string>
+    <string name="ir_a_registro">No account? Sign up HERE</string>
+    <string name="ir_a_login">Already have an account? Sign In</string>
+
+    <string name="bienvenida_titulo">Welcome to MateMate!</string>
+    <string name="bienvenida_subtitulo">Your chess study companion</string>
+    <string name="texto_elo">ELO</string>
+    <string name="texto_puzzle">Puzzle</string>
+    <string name="texto_tacticas">Tactics</string>
+    <string name="texto_amigos">Friends</string>
+    <string name="titulo_noticias">Chess News</string>
+
+    <string name="titulo_tablero">Chess Board</string>
+    <string name="titulo_historial">Game History</string>
+    <string name="btn_deshacer">Undo</string>
+    <string name="btn_reiniciar">Reset</string>
+    <string name="btn_guardar">Save</string>
+    <string name="btn_atras">Back</string>
+    <string name="modo_estudio">Mode: Study</string>
+
+    <string name="apertura_italiana">Italian Game</string>
+    <string name="defensa_siciliana">Sicilian Defense</string>
+    <string name="apertura_espanola">Spanish Opening</string>
+    <string name="defensa_francesa">French Defense</string>
+    <string name="gambito_dama">Queen\'s Gambit</string>
+    <string name="defensa_india">King\'s Indian Defense</string>
+
+    <string name="titulo_bloc_notas">Notepad</string>
+    <string name="subtitulo_bloc_notas">Save your ideas, analysis and games</string>
+    <string name="nueva_nota">New Note</string>
+    <string name="notas_recientes">Recent Notes</string>
+    <string name="sin_notas">No notes yet</string>
+    <string name="crea_primera_nota">Create your first note to start</string>
+
+    <string name="titulo_comunidad">Community</string>
+    <string name="tab_feed">Feed</string>
+    <string name="tab_amigos">Friends</string>
+    <string name="tab_mensajes">Messages</string>
+
+    <string name="titulo_aperturas">Openings</string>
+    <string name="titulo_tacticas">Tactical Exercises</string>
+    <string name="subtitulo_tacticas">Improve your tactical vision solving puzzles</string>
+    <string name="mate_1">Mate in 1</string>
+    <string name="mate_2">Mate in 2</string>
+    <string name="nivel_facil">Level: Easy</string>
+    <string name="nivel_medio">Level: Medium</string>
+    <string name="nivel_dificil">Level: Hard</string>
+    <string name="tacticas_avanzadas">Advanced Tactics</string>
+    <string name="mis_estadisticas">My Stats</string>
+    <string name="porcentaje_correctas">85% correct</string>
 </resources>

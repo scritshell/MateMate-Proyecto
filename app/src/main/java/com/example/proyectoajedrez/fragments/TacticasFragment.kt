@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.example.proyectoajedrez.R
 import com.example.proyectoajedrez.databinding.FragmentTacticasBinding
 
 class TacticasFragment : Fragment() {
@@ -23,38 +25,39 @@ class TacticasFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setupNavigation()
     }
 
     private fun setupNavigation() {
-        // Navegación desde las tarjetas de ejercicios
-        // (Asumiendo que tienes IDs para cada CardView)
-
-        // Ejercicio Mate en 1
+        // Mate en 1
         binding.cardMate1.setOnClickListener {
-            showToast("Iniciando ejercicios de Mate en 1")
-            // findNavController().navigate(R.id.action_tacticas_to_ejercicio1) // Para implementar después
+            navigateToBoard("mate1")
         }
 
-        // Ejercicio Mate en 2
+        // Mate en 2
         binding.cardMate2.setOnClickListener {
-            showToast("Iniciando ejercicios de Mate en 2")
+            navigateToBoard("mate2")
         }
 
-        // Ejercicios Avanzados
+        // Avanzados
         binding.cardAvanzados.setOnClickListener {
-            showToast("Iniciando ejercicios avanzados")
+            navigateToBoard("avanzado")
         }
 
-        // Estadísticas
+        // Estadísticas (Podemos mostrar un toast o ir a perfil si existiera)
         binding.cardEstadisticas.setOnClickListener {
-            showToast("Mostrando estadísticas")
+            Toast.makeText(context, "Estadísticas: 85% victorias", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun showToast(message: String) {
-        android.widget.Toast.makeText(requireContext(), message, android.widget.Toast.LENGTH_SHORT).show()
+    private fun navigateToBoard(modoJuego: String) {
+        try {
+            val bundle = Bundle()
+            bundle.putString("modo", modoJuego)
+            findNavController().navigate(R.id.action_tacticasFragment_to_chessBoardFragment, bundle)
+        } catch (e: Exception) {
+            Toast.makeText(context, "Error al navegar", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onDestroyView() {

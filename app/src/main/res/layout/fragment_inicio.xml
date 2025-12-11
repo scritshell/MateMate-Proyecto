@@ -27,14 +27,15 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="¡Bienvenido a MateMate!"
+                    android:text="@string/bienvenida_titulo"
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/tvBienvenidaSubtitulo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tu compañero de estudio de ajedrez"
+                    android:text="@string/bienvenida_subtitulo"
                     android:textSize="16sp"
                     android:layout_marginTop="8dp" />
 
@@ -66,14 +67,14 @@
                         android:id="@+id/textElo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="1250"
+                        android:text="-"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="ELO" />
+                        android:text="@string/texto_elo" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -87,13 +88,14 @@
                         android:id="@+id/textPorcentajeTacticas"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="85%"
+                        android:text="0%"
                         android:textSize="20sp"
                         android:textStyle="bold" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Tácticas" />
+                        android:text="@string/texto_tacticas" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -107,13 +109,14 @@
                         android:id="@+id/textAmigos"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="12"
+                        android:text="0"
                         android:textSize="20sp"
                         android:textStyle="bold" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Amigos" />
+                        android:text="@string/texto_amigos" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -123,7 +126,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Noticias de Ajedrez"
+            android:text="@string/titulo_noticias"
             android:textSize="18sp"
             android:textStyle="bold"
             android:layout_marginBottom="8dp" />

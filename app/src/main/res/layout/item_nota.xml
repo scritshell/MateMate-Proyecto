@@ -4,6 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
     app:cardCornerRadius="8dp"
     app:cardElevation="2dp">
 
@@ -11,10 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="12dp"
-        android:background="?attr/selectableItemBackground"
-        android:clickable="true"
-        android:focusable="true">
+        android:padding="12dp">
 
         <TextView
             android:id="@+id/tituloNota"
@@ -37,7 +37,7 @@
             android:id="@+id/previewNota"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="1.e4 e5 2.Cf3 Cc6 3.Ac4 - Buena posición en el medio juego..."
+            android:text="1.e4 e5..."
             android:textSize="14sp"
             android:maxLines="2"
             android:ellipsize="end"
