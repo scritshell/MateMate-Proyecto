@@ -10,8 +10,8 @@ data class NewsResponse(
 data class Article(
     val title: String?,
     val description: String?,
-    val urlToImage: String?, // La foto de la noticia
-    val url: String?,        // El enlace para leerla completa
+    val urlToImage: String?,
+    val url: String?,
     val source: Source?
 )
 
