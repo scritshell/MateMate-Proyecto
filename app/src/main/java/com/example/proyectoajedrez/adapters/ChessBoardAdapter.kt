@@ -31,17 +31,30 @@ class ChessBoardAdapter(private val context: Context) : BaseAdapter() {
     override fun getItemId(position: Int): Long = position.toLong()
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        // Usamos un FrameLayout para poder apilar capas (Fondo + Pieza + Punto de ayuda)
+        // 1. CALCULO MATEMÁTICO DEL TAMAÑO
+        // Obtenemos el ancho del tablero y lo dividimos entre 8
+        val boardWidth = parent?.width ?: 0
+        val cellSize = if (boardWidth > 0) boardWidth / 8 else 120 // 120 es solo un fallback por si acaso
+
+        // 2. CREACIÓN O REUTILIZACIÓN DEL CONTENEDOR
         val container = (convertView as? FrameLayout) ?: FrameLayout(context).apply {
-            layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 120)
+            // AQUÍ ESTÁ EL CAMBIO CLAVE:
+            // Usamos AbsListView.LayoutParams porque el padre es un GridView
+            // Y le decimos: Ancho = cellSize, Alto = cellSize
+            layoutParams = android.widget.AbsListView.LayoutParams(cellSize, cellSize)
         }
 
-        // Limpiamos vistas anteriores si se recicla
+        // Aseguramos que si el tamaño cambió (por rotación, etc), se actualice
+        if (container.layoutParams.height != cellSize && cellSize > 0) {
+            container.layoutParams = android.widget.AbsListView.LayoutParams(cellSize, cellSize)
+        }
+
+        // Limpiamos vistas anteriores
         container.removeAllViews()
 
         val square = squares[position]
 
-        // 1. FONDO (Tablero)
+        // 3. FONDO (Tablero)
         val bgView = View(context)
         if (position == selectedPosition) {
             bgView.setBackgroundColor(Color.parseColor("#829769")) // Verde Selección
@@ -53,7 +66,7 @@ class ChessBoardAdapter(private val context: Context) : BaseAdapter() {
         }
         container.addView(bgView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
 
-        // 2. PIEZA (ImageView)
+        // 4. PIEZA (ImageView)
         val pieceView = ImageView(context)
         pieceView.scaleType = ImageView.ScaleType.FIT_CENTER
         pieceView.setPadding(8, 8, 8, 8)
@@ -63,26 +76,23 @@ class ChessBoardAdapter(private val context: Context) : BaseAdapter() {
         }
         container.addView(pieceView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
 
-        // 3. NUEVO: INDICADOR DE MOVIMIENTO LEGAL (Círculo)
+        // 5. INDICADOR DE MOVIMIENTO LEGAL
         if (legalMovePositions.contains(position)) {
             val indicator = View(context)
 
-            // Lógica visual:
-            // - Si está vacío: Un punto pequeño gris.
-            // - Si hay una pieza (Captura): Un marco o círculo rojo/transparente grande.
+            // Ajustamos el tamaño del indicador proporcionalmente al tamaño de la celda
+            // Si la celda es pequeña, el indicador debe ser pequeño
+            val indicatorSize = if (square.piece == ChessPiece.EMPTY) (cellSize * 0.3).toInt() else cellSize
 
-            val size = if (square.piece == ChessPiece.EMPTY) 40 else 100 // Tamaño
-            val params = FrameLayout.LayoutParams(size, size)
+            val params = FrameLayout.LayoutParams(indicatorSize, indicatorSize)
             params.gravity = android.view.Gravity.CENTER
 
             val indicatorDrawable = android.graphics.drawable.GradientDrawable()
             indicatorDrawable.shape = android.graphics.drawable.GradientDrawable.OVAL
 
             if (square.piece == ChessPiece.EMPTY) {
-                // Casilla vacía: Punto gris semitransparente
                 indicatorDrawable.setColor(Color.parseColor("#80666666"))
             } else {
-                // Captura: Anillo rojo semitransparente
                 indicatorDrawable.setColor(Color.TRANSPARENT)
                 indicatorDrawable.setStroke(10, Color.parseColor("#80FF0000"))
             }
