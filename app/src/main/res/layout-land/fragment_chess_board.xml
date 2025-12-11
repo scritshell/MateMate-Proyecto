@@ -84,22 +84,38 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:background="#10000000"
+            android:padding="8dp"
             android:layout_marginBottom="8dp">
 
             <TextView
-                android:id="@+id/tvDificultad"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Dificultad IA: 50"
-                android:textSize="12sp"
-                android:textColor="#888"/>
+                android:text="Tiempo IA:"
+                android:textStyle="bold"
+                android:textSize="12sp"/>
 
-            <SeekBar
-                android:id="@+id/seekBarDificultad"
+            <Spinner
+                android:id="@+id/spinnerTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:max="100"
-                android:progress="50"
+                android:layout_marginBottom="4dp"
+                android:minHeight="40dp" />
+
+            <TextView
+                android:id="@+id/tvDifficultyLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nivel IA: 1"
+                android:textStyle="bold"
+                android:textSize="12sp"/>
+
+            <SeekBar
+                android:id="@+id/seekBarDifficulty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="10"
+                android:progress="1"
                 android:thumbTint="#673AB7"
                 android:progressTint="#673AB7"/>
         </LinearLayout>
@@ -134,13 +150,13 @@
                     android:backgroundTint="#F44336"/>
             </LinearLayout>
 
-            <Button
-                android:id="@+id/btnSave"
+            <Button android:id="@+id/btnSave"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/btn_guardar"
                 android:textSize="12sp"
-                android:backgroundTint="#673AB7"/>
+                android:backgroundTint="#673AB7"
+                android:text="@string/btn_guardar" />
         </LinearLayout>
+
     </LinearLayout>
 </LinearLayout>

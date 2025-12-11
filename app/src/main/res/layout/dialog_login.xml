@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Layout del diálogo de login/registro -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="24dp">
 
+    <!-- Título del diálogo -->
     <TextView
         android:id="@+id/tvTitulo"
         android:layout_width="match_parent"
@@ -15,6 +17,7 @@
         android:gravity="center"
         android:layout_marginBottom="16dp"/>
 
+    <!-- Campo para nombre de usuario (visible solo en registro) -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/layoutUsername"
         android:layout_width="match_parent"
@@ -29,6 +32,7 @@
             android:inputType="text"/>
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- Campo para email o nombre de usuario en login -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/layoutEmail"
         android:layout_width="match_parent"
@@ -43,6 +47,7 @@
             android:inputType="textEmailAddress"/>
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- Campo para contraseña -->
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -56,6 +61,7 @@
             android:inputType="textPassword"/>
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- Botón principal (Login o Registro según modo) -->
     <Button
         android:id="@+id/btnLogin"
         android:layout_width="match_parent"
@@ -64,6 +70,7 @@
         android:layout_marginTop="24dp"
         android:backgroundTint="#673AB7"/>
 
+    <!-- Texto para cambiar entre login y registro -->
     <TextView
         android:id="@+id/tvCambiarModo"
         android:layout_width="match_parent"

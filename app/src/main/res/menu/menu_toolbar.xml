@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Menú de la toolbar principal (dependiente del estado de login) -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <!-- Opción para iniciar sesión (visible cuando NO está logueado) -->
     <item
         android:id="@+id/action_login"
         android:title="Iniciar Sesión"
         app:showAsAction="never" />
 
+    <!-- Opción para ajustes de la aplicación (visible cuando SÍ está logueado) -->
     <item
         android:id="@+id/action_settings"
         android:title="Ajustes"
         app:showAsAction="never" />
 
+    <!-- Opción para cerrar sesión (visible cuando SÍ está logueado) -->
     <item
         android:id="@+id/action_logout"
         android:title="Cerrar Sesión"

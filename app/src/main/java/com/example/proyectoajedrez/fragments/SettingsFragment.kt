@@ -10,9 +10,10 @@ import androidx.fragment.app.Fragment
 import com.example.proyectoajedrez.R
 import com.example.proyectoajedrez.databinding.FragmentSettingsBinding
 
+// Fragmento de configuración para ajustes de la aplicación
 class SettingsFragment : Fragment() {
 
-    private lateinit var binding: FragmentSettingsBinding
+    private lateinit var binding: FragmentSettingsBinding  // ViewBinding para el fragmento
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -24,41 +25,48 @@ class SettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupDarkMode()
-        setupLanguage()
+        setupDarkMode()   // Configurar toggle de modo oscuro
+        setupLanguage()   // Configurar selector de idioma
     }
 
+    // Configurar interruptor de modo oscuro/claro
     private fun setupDarkMode() {
-        // 1. Leer estado actual
+        // Obtener estado actual del modo oscuro
         val currentNightMode = AppCompatDelegate.getDefaultNightMode()
+
+        // Marcar switch según el estado actual
         binding.switchDarkMode.isChecked = currentNightMode == AppCompatDelegate.MODE_NIGHT_YES
 
-        // 2. Escuchar cambios
+        // Listener para cambios en el switch
         binding.switchDarkMode.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)  // Modo oscuro
             } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)   // Modo claro
             }
         }
     }
 
+    // Configurar selección de idioma (español/inglés)
     private fun setupLanguage() {
-        // 1. Detectar idioma actual
+        // Detectar idioma actual de la aplicación
         val currentLocale = AppCompatDelegate.getApplicationLocales().toLanguageTags()
+
+        // Marcar el radio button correspondiente
         if (currentLocale.contains("en")) {
-            binding.rbEnglish.isChecked = true
+            binding.rbEnglish.isChecked = true  // Inglés seleccionado
         } else {
-            binding.rbSpanish.isChecked = true
+            binding.rbSpanish.isChecked = true  // Español seleccionado
         }
 
-        // 2. Escuchar cambios
+        // Listener para cambios en el grupo de radio buttons
         binding.radioGroupLanguage.setOnCheckedChangeListener { _, checkedId ->
             val idioma = when (checkedId) {
-                R.id.rbEnglish -> "en"
-                else -> "es"
+                R.id.rbEnglish -> "en"  // Código para inglés
+                else -> "es"            // Código para español
             }
-            // Esto cambia el idioma y REINICIA la actividad automáticamente
+
+            // Aplicar nuevo idioma (reinicia automáticamente la actividad)
             val appLocale = LocaleListCompat.forLanguageTags(idioma)
             AppCompatDelegate.setApplicationLocales(appLocale)
         }

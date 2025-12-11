@@ -5,10 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.proyectoajedrez.R  // ✅ IMPORT AÑADIDO
+import com.example.proyectoajedrez.R
 import com.example.proyectoajedrez.databinding.FragmentSocialBinding
-import com.google.android.material.tabs.TabLayout  // ✅ IMPORT AÑADIDO
+import com.google.android.material.tabs.TabLayout
 
+// Fragmento para funcionalidades sociales de la aplicación
 class SocialFragment : Fragment() {
 
     private var _binding: FragmentSocialBinding? = null
@@ -25,13 +26,13 @@ class SocialFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Configuración de tabs
+        // Configurar listener para selección de tabs
         binding.tabLayoutSocial.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 when (tab?.position) {
-                    0 -> showToast("Feed Social - Próximamente")
-                    1 -> showToast("Lista de Amigos - Próximamente")
-                    2 -> showToast("Mensajes - Próximamente")
+                    0 -> showToast("Feed Social - Próximamente")      // Tab 0: Feed social
+                    1 -> showToast("Lista de Amigos - Próximamente") // Tab 1: Amigos
+                    2 -> showToast("Mensajes - Próximamente")        // Tab 2: Mensajes
                 }
             }
 
@@ -39,10 +40,11 @@ class SocialFragment : Fragment() {
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
 
-        // Navegación desde items del menú de la toolbar
+        // Configurar menú de la toolbar
         setupToolbarMenu()
     }
 
+    // Configurar acciones del menú de la toolbar social
     private fun setupToolbarMenu() {
         binding.toolbarSocial?.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
@@ -63,12 +65,13 @@ class SocialFragment : Fragment() {
         }
     }
 
+    // Mostrar mensaje temporal Toast
     private fun showToast(message: String) {
         android.widget.Toast.makeText(requireContext(), message, android.widget.Toast.LENGTH_SHORT).show()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        _binding = null  // Limpiar binding para evitar memory leaks
     }
 }

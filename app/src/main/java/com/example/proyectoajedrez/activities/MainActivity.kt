@@ -17,22 +17,32 @@ import com.example.proyectoajedrez.fragments.LoginDialogFragment
 
 class MainActivity : AppCompatActivity() {
 
+    // Configuración para la barra de la app con Navigation Component
     private lateinit var appBarConfiguration: AppBarConfiguration
+
+    // ViewBinding para la actividad principal
     private lateinit var binding: ActivityMainBinding
-    private lateinit var session: SessionManager // Nuestra sesión
+
+    // Gestor de sesión de usuario
+    private lateinit var session: SessionManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Inflar layout usando ViewBinding
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Configurar Toolbar personalizada como ActionBar
         setSupportActionBar(binding.toolbar)
 
-        // Inicializar Sesión
+        // Inicializar gestor de sesión
         session = SessionManager(this)
 
-        // Configuración de Navegación
+        // Configurar Navigation Component
         val navController = findNavController(R.id.nav_host_fragment_content_main)
+
+        // Definir fragmentos de nivel superior y drawer layout
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.inicioFragment,
@@ -44,20 +54,21 @@ class MainActivity : AppCompatActivity() {
             binding.drawerLayout
         )
 
+        // Configurar ActionBar con Navigation Controller
         setupActionBarWithNavController(navController, appBarConfiguration)
 
-        // 1. Configuración estándar del menú lateral
+        // Configurar NavigationView con Navigation Component
         binding.navView.setupWithNavController(navController)
 
-        // 2. CORRECCIÓN DEL BUG DEL MENÚ LATERAL (¡ESTO FALTABA!)
+        // Listener personalizado para items del menú lateral
         binding.navView.setNavigationItemSelectedListener { item ->
             if (item.itemId == R.id.inicioFragment) {
-                // Si pulsamos Inicio, limpiamos la pila hasta el principio
+                // Navegar a inicio limpiando la pila
                 navController.popBackStack(R.id.inicioFragment, false)
                 binding.drawerLayout.closeDrawers()
                 true
             } else {
-                // Para el resto, comportamiento normal
+                // Navegación normal para otros fragments
                 val handled = androidx.navigation.ui.NavigationUI.onNavDestinationSelected(item, navController)
                 if (handled) {
                     binding.drawerLayout.closeDrawers()
@@ -66,7 +77,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Configuración del botón hamburguesa
+        // Configurar menu lateral
         val toggle = ActionBarDrawerToggle(
             this,
             binding.drawerLayout,
@@ -77,38 +88,41 @@ class MainActivity : AppCompatActivity() {
         binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
-        // LÓGICA DE INICIO: ¿Está logueado?
+        // Verificar estado de login al iniciar
         checkLoginStatus()
     }
 
+    // Verificar si el usuario está logueado
     private fun checkLoginStatus() {
         if (!session.isLoggedIn()) {
             mostrarLoginDialog()
         }
     }
 
+    // Mostrar diálogo de login
     private fun mostrarLoginDialog() {
         val loginDialog = LoginDialogFragment()
-        // Evitamos que se pueda cancelar pulsando fuera (isCancelable = false en el fragment)
+        // Diálogo no cancelable (obligatorio login)
         loginDialog.isCancelable = false
         loginDialog.show(supportFragmentManager, "LoginDialog")
     }
 
-    // Método público para que el Dialog nos avise de actualizar el menú
+    // Actualizar menú de toolbar (llamado desde LoginDialogFragment)
     fun actualizarMenu() {
-        invalidateOptionsMenu() // Esto fuerza a Android a llamar a onPrepareOptionsMenu de nuevo
+        invalidateOptionsMenu() // Forzar recreación del menú
     }
 
+    // Inflar menú de la toolbar
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_toolbar, menu)
         return true
     }
 
-    // AQUÍ ES DONDE OCULTAMOS/MOSTRAMOS OPCIONES
+    // Configurar visibilidad de items según estado de login
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         val isLoggedIn = session.isLoggedIn()
 
-        // Si está logueado: Ocultar Login, Mostrar Logout y Ajustes
+        // Mostrar/ocultar items basado en login
         menu?.findItem(R.id.action_login)?.isVisible = !isLoggedIn
         menu?.findItem(R.id.action_logout)?.isVisible = isLoggedIn
         menu?.findItem(R.id.action_settings)?.isVisible = isLoggedIn
@@ -116,6 +130,7 @@ class MainActivity : AppCompatActivity() {
         return super.onPrepareOptionsMenu(menu)
     }
 
+    // Manejar clicks en items del menú de toolbar
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_login -> {
@@ -123,14 +138,14 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             R.id.action_logout -> {
-                session.logoutUser() // Borramos sesión
-                actualizarMenu()     // Actualizamos menú (ahora saldrá "Iniciar sesión")
-                mostrarLoginDialog() // Pedimos login de nuevo
+                session.logoutUser() // Cerrar sesión
+                actualizarMenu()     // Actualizar toolbar
+                mostrarLoginDialog() // Pedir login nuevamente
                 Toast.makeText(this, "Sesión cerrada", Toast.LENGTH_SHORT).show()
                 true
             }
             R.id.action_settings -> {
-                // Navegar al fragmento de ajustes
+                // Navegar a fragmento de ajustes
                 val navController = findNavController(R.id.nav_host_fragment_content_main)
                 navController.navigate(R.id.settingsFragment)
                 true
@@ -139,6 +154,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Manejar botón de navegación hacia arriba
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()

@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    id("com.google.gms.google-services")
+    id("com.google.gms.google-services") // Firebase Services
 }
 
 android {
@@ -35,21 +35,27 @@ android {
         jvmTarget = "11"
     }
     buildFeatures {
-        viewBinding = true
+        viewBinding = true // Habilitar ViewBinding
     }
 }
 
 dependencies {
+    // Firebase BOM (Bill of Materials) para versiones compatibles
     implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
-    implementation("com.google.firebase:firebase-auth")
-    implementation("com.google.firebase:firebase-firestore")
-// Retrofit (Para llamar a la API)
+    implementation("com.google.firebase:firebase-auth")       // Autenticación de usuarios
+    implementation("com.google.firebase:firebase-firestore")  // Base de datos NoSQL
+
+    // Retrofit para peticiones HTTP a API de noticias
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-// Corrutinas (Para hacerlo en segundo plano)
+
+    // Corrutinas para operaciones asíncronas
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
-// Glide (Para cargar las imágenes de las noticias)
+
+    // Glide para carga y caché de imágenes
     implementation("com.github.bumptech.glide:glide:4.15.1")
+
+    // Librería de ajedrez para lógica del juego
     implementation("com.github.bhlangonijr:chesslib:1.3.3")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

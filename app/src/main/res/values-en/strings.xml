@@ -1,4 +1,6 @@
 <resources>
+    <!-- Traducciones al inglés -->
+
     <string name="app_name">MateMate</string>
     <string name="navigation_drawer_open">Open menu</string>
     <string name="navigation_drawer_close">Close menu</string>

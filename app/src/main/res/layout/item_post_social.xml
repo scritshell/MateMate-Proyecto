@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Layout para item de post social en comunidad de ajedrez -->
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -13,14 +14,14 @@
         android:orientation="vertical"
         android:background="@android:color/black">
 
-        <!-- Tablero de ajedrez (placeholder) -->
+        <!-- Espacio para representar tablero de ajedrez (placeholder) -->
         <View
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:background="@android:color/darker_gray" />
 
-        <!-- Información del post -->
+        <!-- Barra inferior con información del post -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -28,13 +29,14 @@
             android:padding="12dp"
             android:background="#CC000000">
 
-            <!-- Perfil usuario -->
+            <!-- Sección izquierda: información del usuario -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="horizontal">
 
+                <!-- Avatar del usuario (placeholder con emoji de rey) -->
                 <TextView
                     android:layout_width="30dp"
                     android:layout_height="30dp"
@@ -43,6 +45,7 @@
                     android:text="♔"
                     android:textSize="16sp" />
 
+                <!-- Nombre de usuario -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -53,12 +56,13 @@
 
             </LinearLayout>
 
-            <!-- Estadísticas -->
+            <!-- Sección derecha: estadísticas del post -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
+                <!-- Contador de likes -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -66,6 +70,7 @@
                     android:textColor="@android:color/white"
                     android:layout_marginEnd="12dp" />
 
+                <!-- Contador de comentarios -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

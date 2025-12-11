@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Layout del fragmento de inicio - Versión vertical -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -11,6 +12,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <!-- Card de bienvenida al usuario -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -24,6 +26,7 @@
                 android:orientation="vertical"
                 android:padding="20dp">
 
+                <!-- Título de bienvenida -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -31,6 +34,7 @@
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
+                <!-- Subtítulo con nombre de usuario -->
                 <TextView
                     android:id="@+id/tvBienvenidaSubtitulo"
                     android:layout_width="wrap_content"
@@ -43,6 +47,7 @@
 
         </androidx.cardview.widget.CardView>
 
+        <!-- Card de estadísticas del usuario -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -56,6 +61,7 @@
                 android:orientation="horizontal"
                 android:padding="16dp">
 
+                <!-- Estadística: Puntuación ELO -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -77,6 +83,7 @@
                         android:text="@string/texto_elo" />
                 </LinearLayout>
 
+                <!-- Estadística: Porcentaje tácticas -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -98,6 +105,7 @@
                         android:text="@string/texto_tacticas" />
                 </LinearLayout>
 
+                <!-- Estadística: Número de amigos -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -123,6 +131,7 @@
 
         </androidx.cardview.widget.CardView>
 
+        <!-- Título de sección de noticias -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -131,6 +140,7 @@
             android:textStyle="bold"
             android:layout_marginBottom="8dp" />
 
+        <!-- RecyclerView para mostrar noticias -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerNoticias"
             android:layout_width="match_parent"

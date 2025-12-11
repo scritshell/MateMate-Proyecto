@@ -18,22 +18,35 @@
         android:gravity="center"
         android:layout_marginBottom="8dp" />
 
-    <GridView
-        android:id="@+id/chessBoard"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3"
-        android:numColumns="8"
-        android:verticalSpacing="0dp"
-        android:horizontalSpacing="0dp"
-        android:stretchMode="columnWidth"
-        android:background="@android:color/transparent"
-        android:layout_marginBottom="8dp" />
+        android:layout_weight="4">
+
+        <GridView
+            android:id="@+id/chessBoard"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:numColumns="8"
+            android:stretchMode="columnWidth"
+            android:gravity="center"
+            android:background="@android:color/transparent"
+            android:listSelector="@android:color/transparent"
+            android:scrollbars="none"
+            android:overScrollMode="never"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="2"
+        android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         app:cardCornerRadius="12dp"
         app:cardElevation="4dp">
@@ -66,19 +79,41 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:gravity="center"
+        android:background="#10000000"
+        android:padding="8dp"
         android:layout_marginBottom="8dp">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tiempo:"
+                android:textStyle="bold"
+                android:layout_marginEnd="8dp"/>
+
+            <Spinner
+                android:id="@+id/spinnerTime"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minHeight="40dp"/>
+        </LinearLayout>
+
         <TextView
-            android:id="@+id/tvDificultad"
+            android:id="@+id/tvDifficultyLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Dificultad IA: 50"
             android:textSize="12sp"
-            android:textColor="#888"/>
+            android:layout_marginTop="4dp"/>
 
         <SeekBar
-            android:id="@+id/seekBarDificultad"
+            android:id="@+id/seekBarDifficulty"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:max="100"
@@ -99,7 +134,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
-            android:text="@string/btn_deshacer"
+            android:text="@string/btn_atras"
             android:backgroundTint="#9E9E9E"/>
 
         <Button

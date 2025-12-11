@@ -12,8 +12,10 @@ import com.example.proyectoajedrez.adapters.AperturasAdapter
 import com.example.proyectoajedrez.databinding.FragmentAperturasBinding
 import com.example.proyectoajedrez.model.Apertura
 
+// Fragmento para mostrar lista de aperturas de ajedrez
 class AperturasFragment : Fragment() {
 
+    // ViewBinding para el fragmento
     private var _binding: FragmentAperturasBinding? = null
     private val binding get() = _binding!!
 
@@ -28,6 +30,7 @@ class AperturasFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Lista predefinida de aperturas de ajedrez
         val listaAperturas = listOf(
             Apertura(getString(R.string.apertura_italiana), "1.e4 e5 2.Cf3 Cc6 3.Ac4", "♟️"),
             Apertura(getString(R.string.defensa_siciliana), "1.e4 c5", "⚔️"),
@@ -37,25 +40,29 @@ class AperturasFragment : Fragment() {
             Apertura(getString(R.string.defensa_india), "1.d4 Cf6 2.c4 g6", "🌄")
         )
 
+        // Crear adaptador con lista de aperturas y callback para clicks
         val adapter = AperturasAdapter(listaAperturas) { apertura ->
-            navigateToChessBoard(apertura)
+            navigateToChessBoard(apertura) // Navegar al tablero al seleccionar apertura
         }
 
+        // Configurar RecyclerView con layout linear vertical y adaptador
         binding.recyclerViewAperturas.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewAperturas.adapter = adapter
     }
 
+    // Navegar al fragmento del tablero con información de la apertura seleccionada
     private fun navigateToChessBoard(apertura: Apertura) {
         try {
-            // Navegación simple sin Safe Args
+            // Crear bundle con parámetros para el fragmento destino
             val bundle = Bundle().apply {
-                putString("modo", "apertura")
-                putString("aperturaNombre", apertura.nombre)
+                putString("modo", "apertura")               // Modo de visualización
+                putString("aperturaNombre", apertura.nombre) // Nombre de la apertura
             }
+            // Navegar al ChessBoardFragment usando la acción definida en nav_graph
             findNavController().navigate(R.id.action_aperturasFragment_to_chessBoardFragment, bundle)
 
         } catch (e: Exception) {
-            // Fallback si hay error
+            // Manejar error de navegación mostrando Toast
             android.widget.Toast.makeText(
                 requireContext(),
                 "Abriendo tablero para: ${apertura.nombre}",
@@ -66,6 +73,6 @@ class AperturasFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        _binding = null // Limpiar la referencia de binding para evitar memory leaks
     }
 }

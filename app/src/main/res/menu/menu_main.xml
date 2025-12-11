@@ -1,30 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Menú del Navigation Drawer (menú lateral deslizable) -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
+    <!-- Grupo con comportamiento de selección única -->
     <group android:checkableBehavior="single">
+        <!-- Inicio - Pantalla principal -->
         <item
             android:id="@+id/inicioFragment"
             android:icon="@android:drawable/ic_menu_view"
             android:title="@string/menu_inicio" />
+
+        <!-- Aperturas - Catálogo de aperturas de ajedrez -->
         <item
             android:id="@+id/aperturasFragment"
             android:icon="@android:drawable/ic_menu_edit"
             android:title="@string/menu_aperturas" />
+
+        <!-- Tácticas - Ejercicios de mate y táctica -->
         <item
             android:id="@+id/tacticasFragment"
             android:icon="@android:drawable/ic_menu_help"
             android:title="@string/menu_tacticas" />
+
+        <!-- Bloc de notas - Notas personales del usuario -->
         <item
             android:id="@+id/blocNotasFragment"
             android:icon="@android:drawable/ic_menu_agenda"
             android:title="@string/menu_bloc_notas" />
+
+        <!-- Comunidad - Funcionalidades sociales -->
         <item
             android:id="@+id/socialFragment"
             android:icon="@android:drawable/ic_menu_share"
             android:title="@string/menu_comunidad" />
 
+        <!-- Práctica - Tablero de ajedrez principal -->
         <item
             android:id="@+id/chessBoardFragment"
             android:icon="@android:drawable/ic_menu_rotate"

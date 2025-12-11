@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Layout del fragmento social - Versión vertical -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <!-- Toolbar con menú de opciones sociales -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbarSocial"
         android:layout_width="match_parent"
@@ -14,21 +16,27 @@
         app:title="@string/titulo_comunidad"
         app:menu="@menu/menu_social" />
 
+    <!-- Tabs de navegación para secciones sociales -->
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayoutSocial"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tabMode="fixed"
-        app:tabGravity="fill"> <com.google.android.material.tabs.TabItem
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/tab_feed" />
+        app:tabGravity="fill">
 
+        <!-- Tab para feed social -->
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tab_feed" />
+
+        <!-- Tab para lista de amigos -->
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/tab_amigos" />
 
+        <!-- Tab para mensajes -->
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -36,6 +44,7 @@
 
     </com.google.android.material.tabs.TabLayout>
 
+    <!-- ViewPager para contenido de las tabs -->
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPagerSocial"
         android:layout_width="match_parent"

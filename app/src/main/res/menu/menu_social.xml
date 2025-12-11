@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Menú de la toolbar del fragmento social -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <!-- Ícono de búsqueda en la toolbar -->
     <item
         android:id="@+id/action_search_social"
         android:icon="@android:drawable/ic_menu_search"
         android:title="Buscar"
         app:showAsAction="ifRoom" />
 
+    <!-- Ícono de notificaciones en la toolbar -->
     <item
         android:id="@+id/action_notifications_social"
         android:icon="@android:drawable/ic_popup_reminder"
         android:title="Notificaciones"
         app:showAsAction="ifRoom" />
 
+    <!-- Opción de ajustes en menú desplegable -->
     <item
         android:id="@+id/action_settings_social"
         android:title="Ajustes"

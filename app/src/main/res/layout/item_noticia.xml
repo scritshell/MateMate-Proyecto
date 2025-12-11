@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Layout para item de noticia en RecyclerView -->
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -12,6 +13,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <!-- Imagen principal de la noticia -->
         <ImageView
             android:id="@+id/imgNoticia"
             android:layout_width="match_parent"
@@ -19,12 +21,14 @@
             android:scaleType="centerCrop"
             android:src="@android:drawable/ic_menu_gallery" />
 
+        <!-- Contenedor para texto de la noticia -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="12dp">
 
+            <!-- Título de la noticia -->
             <TextView
                 android:id="@+id/txtTitulo"
                 android:layout_width="match_parent"
@@ -34,6 +38,7 @@
                 android:textStyle="bold"
                 android:textColor="@android:color/black" />
 
+            <!-- Fuente/origen de la noticia -->
             <TextView
                 android:id="@+id/txtFuente"
                 android:layout_width="match_parent"

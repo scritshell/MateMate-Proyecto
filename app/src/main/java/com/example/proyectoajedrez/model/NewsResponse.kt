@@ -1,20 +1,22 @@
 package com.example.proyectoajedrez.model
-// La respuesta general de la API
+
+// Respuesta general de la API de noticias
 data class NewsResponse(
-    val status: String,
-    val totalResults: Int,
-    val articles: List<Article>
+    val status: String,          // Estado de la petición (ej: "ok", "error")
+    val totalResults: Int,       // Número total de resultados encontrados
+    val articles: List<Article>  // Lista de artículos de noticias
 )
 
-// Cada noticia individual
+// Representa un artículo individual de noticias
 data class Article(
-    val title: String?,
-    val description: String?,
-    val urlToImage: String?,
-    val url: String?,
-    val source: Source?
+    val title: String?,         // Título de la noticia
+    val description: String?,   // Descripción breve
+    val urlToImage: String?,    // URL de la imagen principal
+    val url: String?,           // URL completa de la noticia
+    val source: Source?         // Fuente/origen de la noticia
 )
 
+// Representa la fuente/origen de una noticia
 data class Source(
-    val name: String?
+    val name: String?           // Nombre de la fuente (ej: "CNN", "El País")
 )
