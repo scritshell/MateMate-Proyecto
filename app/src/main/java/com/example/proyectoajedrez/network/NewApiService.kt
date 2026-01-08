@@ -13,7 +13,8 @@ interface NewsApiService {
         @Query("q") query: String,        // Término de búsqueda (ej: "ajedrez", "chess")
         @Query("apiKey") apiKey: String,  // Clave de API para autenticación
         @Query("language") language: String = "es",  // Idioma de las noticias
-        @Query("sortBy") sortBy: String = "publishedAt"  // Ordenar por fecha de publicación
+        @Query("sortBy") sortBy: String = "relevancy",
+        @Query("pageSize") pageSize: Int = 20
     ): NewsResponse  // Retorna objeto NewsResponse con los resultados
 }
 
@@ -30,3 +31,7 @@ object RetrofitClient {
             .create(NewsApiService::class.java)   // Crear implementación de la interfaz
     }
 }
+
+/*
+*  TODO: Aun aparecen noticias IRRELEVANTES (POLITICA, COSAS QUE NO TIENEN RELACION CON AJEDREZ)
+* */
