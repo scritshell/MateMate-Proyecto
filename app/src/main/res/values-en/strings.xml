@@ -1,7 +1,6 @@
 <resources>
-    <!-- Traducciones al inglés -->
-
     <string name="app_name">MateMate</string>
+
     <string name="navigation_drawer_open">Open menu</string>
     <string name="navigation_drawer_close">Close menu</string>
 
@@ -13,9 +12,9 @@
     <string name="lang_en">English</string>
 
     <string name="menu_inicio">Home</string>
+    <string name="menu_bloc_notas">Notepad</string>
     <string name="menu_aperturas">Openings</string>
-    <string name="menu_tacticas">Tactics</string>
-    <string name="menu_bloc_notas">Notes</string>
+    <string name="menu_puzzleDiario">Daily Puzzle</string>
     <string name="menu_comunidad">Community</string>
     <string name="menu_practica">Free Practice</string>
 
@@ -38,6 +37,13 @@
     <string name="texto_amigos">Friends</string>
     <string name="titulo_noticias">Chess News</string>
 
+    <string name="apertura_italiana">Italian Game</string>
+    <string name="defensa_siciliana">Sicilian Defense</string>
+    <string name="apertura_espanola">Spanish Opening</string>
+    <string name="defensa_francesa">French Defense</string>
+    <string name="gambito_dama">Queen\'s Gambit</string>
+    <string name="defensa_india">King\'s Indian Defense</string>
+
     <string name="titulo_tablero">Chess Board</string>
     <string name="titulo_historial">Game History</string>
     <string name="btn_deshacer">Undo</string>
@@ -45,13 +51,6 @@
     <string name="btn_guardar">Save</string>
     <string name="btn_atras">Back</string>
     <string name="modo_estudio">Mode: Study</string>
-
-    <string name="apertura_italiana">Italian Game</string>
-    <string name="defensa_siciliana">Sicilian Defense</string>
-    <string name="apertura_espanola">Spanish Opening</string>
-    <string name="defensa_francesa">French Defense</string>
-    <string name="gambito_dama">Queen\'s Gambit</string>
-    <string name="defensa_india">King\'s Indian Defense</string>
 
     <string name="titulo_bloc_notas">Notepad</string>
     <string name="subtitulo_bloc_notas">Save your ideas, analysis and games</string>
@@ -66,14 +65,23 @@
     <string name="tab_mensajes">Messages</string>
 
     <string name="titulo_aperturas">Openings</string>
-    <string name="titulo_tacticas">Tactical Exercises</string>
-    <string name="subtitulo_tacticas">Improve your tactical vision solving puzzles</string>
-    <string name="mate_1">Mate in 1</string>
-    <string name="mate_2">Mate in 2</string>
-    <string name="nivel_facil">Level: Easy</string>
-    <string name="nivel_medio">Level: Medium</string>
-    <string name="nivel_dificil">Level: Hard</string>
-    <string name="tacticas_avanzadas">Advanced Tactics</string>
-    <string name="mis_estadisticas">My Stats</string>
-    <string name="porcentaje_correctas">85% correct</string>
+
+    <string name="titulo_puzzleDiario">Daily Puzzle</string>
+    <string name="subtitulo_puzzleDiario">Improve your level with Lichess official challenge</string>
+    <string name="btn_jugar_puzzle">PLAY NOW</string>
+    <string name="stat_racha">Streak (Days)</string>
+    <string name="stat_resueltos">Solved</string>
+    <string name="msg_reto_completado">🏆 CHALLENGE COMPLETED! 🏆</string>
+    <string name="msg_jugada_incorrecta">That is not the correct move. Keep looking.</string>
+
+    <string name="config_titulo">Game Setup</string>
+    <string name="config_modo">Game Mode</string>
+    <string name="modo_vs_ia">Vs Computer</string>
+    <string name="modo_vs_local">2 Players</string>
+    <string name="config_bando">Play as:</string>
+    <string name="bando_blancas">White</string>
+    <string name="bando_negras">Black</string>
+    <string name="config_tiempo">Time Control</string>
+    <string name="config_nivel_ia">Stockfish Level:</string>
+    <string name="btn_jugar_ahora">PLAY NOW</string>
 </resources>
