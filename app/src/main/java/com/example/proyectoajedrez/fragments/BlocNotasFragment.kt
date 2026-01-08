@@ -23,6 +23,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 
 // Fragmento para gestionar notas personales de ajedrez
+// Finalizado
 class BlocNotasFragment : Fragment() {
 
     private var _binding: FragmentBlocNotasBinding? = null
