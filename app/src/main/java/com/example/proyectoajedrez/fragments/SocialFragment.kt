@@ -45,6 +45,9 @@ class SocialFragment : Fragment() {
     }
 
     // Configurar acciones del menú de la toolbar social
+    /*
+    * Por configurar.
+    * */
     private fun setupToolbarMenu() {
         binding.toolbarSocial?.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
@@ -75,3 +78,9 @@ class SocialFragment : Fragment() {
         _binding = null  // Limpiar binding para evitar memory leaks
     }
 }
+
+/*
+* TODO: La seccion social la dejare para el final, he pensado en aprovechar el "TikTok Chess"
+*  para pedir permiso al usuario para acceder a recursos como Galeria, camara o notificaciones
+*
+* */
