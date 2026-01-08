@@ -35,10 +35,10 @@ class NewsAdapter(private val noticias: List<Article>) : RecyclerView.Adapter<Ne
 
         // Cargar imagen usando Glide con manejo de URL
         Glide.with(holder.itemView.context)
-            .load(noticia.urlToImage)                       // URL de la imagen
-            .centerCrop()                                   // Recortar al centro
-            .placeholder(android.R.drawable.ic_menu_gallery) // Imagen mientras carga
-            .into(holder.imagen)                            // Asignar a ImageView
+            .load(noticia.urlToImage)                               // URL de la imagen
+            .centerCrop()                                                  // Recortar al centro
+            .placeholder(android.R.drawable.ic_menu_gallery)    // Imagen mientras carga
+            .into(holder.imagen)                                    // Asignar a ImageView
     }
 
     // Retornar cantidad total de noticias
