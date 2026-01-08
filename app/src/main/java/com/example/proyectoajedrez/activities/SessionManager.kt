@@ -3,7 +3,7 @@ package com.example.proyectoajedrez.activities
 import android.content.Context
 import android.content.SharedPreferences
 
-// Clase para gestionar la sesión de usuario usando SharedPreferences
+// Clase para gestionar la sesión de usuario usando SharedPreferences.
 class SessionManager(context: Context) {
     // SharedPreferences para almacenar datos de sesión persistentes
     // SharedPreferences servirá para almacenar datos en Android.
@@ -20,7 +20,7 @@ class SessionManager(context: Context) {
         val editor = prefs.edit()
         editor.putBoolean(KEY_IS_LOGGED_IN, true)  // Marcar como logueado
         editor.putString(KEY_USERNAME, username)   // Guardar nombre de usuario
-        editor.apply()  // Guardar cambios (asíncrono)
+        editor.apply()  // Guardar cambios
     }
 
     // Cerrar sesión eliminando todos los datos
