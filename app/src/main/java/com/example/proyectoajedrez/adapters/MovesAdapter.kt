@@ -6,26 +6,26 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-// Adaptador para mostrar lista de movimientos de ajedrez
-class MovesAdapter : RecyclerView.Adapter<MovesAdapter.MoveViewHolder>() {
+// Adaptador para mostrar la lista de movimientos de ajedrez
+class MovesAdapter : RecyclerView.Adapter<MovesAdapter.MovesViewHolder>() {
 
     // Lista que almacena los movimientos como strings
     private val moves = ArrayList<String>()
 
     // ViewHolder para cada item de movimiento
-    class MoveViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class MovesViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvMove: TextView = view.findViewById(android.R.id.text1) // TextView del layout simple
     }
 
-    // Crear nuevo ViewHolder
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MoveViewHolder {
+    // Crear un nuevo ViewHolder
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovesViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(android.R.layout.simple_list_item_1, parent, false) // Layout simple de Android
-        return MoveViewHolder(view)
+        return MovesViewHolder(view)
     }
 
     // Vincular datos del movimiento a la vista
-    override fun onBindViewHolder(holder: MoveViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: MovesViewHolder, position: Int) {
         holder.tvMove.text = moves[position] // Establecer texto del movimiento
         holder.tvMove.textSize = 16f // Tamaño de texto aumentado para mejor legibilidad
     }
@@ -56,5 +56,13 @@ class MovesAdapter : RecyclerView.Adapter<MovesAdapter.MoveViewHolder>() {
     fun clear() {
         moves.clear()
         notifyDataSetChanged() // Notificar que todos los datos cambiaron
+    }
+
+    fun removeLastItem() {
+        if (moves.isNotEmpty()) {
+            val lastIndex = moves.size - 1
+            moves.removeAt(lastIndex)
+            notifyItemRemoved(lastIndex)
+        }
     }
 }
