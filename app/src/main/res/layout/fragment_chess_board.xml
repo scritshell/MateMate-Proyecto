@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Layout vertical para el tablero de ajedrez -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -9,7 +8,6 @@
     android:padding="16dp"
     tools:context=".fragments.ChessBoardFragment">
 
-    <!-- Título de la pantalla -->
     <TextView
         android:id="@+id/titleTextView"
         android:layout_width="match_parent"
@@ -20,13 +18,11 @@
         android:gravity="center"
         android:layout_marginBottom="8dp" />
 
-    <!-- Contenedor para el tablero (66% de la altura) -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="4">
 
-        <!-- GridView 8x8 del tablero -->
         <GridView
             android:id="@+id/chessBoard"
             android:layout_width="0dp"
@@ -41,7 +37,6 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Card para el historial de movimientos -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -66,18 +61,16 @@
                 android:gravity="center"
                 android:layout_marginBottom="4dp"/>
 
-            <!-- RecyclerView para movimientos -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerHistory"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scrollbars="vertical" />
-
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- Panel de configuración de IA -->
     <LinearLayout
+        android:id="@+id/layoutAjustesPartida"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -85,84 +78,124 @@
         android:padding="8dp"
         android:layout_marginBottom="8dp">
 
-    <!-- Fila para selector de tiempo -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tiempo:"
+                android:textStyle="bold"
+                android:layout_marginEnd="8dp"/>
+
+            <Spinner
+                android:id="@+id/spinnerTime"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minHeight="40dp"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvDifficultyLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Profundidad de Stockfish: 3"
+            android:textSize="12sp"
+            android:layout_marginTop="4dp"/>
+
+        <SeekBar
+            android:id="@+id/seekBarDifficulty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:progress="50"
+            android:thumbTint="#673AB7"
+            android:progressTint="#673AB7"/>
+    </LinearLayout>
+
     <LinearLayout
+        android:id="@+id/layoutTimers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:padding="8dp"
+        android:gravity="center"
+        android:layout_marginBottom="8dp">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tiempo:"
-            android:textStyle="bold"
-            android:layout_marginEnd="8dp"/>
-
-        <!-- Spinner para tiempo de la IA -->
-        <Spinner
-            android:id="@+id/spinnerTime"
+            android:id="@+id/tvTimerWhite"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:minHeight="40dp"/>
+            android:text="05:00"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:background="@drawable/bg_timer_active"
+            android:textColor="@color/black"
+            android:padding="8dp"
+            android:layout_marginEnd="8dp"/>
+
+        <TextView
+            android:id="@+id/tvTimerBlack"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="05:00"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:background="#E0E0E0"
+            android:textColor="@color/black"
+            android:padding="8dp" />
     </LinearLayout>
 
-    <!-- Etiqueta de dificultad -->
-    <TextView
-        android:id="@+id/tvDifficultyLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Dificultad IA: 50"
-        android:textSize="12sp"
-        android:layout_marginTop="4dp"/>
-
-    <!-- SeekBar para ajustar dificultad (0-100) -->
-    <SeekBar
-        android:id="@+id/seekBarDifficulty"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:max="100"
-        android:progress="50"
-        android:thumbTint="#673AB7"
-        android:progressTint="#673AB7"/>
-</LinearLayout>
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
-    <!-- Botones de control en fila horizontal -->
-<LinearLayout
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:orientation="horizontal"
-android:gravity="center">
+        <ImageButton
+            android:id="@+id/btnExit"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Salir"
+            android:src="@drawable/ic_close"
+            app:tint="@color/black" />
 
-<!-- Botón para deshacer movimiento -->
-<Button
-    android:id="@+id/btnUndo"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    android:layout_weight="1"
-    android:layout_marginEnd="8dp"
-    android:text="@string/btn_atras"
-    android:backgroundTint="#9E9E9E"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
-<!-- Botón para reiniciar tablero -->
-<Button
-    android:id="@+id/btnReset"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    android:layout_weight="1"
-    android:layout_marginEnd="8dp"
-    android:text="@string/btn_reiniciar"
-    android:backgroundTint="#F44336"/>
+        <ImageButton
+            android:id="@+id/btnUndo"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginEnd="16dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Deshacer"
+            android:src="@drawable/ic_undo"
+            app:tint="@color/black" />
 
-<!-- Botón para guardar partida -->
-<Button
-    android:id="@+id/btnSave"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    android:layout_weight="1"
-    android:text="@string/btn_guardar"
-    android:backgroundTint="#673AB7"/>
-</LinearLayout>
+        <ImageButton
+            android:id="@+id/btnRedo"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Rehacer"
+            android:src="@drawable/ic_redo"
+            app:tint="@color/black" />
 
     </LinearLayout>
+</LinearLayout>
