@@ -54,6 +54,13 @@ class InicioFragment : Fragment() {
         cargarNoticias()
     }
 
+    private fun setupRecyclerView() {
+        binding.recyclerNoticias.layoutManager = LinearLayoutManager(context)
+        binding.recyclerNoticias.isNestedScrollingEnabled = false
+        binding.recyclerNoticias.setHasFixedSize(true)
+    }
+
+
     // Cargar y mostrar datos del usuario actual desde Firestore
     private fun cargarDatosUsuario() {
         val userId = auth.currentUser?.uid
@@ -94,22 +101,23 @@ class InicioFragment : Fragment() {
             try {
                 val apiKey = "fd08253831f2472582d2a03585f4f834"
                 val idiomaActual = java.util.Locale.getDefault().language
-
-                // Definir búsqueda según idioma del dispositivo
-                val queryBusqueda = if (idiomaActual == "en") "chess" else "ajedrez"
+                val queryBusqueda = if (idiomaActual == "en") "+chess" else "+ajedrez"
                 val idiomaApi = if (idiomaActual == "en") "en" else "es"
 
-                // Realizar petición a la API
                 val respuesta = RetrofitClient.instance.getChessNews(
                     query = queryBusqueda,
                     apiKey = apiKey,
-                    language = idiomaApi
+                    language = idiomaApi,
+                    sortBy = "relevancy"
                 )
 
                 withContext(Dispatchers.Main) {
-                    // Verificar que el fragmento esté activo y la respuesta sea válida
                     if (isAdded && respuesta.status == "ok") {
-                        val adapter = NewsAdapter(respuesta.articles)
+                        // Filtro
+                        val noticiasLimpias = respuesta.articles.filter {
+                            !it.urlToImage.isNullOrEmpty() && !it.description.isNullOrEmpty()
+                        }
+                        val adapter = NewsAdapter(noticiasLimpias)
                         binding.recyclerNoticias.adapter = adapter
                     }
                 }
