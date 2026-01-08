@@ -11,7 +11,8 @@ android {
     defaultConfig {
         applicationId = "com.example.proyectoajedrez"
         minSdk = 24
-        targetSdk = 36
+        //noinspection ExpiredTargetSdkVersion
+        targetSdk = 28
         versionCode = 1
         versionName = "1.0"
 
