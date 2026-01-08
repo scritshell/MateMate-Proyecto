@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 // Fragmento de diálogo para login/registro de usuarios
+// FINALIZADO
 class LoginDialogFragment : DialogFragment() {
 
     private var esModoRegistro = false                // Controla si estamos en registro o login
