@@ -18,11 +18,11 @@
             android:icon="@android:drawable/ic_menu_edit"
             android:title="@string/menu_aperturas" />
 
-        <!-- Tácticas - Ejercicios de mate y táctica -->
+        <!-- Puzzle diario - Uso de API de Lichess -->
         <item
-            android:id="@+id/tacticasFragment"
+            android:id="@+id/puzzleDiarioFragment"
             android:icon="@android:drawable/ic_menu_help"
-            android:title="@string/menu_tacticas" />
+            android:title="@string/menu_puzzleDiario" />
 
         <!-- Bloc de notas - Notas personales del usuario -->
         <item

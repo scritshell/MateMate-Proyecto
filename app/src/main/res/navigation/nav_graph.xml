@@ -4,31 +4,34 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/inicioFragment"> <!-- Pantalla inicial al abrir la app -->
+    app:startDestination="@id/inicioFragment">
 
-    <!-- Fragmento de inicio (pantalla principal) -->
+    <!-- Fragmento principal de inicio -->
     <fragment
         android:id="@+id/inicioFragment"
         android:name="com.example.proyectoajedrez.fragments.InicioFragment"
         android:label="Inicio"
         tools:layout="@layout/fragment_inicio">
 
-        <!-- Acciones de navegación desde inicio a otros fragments -->
         <action
-            android:id="@+id/action_inicioFragment_to_aperturasFragment"
-            app:destination="@id/aperturasFragment" />
-        <action
-            android:id="@+id/action_inicioFragment_to_tacticasFragment"
-            app:destination="@id/tacticasFragment" />
+            android:id="@+id/action_inicioFragment_to_puzzleDiarioFragment"
+            app:destination="@id/puzzleDiarioFragment" />
+
         <action
             android:id="@+id/action_inicioFragment_to_chessBoardFragment"
             app:destination="@id/chessBoardFragment" />
+
         <action
             android:id="@+id/action_inicioFragment_to_blocNotasFragment"
             app:destination="@id/blocNotasFragment" />
+
         <action
             android:id="@+id/action_inicioFragment_to_socialFragment"
             app:destination="@id/socialFragment" />
+
+        <action
+            android:id="@+id/action_inicioFragment_to_aperturasFragment"
+            app:destination="@id/aperturasFragment" />
     </fragment>
 
     <!-- Fragmento de aperturas de ajedrez -->
@@ -38,22 +41,20 @@
         android:label="Aperturas"
         tools:layout="@layout/fragment_aperturas">
 
-        <!-- Acción para abrir el tablero con una apertura específica -->
         <action
             android:id="@+id/action_aperturasFragment_to_chessBoardFragment"
             app:destination="@id/chessBoardFragment" />
     </fragment>
 
-    <!-- Fragmento de ejercicios tácticos -->
+    <!-- Fragmento de Puzzle Diario -->
     <fragment
-        android:id="@+id/tacticasFragment"
-        android:name="com.example.proyectoajedrez.fragments.TacticasFragment"
-        android:label="Tácticas"
-        tools:layout="@layout/fragment_tacticas">
+        android:id="@+id/puzzleDiarioFragment"
+        android:name="com.example.proyectoajedrez.fragments.PuzzleDiarioFragment"
+        android:label="Puzzle Diario"
+        tools:layout="@layout/fragment_puzzle_diario">
 
-        <!-- Acción para abrir el tablero con modo táctico -->
         <action
-            android:id="@+id/action_tacticasFragment_to_chessBoardFragment"
+            android:id="@+id/action_puzzleDiarioFragment_to_chessBoardFragment"
             app:destination="@id/chessBoardFragment" />
     </fragment>
 
@@ -64,7 +65,6 @@
         android:label="Bloc de Notas"
         tools:layout="@layout/fragment_bloc_notas">
 
-        <!-- Acción para abrir el tablero desde notas -->
         <action
             android:id="@+id/action_blocNotasFragment_to_chessBoardFragment"
             app:destination="@id/chessBoardFragment" />
@@ -84,12 +84,11 @@
         android:label="Tablero de Ajedrez"
         tools:layout="@layout/fragment_chess_board">
 
-        <!-- Argumento: modo de juego (libre, apertura, mate1, mate2, avanzado) -->
         <argument
             android:name="modo"
             app:argType="string"
             android:defaultValue="libre" />
-        <!-- Argumento: nombre de la apertura (si aplica) -->
+
         <argument
             android:name="aperturaNombre"
             app:argType="string"
