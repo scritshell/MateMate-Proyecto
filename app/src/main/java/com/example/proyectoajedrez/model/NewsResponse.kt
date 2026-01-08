@@ -18,5 +18,5 @@ data class Article(
 
 // Representa la fuente/origen de una noticia
 data class Source(
-    val name: String?           // Nombre de la fuente (ej: "CNN", "El País")
+    val name: String?   // Nombre de la fuente (ej: "CNN", "El País")
 )
