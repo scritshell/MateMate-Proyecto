@@ -11,6 +11,7 @@ import com.example.proyectoajedrez.R
 import com.example.proyectoajedrez.databinding.FragmentSettingsBinding
 
 // Fragmento de configuración para ajustes de la aplicación
+// FINALIZADO
 class SettingsFragment : Fragment() {
 
     private lateinit var binding: FragmentSettingsBinding  // ViewBinding para el fragmento
