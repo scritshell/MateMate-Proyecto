@@ -31,8 +31,12 @@ class AperturasFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Lista predefinida de aperturas de ajedrez
+        /*
+        * TODO: Añadir todas las aperturas más conocidas.
+        *  Para pedir a la IA. ^^^^
+        * */
         val listaAperturas = listOf(
-            Apertura(getString(R.string.apertura_italiana), "1.e4 e5 2.Cf3 Cc6 3.Ac4", "♟️"),
+            Apertura(getString(R.string.apertura_italiana), "1.e4 e5 2.Nf3 Nc6 3.Bc4", "♟️"),
             Apertura(getString(R.string.defensa_siciliana), "1.e4 c5", "⚔️"),
             Apertura(getString(R.string.apertura_espanola), "1.e4 e5 2.Cf3 Cc6 3.Ab5", "🏰"),
             Apertura(getString(R.string.defensa_francesa), "1.e4 e6", "🛡️"),
@@ -52,23 +56,12 @@ class AperturasFragment : Fragment() {
 
     // Navegar al fragmento del tablero con información de la apertura seleccionada
     private fun navigateToChessBoard(apertura: Apertura) {
-        try {
-            // Crear bundle con parámetros para el fragmento destino
-            val bundle = Bundle().apply {
-                putString("modo", "apertura")               // Modo de visualización
-                putString("aperturaNombre", apertura.nombre) // Nombre de la apertura
-            }
-            // Navegar al ChessBoardFragment usando la acción definida en nav_graph
-            findNavController().navigate(R.id.action_aperturasFragment_to_chessBoardFragment, bundle)
-
-        } catch (e: Exception) {
-            // Manejar error de navegación mostrando Toast
-            android.widget.Toast.makeText(
-                requireContext(),
-                "Abriendo tablero para: ${apertura.nombre}",
-                android.widget.Toast.LENGTH_SHORT
-            ).show()
+        val bundle = Bundle().apply {
+            putString("modo", "apertura")
+            putString("titulo", apertura.nombre)
+            putString("secuenciaMovimientos", apertura.movimientos) // ¡IMPORTANTE! Pasamos los movimientos "1.e4 e5..."
         }
+        findNavController().navigate(R.id.action_aperturasFragment_to_chessBoardFragment, bundle)
     }
 
     override fun onDestroyView() {
