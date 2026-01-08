@@ -55,7 +55,7 @@ class NotasAdapter(
             val netDate = Date(nota.fecha)
             holder.fecha.text = sdf.format(netDate)
         } catch (e: Exception) {
-            holder.fecha.text = "-" // Texto alternativo si hay error
+            holder.fecha.text = ""
         }
 
         // Click en el item completo: editar nota
