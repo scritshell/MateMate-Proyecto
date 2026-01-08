@@ -1,6 +1,4 @@
-package com.example.proyectoajedrez.models
-
-import com.example.proyectoajedrez.model.ChessPiece
+package com.example.proyectoajedrez.model
 
 // Clase de datos que representa una casilla del tablero de ajedrez
 data class ChessSquare(
