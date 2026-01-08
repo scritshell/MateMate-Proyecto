@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.proyectoajedrez.databinding.ItemAperturaBinding
 import com.example.proyectoajedrez.model.Apertura
 
-// Adaptador para mostrar lista de aperturas de ajedrez en RecyclerView
+// Adaptador para mostrar la lista de aperturas de ajedrez en RecyclerView
 class AperturasAdapter(
     private val aperturas: List<Apertura>,           // Lista de aperturas a mostrar
     private val onAperturaClick: (Apertura) -> Unit  // Callback al hacer click en una apertura
@@ -30,6 +30,7 @@ class AperturasAdapter(
     // Retornar cantidad total de items en la lista
     override fun getItemCount(): Int = aperturas.size
 
+    // Usamos clase inner para tener acceso a los miembros de la clase externa
     // ViewHolder que representa cada item de apertura en el RecyclerView
     inner class AperturaViewHolder(private val binding: ItemAperturaBinding) :
         RecyclerView.ViewHolder(binding.root) {
