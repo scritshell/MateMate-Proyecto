@@ -195,7 +195,7 @@ class MainActivity : AppCompatActivity() {
 
 /*
 * TODO: GLOBAL
-*  IDEAS: Paso 1: El Puzzle Diario : COMPLETADO
+*  IDEAS: Paso 1: El Puzzle Diario : COMPLETADO <=================================
 *  Sustituir los puzzles estáticos por el endpoint /api/puzzle/daily.
 *  Implementación de Retrofit para manejar el JSON dinámico.
 *  Objetivo: Que el tablero se inicialice cada día con un reto nuevo y real.
