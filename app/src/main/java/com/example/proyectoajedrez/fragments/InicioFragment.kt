@@ -20,8 +20,8 @@ import com.example.proyectoajedrez.network.RetrofitClient
 import com.example.proyectoajedrez.adapters.NewsAdapter
 import com.example.proyectoajedrez.model.LichessUserResponse
 import com.google.firebase.auth.FirebaseAuth
+import com.example.proyectoajedrez.BuildConfig
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -211,7 +211,7 @@ class InicioFragment : Fragment() {
         // Usamos viewLifecycleOwner.lifecycleScope porque es más seguro en Fragmentos
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
             try {
-                val apiKey = BuildConfig.NEWS_API_KEYM
+                val apiKey = BuildConfig.NEWS_API_KEY
                 val idiomaActual = java.util.Locale.getDefault().language
 
                 // Mantenemos tu lógica de idiomas original
