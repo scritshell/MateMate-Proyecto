@@ -24,3 +24,24 @@ data class LichessPuzzleInfo(
     val rating: Int,
     val solution: List<String> // La lista de movimientos ganadores [EJEMPLOS: "f3e5", "d6e5"]
 )
+
+// GET /api/user/{username}
+data class LichessUserResponse(
+    val id: String,
+    val username: String,
+    val perfs: UserPerfs?, // Puede ser nulo si el usuario es nuevo
+    val online: Boolean = false,
+    val title: String? = null // GM, IM, FM, etc.
+)
+
+data class UserPerfs(
+    val blitz: PerfStats?,
+    val rapid: PerfStats?,
+    val puzzle: PerfStats?
+)
+
+data class PerfStats(
+    val rating: Int,
+    val games: Int,
+    val prog: Int // Progreso reciente
+)

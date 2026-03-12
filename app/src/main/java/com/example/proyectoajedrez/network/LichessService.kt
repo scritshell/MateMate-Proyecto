@@ -4,6 +4,8 @@ import com.example.proyectoajedrez.model.LichessPuzzleResponse
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Path
+import com.example.proyectoajedrez.model.LichessUserResponse
 
 // Define los métodos para comunicarse con la API de Lichess
 interface LichessApiService {
@@ -12,6 +14,12 @@ interface LichessApiService {
     @GET("api/puzzle/daily")
     // Función suspendida para ejecutarse en segundo plano (Corrutinas)
     suspend fun getDailyPuzzle(): LichessPuzzleResponse
+
+    // Obtener los datos del usuario
+    @GET("api/user/{username}")
+    suspend fun getUserPublicData(
+        @Path("username") username: String
+    ): LichessUserResponse
 }
 
 // Objeto Singleton para gestionar la conexión de red

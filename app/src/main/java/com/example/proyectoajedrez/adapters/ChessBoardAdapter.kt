@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.FrameLayout
 import android.widget.ImageView
+import com.example.proyectoajedrez.R
 import com.example.proyectoajedrez.model.ChessPiece
 import com.example.proyectoajedrez.model.ChessSquare
 import com.github.bhlangonijr.chesslib.File
@@ -25,6 +26,8 @@ class ChessBoardAdapter(private val context: Context) : BaseAdapter() {
     private val squares = Array(64) {
         ChessSquare(col = it % 8, row = it / 8)
     }
+
+    private val sharedPref = context.getSharedPreferences("AjedrezPrefs", Context.MODE_PRIVATE)
 
     private var selectedPosition: Int = -1
     private var legalMovePositions: List<Int> = emptyList()
@@ -52,6 +55,7 @@ class ChessBoardAdapter(private val context: Context) : BaseAdapter() {
         val logicalIndex = getLogicalIndex(position)
         return squares[logicalIndex]
     }
+
     override fun getItemId(position: Int): Long = position.toLong()
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
@@ -71,8 +75,6 @@ class ChessBoardAdapter(private val context: Context) : BaseAdapter() {
         // Limpiar vistas anteriores
         container.removeAllViews()
 
-
-
         // TRUCO MATEMÁTICO:
         // Si está flipped, la posición visual 0 corresponde a la lógica 63 (H1).
         val logicalIndex = getLogicalIndex(position)
@@ -89,12 +91,14 @@ class ChessBoardAdapter(private val context: Context) : BaseAdapter() {
         }
         container.addView(bgView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
 
-        // 2. PIEZA
+        // 2. PIEZA (AQUÍ ESTÁ LA MAGIA DE LAS SKINS)
         val pieceView = ImageView(context)
         pieceView.scaleType = ImageView.ScaleType.FIT_CENTER
         pieceView.setPadding(8, 8, 8, 8)
         if (square.piece != ChessPiece.EMPTY) {
-            pieceView.setImageResource(square.piece.drawableRes)
+            // Usamos la nueva función para obtener el dibujo correcto según la configuración
+            val drawableId = obtenerDibujoPieza(square.piece)
+            pieceView.setImageResource(drawableId)
         }
         container.addView(pieceView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
 
@@ -122,14 +126,40 @@ class ChessBoardAdapter(private val context: Context) : BaseAdapter() {
         return container
     }
 
-    // FUNCIONES PARA LA LÓGICA INVERTIDA //
+    // --- NUEVO: SISTEMA DE SKINS ---
+    private fun obtenerDibujoPieza(piece: ChessPiece): Int {
+        val usarSkinAlternativa = sharedPref.getBoolean("usar_skin_alt", false)
 
-    // Convierte el índice visual (click en pantalla) a un índice lógico (array interno)
+        return if (usarSkinAlternativa) {
+            // --- SKIN ALTERNATIVA ---
+            // Asegúrate de que estos archivos _alt existan en tu carpeta drawable
+            when (piece) {
+                ChessPiece.WHITE_PAWN -> R.drawable.ic_w_pawn_alt
+                ChessPiece.WHITE_KNIGHT -> R.drawable.ic_w_knight_alt
+                ChessPiece.WHITE_BISHOP -> R.drawable.ic_w_bishop_alt
+                ChessPiece.WHITE_ROOK -> R.drawable.ic_w_rook_alt
+                ChessPiece.WHITE_QUEEN -> R.drawable.ic_w_queen_alt
+                ChessPiece.WHITE_KING -> R.drawable.ic_w_king_alt
+
+                ChessPiece.BLACK_PAWN -> R.drawable.ic_b_pawn_alt
+                ChessPiece.BLACK_KNIGHT -> R.drawable.ic_b_knight_alt
+                ChessPiece.BLACK_BISHOP -> R.drawable.ic_b_bishop_alt
+                ChessPiece.BLACK_ROOK -> R.drawable.ic_b_rook_alt
+                ChessPiece.BLACK_QUEEN -> R.drawable.ic_b_queen_alt
+                ChessPiece.BLACK_KING -> R.drawable.ic_b_king_alt
+                else -> 0
+            }
+        } else {
+            // --- SKIN POR DEFECTO (Tus originales) ---
+            piece.drawableRes
+        }
+    }
+
+    // FUNCIONES PARA LA LÓGICA INVERTIDA //
     fun getLogicalIndex(visualPosition: Int): Int {
         return if (isFlipped) 63 - visualPosition else visualPosition
     }
 
-    // Convierte índice lógico a visual
     fun getVisualIndex(logicalIndex: Int): Int {
         return if (isFlipped) 63 - logicalIndex else logicalIndex
     }
@@ -154,7 +184,6 @@ class ChessBoardAdapter(private val context: Context) : BaseAdapter() {
     }
 
     // SETTERS Y GETTERS //
-
     fun setLegalMoves(logicalPositions: List<Int>) {
         this.legalMovePositions = logicalPositions
         notifyDataSetChanged()
@@ -189,7 +218,6 @@ class ChessBoardAdapter(private val context: Context) : BaseAdapter() {
     }
 
     // LÓGICA INTERNA PRIVADA //
-
     private fun setupInitialPosition() {
         squares.forEach { it.piece = ChessPiece.EMPTY }
         squares[0].piece = ChessPiece.BLACK_ROOK
@@ -231,9 +259,9 @@ class ChessBoardAdapter(private val context: Context) : BaseAdapter() {
     }
 
     private fun getSquareFromIndex(index: Int): Square {
-        val col = index % 8        // Columna (0=A, 1=B, ..., 7=H)
-        val row = index / 8        // Fila (0=fila 8, 1=fila 7, ..., 7=fila 1)
-        val rankIndex = 7 - row    // Invertir fila para ajedrez (A8=0, A1=7)
+        val col = index % 8
+        val row = index / 8
+        val rankIndex = 7 - row
 
         val file = File.values()[col]
         val rank = Rank.values()[rankIndex]
@@ -247,7 +275,3 @@ class ChessBoardAdapter(private val context: Context) : BaseAdapter() {
         return row * 8 + col
     }
 }
-
-/*
-* TODO: Metodos aun no implementados, para futuro :)
-* */

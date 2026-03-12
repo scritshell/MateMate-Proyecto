@@ -14,7 +14,8 @@ interface NewsApiService {
         @Query("apiKey") apiKey: String,  // Clave de API para autenticación
         @Query("language") language: String = "es",  // Idioma de las noticias
         @Query("sortBy") sortBy: String = "relevancy",
-        @Query("pageSize") pageSize: Int = 20
+        @Query("pageSize") pageSize: Int = 20,
+        @Query("domains") domains: String? = null
     ): NewsResponse  // Retorna objeto NewsResponse con los resultados
 }
 

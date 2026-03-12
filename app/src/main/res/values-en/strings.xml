@@ -37,20 +37,70 @@
     <string name="texto_amigos">Friends</string>
     <string name="titulo_noticias">Chess News</string>
 
+    <string name="titulo_aperturas">Openings</string>
     <string name="apertura_italiana">Italian Game</string>
+    <string name="apertura_espanola">Ruy Lopez (Spanish Opening)</string>
+    <string name="apertura_escocesa">Scotch Game</string>
+    <string name="gambito_rey">King\'s Gambit</string>
+    <string name="apertura_viena">Vienna Game</string>
+    <string name="defensa_petrov">Petrov\'s Defense</string>
+    <string name="defensa_filidor">Philidor Defense</string>
+    <string name="gambito_evans">Evans Gambit</string>
+    <string name="cuatro_caballos">Four Knights Game</string>
+
     <string name="defensa_siciliana">Sicilian Defense</string>
-    <string name="apertura_espanola">Spanish Opening</string>
+    <string name="siciliana_najdorf">Sicilian Defense (Najdorf)</string>
+    <string name="siciliana_dragon">Sicilian Defense (Dragon)</string>
     <string name="defensa_francesa">French Defense</string>
-    <string name="gambito_dama">Queen\'s Gambit</string>
-    <string name="defensa_india">King\'s Indian Defense</string>
+    <string name="defensa_caro_kann">Caro-Kann Defense</string>
+    <string name="defensa_escandinava">Scandinavian Defense</string>
+    <string name="defensa_alekhine">Alekhine\'s Defense</string>
+    <string name="defensa_pirc">Pirc Defense</string>
+    <string name="defensa_moderna">Modern Defense</string>
+
+    <string name="gambito_dama">Queen\'s Gambit Accepted</string>
+    <string name="gambito_dama_rehusado">Queen\'s Gambit Declined</string>
+    <string name="defensa_slava">Slav Defense</string>
+    <string name="defensa_semislava">Semi-Slav Defense</string>
+    <string name="sistema_londres">London System</string>
+    <string name="sistema_colle">Colle System</string>
+    <string name="ataque_trompowsky">Trompowsky Attack</string>
+
+    <string name="defensa_india_rey">King\'s Indian Defense</string>
+    <string name="defensa_nimzoindia">Nimzo-Indian Defense</string>
+    <string name="defensa_india_dama">Queen\'s Indian Defense</string>
+    <string name="defensa_bogo_india">Bogo-Indian Defense</string>
+    <string name="defensa_grunfeld">Grünfeld Defense</string>
+    <string name="defensa_benoni">Benoni Defense</string>
+    <string name="gambito_benko">Benko Gambit</string>
+
+    <string name="apertura_inglesa">English Opening</string>
+    <string name="apertura_reti">Réti Opening</string>
+    <string name="defensa_holandesa">Dutch Defense</string>
+    <string name="ataque_indio_rey">King\'s Indian Attack</string>
+    <string name="apertura_bird">Bird\'s Opening</string>
+    <string name="apertura_polaca">Polish Opening (Sokolsky)</string>
 
     <string name="titulo_tablero">Chess Board</string>
     <string name="titulo_historial">Game History</string>
+    <string name="btn_exit">Exit"</string>
     <string name="btn_deshacer">Undo</string>
+    <string name="btn_rehacer">Redo</string>
     <string name="btn_reiniciar">Reset</string>
     <string name="btn_guardar">Save</string>
     <string name="btn_atras">Back</string>
     <string name="modo_estudio">Mode: Study</string>
+    <string name="default_time">05:00</string>
+
+    <string name="tab_history">HISTORICAL</string>
+    <string name="tab_explorer">EXPLORER</string>
+    <string name="explorer_label_loading">Loading data from masters...</string>
+    <string name="explorer_label_empty">Do a move to see data.</string>
+    <string name="explorer_label_error">Error after trying to connect to Lichess.</string>
+
+    <string name="label_tiempo">Time: </string>
+    <string name="label_dificultad_ia">Stockfish Level: %1$d</string> <string name="label_profundidad">Profundidad: %1$d</string>
+
 
     <string name="titulo_bloc_notas">Notepad</string>
     <string name="subtitulo_bloc_notas">Save your ideas, analysis and games</string>
@@ -64,7 +114,6 @@
     <string name="tab_amigos">Friends</string>
     <string name="tab_mensajes">Messages</string>
 
-    <string name="titulo_aperturas">Openings</string>
 
     <string name="titulo_puzzleDiario">Daily Puzzle</string>
     <string name="subtitulo_puzzleDiario">Improve your level with Lichess official challenge</string>

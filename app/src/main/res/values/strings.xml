@@ -3,6 +3,12 @@
 
     <string name="navigation_drawer_open">Abrir menú</string>
     <string name="navigation_drawer_close">Cerrar menú</string>
+    <string name="menu_inicio">Inicio</string>
+    <string name="menu_aperturas">Aperturas</string>
+    <string name="menu_puzzleDiario">Puzzle Diario</string>
+    <string name="menu_bloc_notas">Bloc de Notas</string>
+    <string name="menu_comunidad">Comunidad</string>
+    <string name="menu_practica">Práctica Libre</string>
 
     <string name="titulo_ajustes">Ajustes</string>
     <string name="apariencia">Apariencia</string>
@@ -10,13 +16,6 @@
     <string name="idioma">Idioma</string>
     <string name="lang_es">Español</string>
     <string name="lang_en">English</string>
-
-    <string name="menu_inicio">Inicio</string>
-    <string name="menu_bloc_notas">Bloc de Notas</string>
-    <string name="menu_aperturas">Aperturas</string>
-    <string name="menu_puzzleDiario">Puzzle Diario</string>
-    <string name="menu_comunidad">Comunidad</string>
-    <string name="menu_practica">Práctica Libre</string>
 
     <string name="login_titulo">Iniciar Sesión</string>
     <string name="registro_titulo">Crear Cuenta</string>
@@ -37,20 +36,77 @@
     <string name="texto_amigos">Amigos</string>
     <string name="titulo_noticias">Noticias de Ajedrez</string>
 
-    <string name="apertura_italiana">Apertura Italiana</string>
-    <string name="defensa_siciliana">Defensa Siciliana</string>
-    <string name="apertura_espanola">Apertura Española</string>
-    <string name="defensa_francesa">Defensa Francesa</string>
-    <string name="gambito_dama">Gambito de Dama</string>
-    <string name="defensa_india">Defensa India de Rey</string>
-
     <string name="titulo_tablero">Tablero de Ajedrez</string>
     <string name="titulo_historial">Historial de Partida</string>
+    <string name="btn_exit">Salir"</string>
     <string name="btn_deshacer">Deshacer</string>
+    <string name="btn_rehacer">Rehacer</string>
     <string name="btn_reiniciar">Reiniciar</string>
     <string name="btn_guardar">Guardar</string>
     <string name="btn_atras">Atrás</string>
     <string name="modo_estudio">Modo: Estudio</string>
+    <string name="default_time">05:00</string>
+
+    <string name="tab_history">HISTORIAL</string>
+    <string name="tab_explorer">EXPLORADOR</string>
+    <string name="explorer_label_loading">Cargando datos de maestros...</string>
+    <string name="explorer_label_empty">Realiza una jugada para ver datos.</string>
+    <string name="explorer_label_error">Error al conectar con Lichess.</string>
+
+    <string name="label_tiempo">Tiempo: </string>
+    <string name="label_dificultad_ia">Nivel Stockfish: %1$d</string> <string name="label_profundidad">Profundidad: %1$d</string>
+
+    <string name="titulo_puzzleDiario">Puzzle del Día</string>
+    <string name="subtitulo_puzzleDiario">Mejora tu nivel con el reto oficial de Lichess</string>
+    <string name="btn_jugar_puzzle">JUGAR AHORA</string>
+    <string name="stat_racha">Racha (Días)</string>
+    <string name="stat_resueltos">Resueltos</string>
+    <string name="msg_reto_completado">🏆 ¡RETO COMPLETADO! 🏆</string>
+    <string name="msg_jugada_incorrecta">Esa no es la jugada correcta. Sigue buscando.</string>
+
+    <string name="titulo_aperturas">Aperturas</string>
+    <string name="apertura_italiana">Apertura Italiana</string>
+    <string name="apertura_espanola">Apertura Española (Ruy López)</string>
+    <string name="apertura_escocesa">Apertura Escocesa</string>
+    <string name="gambito_rey">Gambito de Rey</string>
+    <string name="apertura_viena">Apertura Viena</string>
+    <string name="defensa_petrov">Defensa Petrov (Rusa)</string>
+    <string name="defensa_filidor">Defensa Philidor</string>
+    <string name="gambito_evans">Gambito Evans</string>
+    <string name="cuatro_caballos">Apertura de los Cuatro Caballos</string>
+
+    <string name="defensa_siciliana">Defensa Siciliana</string>
+    <string name="siciliana_najdorf">Siciliana (Variante Najdorf)</string>
+    <string name="siciliana_dragon">Siciliana (Variante Dragón)</string>
+    <string name="defensa_francesa">Defensa Francesa</string>
+    <string name="defensa_caro_kann">Defensa Caro-Kann</string>
+    <string name="defensa_escandinava">Defensa Escandinava</string>
+    <string name="defensa_alekhine">Defensa Alekhine</string>
+    <string name="defensa_pirc">Defensa Pirc</string>
+    <string name="defensa_moderna">Defensa Moderna</string>
+
+    <string name="gambito_dama">Gambito de Dama (Aceptado)</string>
+    <string name="gambito_dama_rehusado">Gambito de Dama (Rehusado)</string>
+    <string name="defensa_slava">Defensa Eslava</string>
+    <string name="defensa_semislava">Defensa Semi-Eslava</string>
+    <string name="sistema_londres">Sistema Londres</string>
+    <string name="sistema_colle">Sistema Colle</string>
+    <string name="ataque_trompowsky">Ataque Trompowsky</string>
+
+    <string name="defensa_india_rey">Defensa India de Rey</string>
+    <string name="defensa_nimzoindia">Defensa Nimzo-India</string>
+    <string name="defensa_india_dama">Defensa India de Dama</string>
+    <string name="defensa_bogo_india">Defensa Bogo-India</string>
+    <string name="defensa_grunfeld">Defensa Grünfeld</string>
+    <string name="defensa_benoni">Defensa Benoni</string>
+    <string name="gambito_benko">Gambito Benko (Volga)</string>
+
+    <string name="apertura_inglesa">Apertura Inglesa</string>
+    <string name="apertura_reti">Apertura Réti</string>
+    <string name="defensa_holandesa">Defensa Holandesa</string>
+    <string name="ataque_indio_rey">Ataque Indio de Rey</string>
+    <string name="apertura_bird">Apertura Bird</string>
+    <string name="apertura_polaca">Apertura Polaca (Sokolsky)</string>
 
     <string name="titulo_bloc_notas">Bloc de Notas</string>
     <string name="subtitulo_bloc_notas">Guarda tus ideas, análisis y partidas</string>
@@ -63,16 +119,6 @@
     <string name="tab_feed">Feed</string>
     <string name="tab_amigos">Amigos</string>
     <string name="tab_mensajes">Messages</string>
-
-    <string name="titulo_aperturas">Aperturas</string>
-
-    <string name="titulo_puzzleDiario">Puzzle del Día</string>
-    <string name="subtitulo_puzzleDiario">Mejora tu nivel con el reto oficial de Lichess</string>
-    <string name="btn_jugar_puzzle">JUGAR AHORA</string>
-    <string name="stat_racha">Racha (Días)</string>
-    <string name="stat_resueltos">Resueltos</string>
-    <string name="msg_reto_completado">🏆 ¡RETO COMPLETADO! 🏆</string>
-    <string name="msg_jugada_incorrecta">Esa no es la jugada correcta. Sigue buscando.</string>
 
     <string name="config_titulo">Configurar Partida</string>
     <string name="config_modo">Modo de Juego</string>

@@ -28,5 +28,5 @@ enum class ChessPiece(val drawableRes: Int) {
 
     // Propiedad que indica si la pieza es negra
     val isBlack: Boolean
-        get() = this.name.startsWith("BLACK")
+        get() = this.name.startsWith("BLACK") // bcspn (ay noo)
 }

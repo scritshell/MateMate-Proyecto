@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Layout del fragmento de ajustes - Versión vertical -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,7 +10,6 @@
         android:orientation="vertical"
         android:padding="24dp">
 
-        <!-- Título principal de la pantalla de ajustes -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -20,7 +18,6 @@
             android:textStyle="bold"
             android:layout_marginBottom="32dp"/>
 
-        <!-- Subtítulo para sección de apariencia -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -29,7 +26,6 @@
             android:textStyle="bold"
             android:textColor="?attr/colorPrimary"/>
 
-        <!-- Switch para activar/desactivar modo oscuro -->
         <com.google.android.material.materialswitch.MaterialSwitch
             android:id="@+id/switchDarkMode"
             android:layout_width="match_parent"
@@ -39,14 +35,12 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="24dp"/>
 
-        <!-- Línea divisoria entre secciones -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#E0E0E0"
             android:layout_marginBottom="24dp"/>
 
-        <!-- Subtítulo para sección de idioma -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -55,27 +49,59 @@
             android:textStyle="bold"
             android:textColor="?attr/colorPrimary"/>
 
-        <!-- Grupo de radio buttons para selección de idioma -->
         <RadioGroup
             android:id="@+id/radioGroupLanguage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp">
 
-            <!-- Opción para español -->
             <RadioButton
                 android:id="@+id/rbSpanish"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/lang_es" />
 
-            <!-- Opción para inglés -->
             <RadioButton
                 android:id="@+id/rbEnglish"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/lang_en" />
         </RadioGroup>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#E0E0E0"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tablero y Piezas"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="?attr/colorPrimary"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Usar estilo de piezas alternativo"
+                android:textSize="16sp" />
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/switchSkinAlt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
 
     </LinearLayout>
 </ScrollView>

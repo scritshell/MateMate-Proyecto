@@ -80,7 +80,9 @@ class SocialFragment : Fragment() {
 }
 
 /*
-* TODO: La seccion social la dejare para el final, he pensado en aprovechar el "TikTok Chess"
-*  para pedir permiso al usuario para acceder a recursos como Galeria, camara o notificaciones
-*
+* TODO: La seccion social la dejare para el final, FEEDBACK:
+*  Crear un FORO en lugar de un Tiktok Chess. Esto será para
+*  tener 2 tipos de usuarios. Usuarios normales y corrientes
+*  Y ADMINISTRADORES.
+*  Intentar usar JetpackCompose.
 * */

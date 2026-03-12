@@ -19,7 +19,7 @@ import com.example.proyectoajedrez.fragments.LoginDialogFragment
 
 // El contenedor principal del proyecto. Patrón utilizado: Single Activity Architecture.
 
-class MainActivity : AppCompatActivity() {
+class   MainActivity : AppCompatActivity() {
 
     // Configuración para la barra de la app con Navigation Component
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -200,7 +200,7 @@ class MainActivity : AppCompatActivity() {
 *  Implementación de Retrofit para manejar el JSON dinámico.
 *  Objetivo: Que el tablero se inicialice cada día con un reto nuevo y real.
 *  -------------------------------------------------------------------------
-*  Paso 2: Explorador de Aperturas (Análisis Real)
+*  Paso 2: Explorador de Aperturas (Análisis Real) COMPLETADO <=================================
 *  Consumo de la API /masters enviando el FEN actual tras cada movimiento.
 *  Añadir un RecyclerView que muestre jugadas probables
 *  y porcentajes de victoria de Grandes Maestros.
@@ -209,4 +209,6 @@ class MainActivity : AppCompatActivity() {
 *  Paso 3: Sincronización de Perfil
 *  Mostrar ELO real y estadísticas en el InicioFragment.
 *  Objetivo: Gamificación y personalización real de la cuenta del usuario, que no sea estatico
+*
+*  TODO EXTRA: Meter personalizacion de skin de las piezas.
 * */

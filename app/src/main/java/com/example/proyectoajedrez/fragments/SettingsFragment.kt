@@ -1,9 +1,11 @@
 package com.example.proyectoajedrez.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import androidx.fragment.app.Fragment
@@ -11,7 +13,6 @@ import com.example.proyectoajedrez.R
 import com.example.proyectoajedrez.databinding.FragmentSettingsBinding
 
 // Fragmento de configuración para ajustes de la aplicación
-// FINALIZADO
 class SettingsFragment : Fragment() {
 
     private lateinit var binding: FragmentSettingsBinding  // ViewBinding para el fragmento
@@ -28,48 +29,56 @@ class SettingsFragment : Fragment() {
 
         setupDarkMode()   // Configurar toggle de modo oscuro
         setupLanguage()   // Configurar selector de idioma
+        setupSkins()      // NUEVO: Configurar selector de estilo de piezas
     }
 
     // Configurar interruptor de modo oscuro/claro
     private fun setupDarkMode() {
-        // Obtener estado actual del modo oscuro
         val currentNightMode = AppCompatDelegate.getDefaultNightMode()
-
-        // Marcar switch según el estado actual
         binding.switchDarkMode.isChecked = currentNightMode == AppCompatDelegate.MODE_NIGHT_YES
 
-        // Listener para cambios en el switch
         binding.switchDarkMode.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)  // Modo oscuro
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)   // Modo claro
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
         }
     }
 
     // Configurar selección de idioma (español/inglés)
     private fun setupLanguage() {
-        // Detectar idioma actual de la aplicación
         val currentLocale = AppCompatDelegate.getApplicationLocales().toLanguageTags()
 
-        // Marcar el radio button correspondiente
         if (currentLocale.contains("en")) {
-            binding.rbEnglish.isChecked = true  // Inglés seleccionado
+            binding.rbEnglish.isChecked = true
         } else {
-            binding.rbSpanish.isChecked = true  // Español seleccionado
+            binding.rbSpanish.isChecked = true
         }
 
-        // Listener para cambios en el grupo de radio buttons
         binding.radioGroupLanguage.setOnCheckedChangeListener { _, checkedId ->
             val idioma = when (checkedId) {
-                R.id.rbEnglish -> "en"  // Código para inglés
-                else -> "es"            // Código para español
+                R.id.rbEnglish -> "en"
+                else -> "es"
             }
 
-            // Aplicar nuevo idioma (reinicia automáticamente la actividad)
             val appLocale = LocaleListCompat.forLanguageTags(idioma)
             AppCompatDelegate.setApplicationLocales(appLocale)
+        }
+    }
+
+    // ALTERNAR SKIN
+    private fun setupSkins() {
+        val sharedPref = requireContext().getSharedPreferences("AjedrezPrefs", Context.MODE_PRIVATE)
+
+        binding.switchSkinAlt.isChecked = sharedPref.getBoolean("usar_skin_alt", false)
+
+        binding.switchSkinAlt.setOnCheckedChangeListener { _, isChecked ->
+            with(sharedPref.edit()) {
+                putBoolean("usar_skin_alt", isChecked)
+                apply()
+            }
+            Toast.makeText(context, "Estilo de piezas actualizado", Toast.LENGTH_SHORT).show()
         }
     }
 }
