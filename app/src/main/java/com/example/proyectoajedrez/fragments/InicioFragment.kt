@@ -211,7 +211,7 @@ class InicioFragment : Fragment() {
         // Usamos viewLifecycleOwner.lifecycleScope porque es más seguro en Fragmentos
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
             try {
-                val apiKey = "fd08253831f2472582d2a03585f4f834"
+                val apiKey = BuildConfig.NEWS_API_KEYM
                 val idiomaActual = java.util.Locale.getDefault().language
 
                 // Mantenemos tu lógica de idiomas original
