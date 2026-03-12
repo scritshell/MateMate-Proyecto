@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("com.google.gms.google-services")
+    id("org.jetbrains.kotlin.plugin.compose")
+    id("kotlin-kapt")
 }
 
 android {
@@ -19,17 +21,15 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        // Leer API key segura desde local.properties
         val localProperties = Properties()
         val localPropertiesFile = rootProject.file("local.properties")
         if (localPropertiesFile.exists()) {
             localProperties.load(FileInputStream(localPropertiesFile))
         }
-
-        // Inyectar la clave en el código (asegurando el formato correcto)
         val apiKey = localProperties.getProperty("NEWS_API_KEY") ?: ""
         buildConfigField("String", "NEWS_API_KEY", "\"$apiKey\"")
+
+        manifestPlaceholders["MAPS_API_KEY"] = localProperties.getProperty("MAPS_API_KEY") ?: ""
     }
 
     buildTypes {
@@ -54,23 +54,20 @@ android {
     buildFeatures {
         viewBinding = true
         buildConfig = true
-        compose = true // <-- Jetpack Compose Activado
+        compose = true
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1" // <-- Versión del compilador de Compose
-    }
-} // <-- AQUÍ CIERRA EL BLOQUE ANDROID
+}
 
-// LAS DEPENDENCIAS VAN SIEMPRE FUERA DEL BLOQUE ANDROID
 dependencies {
     // --- FIREBASE ---
     implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-storage")
 
-    // --- JETPACK COMPOSE (Para la nueva Sala de Chat) ---
-    val composeBom = platform("androidx.compose:compose-bom:2024.02.00")
+    // --- JETPACK COMPOSE ---
+    val composeBom = platform("androidx.compose:compose-bom:2025.02.00")
     implementation(composeBom)
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material3:material3")
@@ -89,6 +86,11 @@ dependencies {
     // --- MOTOR AJEDREZ ---
     implementation("com.github.bhlangonijr:chesslib:1.3.3")
 
+    // --- ROOM DATABASE (RA1) ---
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
+
     // --- LIBRERÍAS DE ANDROID NATIVAS ---
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -101,4 +103,9 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    // --- MAPAS ---
+    implementation("com.google.maps.android:maps-compose:4.3.3")
+    implementation("com.google.android.gms:play-services-maps:19.0.0")
+    implementation("com.google.android.gms:play-services-location:21.3.0")
 }

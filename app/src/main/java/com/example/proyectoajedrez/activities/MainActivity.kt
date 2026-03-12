@@ -15,6 +15,11 @@ import com.example.proyectoajedrez.R
 import com.example.proyectoajedrez.databinding.ActivityMainBinding
 import com.example.proyectoajedrez.fragments.GameSetupDialogFragment
 import com.example.proyectoajedrez.fragments.LoginDialogFragment
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
+import androidx.appcompat.app.AppCompatDelegate
 
 
 // El contenedor principal del proyecto. Patrón utilizado: Single Activity Architecture.
@@ -29,6 +34,11 @@ class   MainActivity : AppCompatActivity() {
 
     // Gestor de sesión de usuario
     private lateinit var session: SessionManager
+
+    // Sensores
+    private lateinit var sensorManager: SensorManager
+    private var lightSensor: Sensor? = null
+    private var lightSensorListener: SensorEventListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -123,7 +133,48 @@ class   MainActivity : AppCompatActivity() {
 
         // Verificar el estado de login al iniciar
         checkLoginStatus()
+
+        // Inicializamos el sensor de luz dentro del onCreate
+        setupLightSensor()
+
+    } // <--- ¡AQUÍ CERRAMOS EL ONCREATE!
+
+    // --- FUNCIONES DE LOS SENSORES VAN FUERA DEL ONCREATE ---
+
+    private fun setupLightSensor() {
+        sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
+        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)
+
+        lightSensorListener = object : SensorEventListener {
+            override fun onSensorChanged(event: SensorEvent) {
+                val lux = event.values[0]
+                val deberiaSerOscuro = lux < 10f // Menos de 10 lux = oscuridad
+                val esOscuroActualmente = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
+
+                if (deberiaSerOscuro && !esOscuroActualmente) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                } else if (!deberiaSerOscuro && esOscuroActualmente) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                }
+            }
+            override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+        }
     }
+
+    override fun onResume() {
+        super.onResume()
+        lightSensorListener?.let {
+            sensorManager.registerListener(it, lightSensor, SensorManager.SENSOR_DELAY_NORMAL)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // Apagamos el sensor al minimizar la app
+        lightSensorListener?.let { sensorManager.unregisterListener(it) }
+    }
+
+    // --- RESTO DE TUS FUNCIONES ---
 
     // Verificar si el usuario está logueado
     private fun checkLoginStatus() {
@@ -186,6 +237,8 @@ class   MainActivity : AppCompatActivity() {
         }
     }
 
+
+
     // Manejar botón de navegación hacia arriba
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
@@ -195,20 +248,20 @@ class   MainActivity : AppCompatActivity() {
 
 /*
 * TODO: GLOBAL
-*  IDEAS: Paso 1: El Puzzle Diario : COMPLETADO <=================================
-*  Sustituir los puzzles estáticos por el endpoint /api/puzzle/daily.
-*  Implementación de Retrofit para manejar el JSON dinámico.
-*  Objetivo: Que el tablero se inicialice cada día con un reto nuevo y real.
-*  -------------------------------------------------------------------------
-*  Paso 2: Explorador de Aperturas (Análisis Real) COMPLETADO <=================================
-*  Consumo de la API /masters enviando el FEN actual tras cada movimiento.
-*  Añadir un RecyclerView que muestre jugadas probables
-*  y porcentajes de victoria de Grandes Maestros.
-*  Objetivo: Convertir el modo libre en una herramienta de estudio de alto nivel.
-*  --------------------------------------------------------------------------
-*  Paso 3: Sincronización de Perfil
-*  Mostrar ELO real y estadísticas en el InicioFragment.
-*  Objetivo: Gamificación y personalización real de la cuenta del usuario, que no sea estatico
+* IDEAS: Paso 1: El Puzzle Diario : COMPLETADO <=================================
+* Sustituir los puzzles estáticos por el endpoint /api/puzzle/daily.
+* Implementación de Retrofit para manejar el JSON dinámico.
+* Objetivo: Que el tablero se inicialice cada día con un reto nuevo y real.
+* -------------------------------------------------------------------------
+* Paso 2: Explorador de Aperturas (Análisis Real) COMPLETADO <=================================
+* Consumo de la API /masters enviando el FEN actual tras cada movimiento.
+* Añadir un RecyclerView que muestre jugadas probables
+* y porcentajes de victoria de Grandes Maestros.
+* Objetivo: Convertir el modo libre en una herramienta de estudio de alto nivel.
+* --------------------------------------------------------------------------
+* Paso 3: Sincronización de Perfil
+* Mostrar ELO real y estadísticas en el InicioFragment.
+* Objetivo: Gamificación y personalización real de la cuenta del usuario, que no sea estatico
 *
-*  TODO EXTRA: Meter personalizacion de skin de las piezas.
+* TODO EXTRA: Meter personalizacion de skin de las piezas.
 * */

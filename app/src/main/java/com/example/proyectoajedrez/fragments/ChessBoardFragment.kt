@@ -30,7 +30,6 @@ import com.example.proyectoajedrez.utils.ChessUtils
 import com.github.bhlangonijr.chesslib.Board
 import com.github.bhlangonijr.chesslib.Constants
 import com.github.bhlangonijr.chesslib.Piece
-import com.github.bhlangonijr.chesslib.PieceType
 import com.github.bhlangonijr.chesslib.Rank
 import com.github.bhlangonijr.chesslib.Side
 import com.github.bhlangonijr.chesslib.Square
@@ -39,7 +38,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import androidx.core.content.edit
+import com.example.proyectoajedrez.data.local.MateMateDataBase
+import com.example.proyectoajedrez.data.local.PuzzleProgressEntity
+import kotlinx.coroutines.flow.firstOrNull
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
+
 
 class ChessBoardFragment : Fragment() {
 
@@ -71,6 +77,12 @@ class ChessBoardFragment : Fragment() {
     private var timeLeftWhite = 300_000L
     private var timeLeftBlack = 300_000L
     private var isTimeUnlimited = false
+
+    // Sensores
+    private lateinit var sensorManager: SensorManager
+    private var accelerometer: Sensor? = null
+    private var lastShakeTime = 0L
+    private var shakeListener: SensorEventListener? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentChessBoardBinding.inflate(inflater, container, false)
@@ -361,30 +373,31 @@ class ChessBoardFragment : Fragment() {
 
     // NUEVA FUNCIÓN PARA GUARDAR EL PROGRESO
     private fun actualizarProgresoPuzzle() {
-        // Usamos un nombre de archivo fijo "AjedrezPrefs" para que todos los fragmentos lo vean
-        val sharedPref = requireContext().getSharedPreferences("AjedrezPrefs", Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
+        lifecycleScope.launch(Dispatchers.IO) {
+            val db = MateMateDataBase.getInstance(requireContext())
+            val dao = db.puzzleProgressDao()
 
-        // 1. Sumar al total local (Llave: "local_puzzles_solved")
-        val totalResueltos = sharedPref.getInt("local_puzzles_solved", 0)
-        editor.putInt("local_puzzles_solved", totalResueltos + 1)
+            // Leemos el progreso actual (si no hay, crea uno nuevo por defecto)
+            val progressActual = dao.getProgress().firstOrNull() ?: PuzzleProgressEntity()
 
-        // 2. Lógica de la Racha (Llave: "puzzle_streak_days")
-        val hoy = java.text.SimpleDateFormat("yyyyMMdd", java.util.Locale.getDefault()).format(java.util.Date())
-        val ultimaVez = sharedPref.getString("last_puzzle_date", "")
-        var rachaActual = sharedPref.getInt("puzzle_streak_days", 0)
+            val hoy = java.text.SimpleDateFormat("yyyyMMdd", java.util.Locale.getDefault())
+                .format(java.util.Date())
 
-        if (ultimaVez != hoy) {
-            if (esAyer(ultimaVez)) {
-                rachaActual++
-            } else {
-                rachaActual = 1
+            val nuevaRacha = when {
+                progressActual.lastSolvedDate == hoy -> progressActual.currentStreak
+                esAyer(progressActual.lastSolvedDate) -> progressActual.currentStreak + 1
+                else -> 1 // Si falló un día, vuelve a 1
             }
-            editor.putInt("puzzle_streak_days", rachaActual)
-            editor.putString("last_puzzle_date", hoy)
-        }
 
-        editor.apply()
+            // Guardamos el nuevo progreso en la base de datos
+            dao.saveProgress(
+                progressActual.copy(
+                    currentStreak = nuevaRacha,
+                    totalSolved = progressActual.totalSolved + 1,
+                    lastSolvedDate = hoy
+                )
+            )
+        }
     }
 
     // Función auxiliar para saber si la última vez fue ayer
@@ -539,8 +552,42 @@ class ChessBoardFragment : Fragment() {
     private fun parseColor(hex: String) = Color.parseColor(hex)
     private fun rotateBoard() = lifecycleScope.launch { delay(300); boardAdapter.setFlipped(chessBoard.sideToMove == Side.BLACK) }
 
+    private fun setupShakeSensor() {
+        sensorManager = requireContext().getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+
+        shakeListener = object : SensorEventListener {
+            override fun onSensorChanged(event: SensorEvent) {
+                val x = event.values[0]
+                val y = event.values[1]
+                val z = event.values[2]
+
+                // Calculamos la fuerza del movimiento (quitando la gravedad)
+                val aceleracion = Math.sqrt((x*x + y*y + z*z).toDouble()) - SensorManager.GRAVITY_EARTH
+                val ahora = System.currentTimeMillis()
+
+                // Si la fuerza es mayor a 12 (un buen meneo) y ha pasado 1 segundo desde la última vez
+                if (aceleracion > 12f && ahora - lastShakeTime > 1000) {
+                    lastShakeTime = ahora
+                    requireActivity().runOnUiThread {
+                        // AQUÍ LLAMAS A TU FUNCIÓN DE DESHACER (Asegúrate de que se llama así)
+                        undoMove()
+                        Toast.makeText(requireContext(), "↩ Jugada deshecha por agitación", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+        }
+
+        // Activamos el sensor
+        shakeListener?.let {
+            sensorManager.registerListener(it, accelerometer, SensorManager.SENSOR_DELAY_GAME)
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        shakeListener?.let { sensorManager.unregisterListener(it) }
         timerWhite?.cancel(); timerBlack?.cancel()
         if (gameMode == GameMode.LIBRE) stockfishClient.close()
         _binding = null
