@@ -1,7 +1,4 @@
 package com.example.proyectoajedrez.model
-
-
-// Respuesta completa de la API!
 data class LichessPuzzleResponse(
     val game: LichessGame,
     val puzzle: LichessPuzzleInfo
@@ -22,7 +19,7 @@ data class LichessPlayer(
 data class LichessPuzzleInfo(
     val id: String,
     val rating: Int,
-    val solution: List<String> // La lista de movimientos ganadores [EJEMPLOS: "f3e5", "d6e5"]
+    val solution: List<String> // La lista de movimientos ganadores
 )
 
 // GET /api/user/{username}

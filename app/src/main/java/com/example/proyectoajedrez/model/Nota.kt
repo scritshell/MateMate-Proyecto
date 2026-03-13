@@ -7,5 +7,5 @@ data class Nota(
     val titulo: String = "",           // Título de la nota
     val contenido: String = "",        // Contenido completo de la nota
     val fecha: Long = 0,               // Fecha en milisegundos para ordenamiento
-    val categoria: String = "General"  // Categoría (General, Apertura, Partida, etc.)
+    val categoria: String = "General"  // Categoría
 )

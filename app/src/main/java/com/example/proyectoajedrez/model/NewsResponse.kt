@@ -2,7 +2,7 @@ package com.example.proyectoajedrez.model
 
 // Respuesta general de la API de noticias
 data class NewsResponse(
-    val status: String,          // Estado de la petición (ej: "ok", "error")
+    val status: String,          // Estado de la petición
     val totalResults: Int,       // Número total de resultados encontrados
     val articles: List<Article>  // Lista de artículos de noticias
 )
@@ -18,5 +18,5 @@ data class Article(
 
 // Representa la fuente/origen de una noticia
 data class Source(
-    val name: String?   // Nombre de la fuente (ej: "CNN", "El País")
+    val name: String?   // Nombre de la fuente
 )

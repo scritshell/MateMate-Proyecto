@@ -12,7 +12,7 @@ interface LichessApiService {
 
     // Petición GET a la ruta específica del puzzle diario
     @GET("api/puzzle/daily")
-    // Función suspendida para ejecutarse en segundo plano (Corrutinas)
+    // Función suspendida para ejecutarse en segundo plano
     suspend fun getDailyPuzzle(): LichessPuzzleResponse
 
     // Obtener los datos del usuario

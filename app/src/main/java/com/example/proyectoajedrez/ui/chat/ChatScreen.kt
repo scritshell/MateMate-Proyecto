@@ -17,7 +17,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.proyectoajedrez.model.ChatMessage
 import com.example.proyectoajedrez.viewmodel.ChatViewModel
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.launch
 
 @Composable
 fun ChatScreen(chatViewModel: ChatViewModel = viewModel()) {
@@ -28,8 +27,6 @@ fun ChatScreen(chatViewModel: ChatViewModel = viewModel()) {
     // Para hacer autoscroll al último mensaje
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
-
-    // Cada vez que llegue un nuevo mensaje, bajamos automáticamente al final
     LaunchedEffect(messages.size) {
         if (messages.isNotEmpty()) {
             listState.animateScrollToItem(messages.size - 1)
@@ -38,7 +35,7 @@ fun ChatScreen(chatViewModel: ChatViewModel = viewModel()) {
 
     Column(modifier = Modifier.fillMaxSize()) {
 
-        // Lista de mensajes — LazyColumn es el equivalente a RecyclerView en Compose
+        // Lista de mensajes — LazyColumn
         LazyColumn(
             state = listState,
             modifier = Modifier.weight(1f).padding(horizontal = 8.dp),
@@ -101,7 +98,7 @@ fun MessageBubble(message: ChatMessage, isOwnMessage: Boolean) {
             if (!isOwnMessage) {
                 Text(
                     text = message.senderName,
-                    color = Color(0xFFFFD700), // Tu color teal/dorado del tema
+                    color = Color(0xFFFFD700),
                     fontSize = 11.sp,
                     style = MaterialTheme.typography.labelSmall
                 )

@@ -7,7 +7,7 @@ data class ExplorerResponse(
     val draws: Int,
     val black: Int,
     val moves: List<ExplorerMove>,
-    val opening: ExplorerOpening? = null // <--- IMPORTANTE: Este campo trae el nombre
+    val opening: ExplorerOpening? = null
 )
 
 // CLASE 2: Cada jugada de la lista
@@ -23,6 +23,6 @@ data class ExplorerMove(
 
 // CLASE 3: El nombre de la apertura (para mostrar al final)
 data class ExplorerOpening(
-    val eco: String,  // Código (ej: C50)
-    val name: String  // Nombre (ej: Italian Game)
+    val eco: String,  // Código
+    val name: String  // Nombre
 )

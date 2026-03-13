@@ -10,7 +10,7 @@ import retrofit2.http.Query
 interface NewsApiService {
     @GET("v2/everything")  // Endpoint para obtener noticias
     suspend fun getChessNews(
-        @Query("q") query: String,        // Término de búsqueda (ej: "ajedrez", "chess")
+        @Query("q") query: String,        // Término de búsqueda
         @Query("apiKey") apiKey: String,  // Clave de API para autenticación
         @Query("language") language: String = "es",  // Idioma de las noticias
         @Query("sortBy") sortBy: String = "relevancy",
