@@ -135,7 +135,7 @@ class ChessBoardFragment : Fragment() {
 
         // BOTONES DE LA MÁQUINA DEL TIEMPO
         binding.btnUndo.setOnClickListener { undoMove() }
-        binding.btnRedo?.setOnClickListener { redoMove() } // Asegúrate de tener btnRedo en tu XML
+        binding.btnRedo?.setOnClickListener { redoMove() }
 
         binding.btnTabHistory?.setOnClickListener { switchTab(showHistory = true) }
         binding.btnTabExplorer?.setOnClickListener { switchTab(showHistory = false) }
@@ -257,9 +257,9 @@ class ChessBoardFragment : Fragment() {
                 GameMode.LOCAL_2P -> "Partida finalizada.\n¡Ganan las $ganador!"
                 GameMode.LIBRE -> {
                     if (turnoActual == playerSide) {
-                        "Derrota.\nStockfish te ha dado Jaque Mate 🤖"
+                        "Derrota.\nStockfish te ha dado Jaque Mate"
                     } else {
-                        "¡Victoria!\nHas derrotado a Stockfish 👑"
+                        "¡Victoria!\nHas derrotado a Stockfish"
                     }
                 }
                 else -> "¡Jaque Mate! Ganan las $ganador."
@@ -356,7 +356,6 @@ class ChessBoardFragment : Fragment() {
             puzzleSolution.removeAt(0)
 
             if (puzzleSolution.isEmpty()) {
-                // --- AQUÍ ESTÁ EL CAMBIO ---
                 actualizarProgresoPuzzle()
                 mostrarDialogoFin(getString(R.string.msg_reto_completado))
             } else {
@@ -367,11 +366,10 @@ class ChessBoardFragment : Fragment() {
                 }
             }
         } else {
-            // ... resto del código de error ...
+
         }
     }
 
-    // NUEVA FUNCIÓN PARA GUARDAR EL PROGRESO
     private fun actualizarProgresoPuzzle() {
         lifecycleScope.launch(Dispatchers.IO) {
             val db = MateMateDataBase.getInstance(requireContext())
@@ -434,7 +432,7 @@ class ChessBoardFragment : Fragment() {
         }
     }
 
-    // --- MÁQUINA DEL TIEMPO (Undo / Redo) ---
+    // --- MÁQUINA DEL TIEMPO ---
 
     private fun undoMove() {
         if (gameMode == GameMode.APERTURA) return
@@ -562,15 +560,12 @@ class ChessBoardFragment : Fragment() {
                 val y = event.values[1]
                 val z = event.values[2]
 
-                // Calculamos la fuerza del movimiento (quitando la gravedad)
+                // Calcular la fuerza del movimiento
                 val aceleracion = Math.sqrt((x*x + y*y + z*z).toDouble()) - SensorManager.GRAVITY_EARTH
                 val ahora = System.currentTimeMillis()
-
-                // Si la fuerza es mayor a 12 (un buen meneo) y ha pasado 1 segundo desde la última vez
                 if (aceleracion > 12f && ahora - lastShakeTime > 1000) {
                     lastShakeTime = ahora
                     requireActivity().runOnUiThread {
-                        // AQUÍ LLAMAS A TU FUNCIÓN DE DESHACER (Asegúrate de que se llama así)
                         undoMove()
                         Toast.makeText(requireContext(), "↩ Jugada deshecha por agitación", Toast.LENGTH_SHORT).show()
                     }
@@ -578,8 +573,6 @@ class ChessBoardFragment : Fragment() {
             }
             override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
         }
-
-        // Activamos el sensor
         shakeListener?.let {
             sensorManager.registerListener(it, accelerometer, SensorManager.SENSOR_DELAY_GAME)
         }

@@ -137,9 +137,7 @@ class   MainActivity : AppCompatActivity() {
         // Inicializamos el sensor de luz dentro del onCreate
         setupLightSensor()
 
-    } // <--- ¡AQUÍ CERRAMOS EL ONCREATE!
-
-    // --- FUNCIONES DE LOS SENSORES VAN FUERA DEL ONCREATE ---
+    }
 
     private fun setupLightSensor() {
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
@@ -173,8 +171,6 @@ class   MainActivity : AppCompatActivity() {
         // Apagamos el sensor al minimizar la app
         lightSensorListener?.let { sensorManager.unregisterListener(it) }
     }
-
-    // --- RESTO DE TUS FUNCIONES ---
 
     // Verificar si el usuario está logueado
     private fun checkLoginStatus() {

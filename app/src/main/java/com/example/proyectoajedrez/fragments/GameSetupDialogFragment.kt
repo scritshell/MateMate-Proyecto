@@ -2,7 +2,6 @@ package com.example.proyectoajedrez.fragments
 
 import android.app.Dialog
 import android.os.Bundle
-import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.SeekBar
 import androidx.appcompat.app.AlertDialog
@@ -37,7 +36,7 @@ class GameSetupDialogFragment(
         val tiempos = arrayOf("Sin Límite", "1 min (Bullet)", "3 min (Blitz)", "5 min (Blitz)", "10 min (Rápida)", "30 min (Clásica)")
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, tiempos)
         binding.spinnerTimeDialog.adapter = adapter
-        binding.spinnerTimeDialog.setSelection(3) // Default: 5 min
+        binding.spinnerTimeDialog.setSelection(3)
 
         // 2. RadioButtons: Ocultar opciones de IA si es 2 jugadores
         binding.rgGameMode.setOnCheckedChangeListener { _, checkedId ->

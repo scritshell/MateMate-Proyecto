@@ -130,4 +130,5 @@
     <string name="config_tiempo">Ritmo de Juego</string>
     <string name="config_nivel_ia">Nivel Stockfish:</string>
     <string name="btn_jugar_ahora">JUGAR AHORA</string>
+    <string name="btn_google_signin">Entrar con Google</string>
 </resources>

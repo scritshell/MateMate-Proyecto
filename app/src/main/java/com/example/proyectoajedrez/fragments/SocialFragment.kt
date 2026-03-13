@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import com.example.proyectoajedrez.ui.chat.ChatScreen
-import com.google.android.material.color.DynamicColors
 
 class SocialFragment : Fragment() {
 
@@ -15,10 +14,8 @@ class SocialFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // En lugar de inflar un XML, creamos una vista de Compose directamente
         return ComposeView(requireContext()).apply {
             setContent {
-                // Llamamos a la pantalla que acabamos de crear
                 ChatScreen()
             }
         }

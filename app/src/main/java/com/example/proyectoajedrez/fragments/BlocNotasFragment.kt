@@ -53,7 +53,7 @@ class BlocNotasFragment : Fragment() {
         adapter = NotasAdapter(
             listaNotas,
             { nota -> mostrarDialogoNota(nota) },    // Click en nota: editar
-            { nota -> confirmarBorrado(nota.id) }    // Click en papelera: borrar
+            { nota -> confirmarBorrado(nota.id) }            // Click en papelera: borrar
         )
 
         binding.recyclerViewNotas.layoutManager = LinearLayoutManager(requireContext())

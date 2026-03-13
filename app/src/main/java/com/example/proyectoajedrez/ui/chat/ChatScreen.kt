@@ -1,4 +1,3 @@
-// Crea: app/src/main/java/com/example/proyectoajedrez/ui/chat/ChatScreen.kt
 package com.example.proyectoajedrez.ui.chat
 
 import androidx.compose.foundation.background
@@ -26,7 +25,7 @@ fun ChatScreen(chatViewModel: ChatViewModel = viewModel()) {
     val inputText by chatViewModel.inputText.collectAsState()
     val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
 
-    // Para hacer auto-scroll al último mensaje
+    // Para hacer autoscroll al último mensaje
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 

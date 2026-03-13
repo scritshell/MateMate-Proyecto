@@ -1,4 +1,3 @@
-// Crea: app/src/main/java/com/example/proyectoajedrez/viewmodel/ChatViewModel.kt
 package com.example.proyectoajedrez.viewmodel
 
 import androidx.lifecycle.ViewModel
@@ -16,7 +15,7 @@ class ChatViewModel : ViewModel() {
     private val db = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
 
-    // Estado de la lista de mensajes — la UI observa esto
+    // Estado de la lista de mensajes
     val messages: StateFlow<List<ChatMessage>> = getMessagesFlow()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
@@ -40,7 +39,7 @@ class ChatViewModel : ViewModel() {
                 } ?: emptyList()
                 trySend(msgs) // Emite la nueva lista al Flow
             }
-        // Cuando el Flow se cancela (ej: se destruye el Fragment), removemos el listener
+        // Cuando el Flow se cancela, removemos el listener
         awaitClose { listener.remove() }
     }
 

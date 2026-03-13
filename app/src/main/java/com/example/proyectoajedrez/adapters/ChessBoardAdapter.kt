@@ -91,7 +91,7 @@ class ChessBoardAdapter(private val context: Context) : BaseAdapter() {
         }
         container.addView(bgView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
 
-        // 2. PIEZA (AQUÍ ESTÁ LA MAGIA DE LAS SKINS)
+        // 2. PIEZA
         val pieceView = ImageView(context)
         pieceView.scaleType = ImageView.ScaleType.FIT_CENTER
         pieceView.setPadding(8, 8, 8, 8)
@@ -126,13 +126,12 @@ class ChessBoardAdapter(private val context: Context) : BaseAdapter() {
         return container
     }
 
-    // --- NUEVO: SISTEMA DE SKINS ---
+    // SISTEMA DE SKINS
     private fun obtenerDibujoPieza(piece: ChessPiece): Int {
         val usarSkinAlternativa = sharedPref.getBoolean("usar_skin_alt", false)
 
         return if (usarSkinAlternativa) {
             // --- SKIN ALTERNATIVA ---
-            // Asegúrate de que estos archivos _alt existan en tu carpeta drawable
             when (piece) {
                 ChessPiece.WHITE_PAWN -> R.drawable.ic_w_pawn_alt
                 ChessPiece.WHITE_KNIGHT -> R.drawable.ic_w_knight_alt
@@ -150,7 +149,7 @@ class ChessBoardAdapter(private val context: Context) : BaseAdapter() {
                 else -> 0
             }
         } else {
-            // --- SKIN POR DEFECTO (Tus originales) ---
+            // --- SKIN POR DEFECTO ---
             piece.drawableRes
         }
     }

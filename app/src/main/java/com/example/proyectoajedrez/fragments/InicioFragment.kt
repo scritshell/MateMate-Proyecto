@@ -75,10 +75,8 @@ class InicioFragment : Fragment() {
         val lichessUser = sharedPref.getString("lichess_username", null)
 
         if (lichessUser != null) {
-            // Si ya vinculó Lichess en este dispositivo, mandamos pedir los datos a la API
             obtenerDatosLichess(lichessUser)
         } else {
-            // Si no hay Lichess vinculado, cargamos los datos base de Firebase
             cargarDatosFirebase()
         }
     }
@@ -94,8 +92,7 @@ class InicioFragment : Fragment() {
                         Log.e(TAG, "Error al escuchar datos de usuario", e)
                         return@addSnapshotListener
                     }
-
-                    if (document != null && document.exists()) {
+                    if (_binding != null && isAdded && document != null && document.exists()) {
                         // Extraer datos del documento Firestore
                         val username = document.getString("username") ?: "Jugador"
                         val elo = document.getLong("elo") ?: 1200
@@ -110,10 +107,12 @@ class InicioFragment : Fragment() {
                 }
         } else {
             // Mostrar datos para modo invitado
-            binding.tvBienvenidaSubtitulo.text = "Modo Invitado"
-            binding.textElo.text = "-"
-            binding.textPorcentajeTacticas.text = "-"
-            binding.textAmigos.text = "-"
+            if (_binding != null && isAdded) {
+                binding.tvBienvenidaSubtitulo.text = "Modo Invitado"
+                binding.textElo.text = "-"
+                binding.textPorcentajeTacticas.text = "-"
+                binding.textAmigos.text = "-"
+            }
         }
     }
 
@@ -204,7 +203,7 @@ class InicioFragment : Fragment() {
         }
     }
 
-    // --- LÓGICA DE NOTICIAS (Intacta) ---
+    // --- LÓGICA DE NOTICIAS ---
 
     // Obtener noticias de ajedrez exclusivas desde News API
     private fun cargarNoticias() {
@@ -218,7 +217,7 @@ class InicioFragment : Fragment() {
                 val queryBusqueda = if (idiomaActual == "en") "+chess" else "+ajedrez"
                 val idiomaApi = if (idiomaActual == "en") "en" else "es"
 
-                // 1. Definimos los dominios de confianza (Ajedrez 100%)
+                // 1. Definimos los dominios de confianza.
                 val dominiosAjedrez = "chess.com,lichess.org,chess24.com,fide.com,chessbase.com"
 
                 // 2. Llamada a la API con los dominios incluidos
@@ -226,15 +225,13 @@ class InicioFragment : Fragment() {
                     query = queryBusqueda,
                     apiKey = apiKey,
                     language = idiomaApi,
-                    sortBy = "publishedAt",   // Traerá lo más reciente
-                    domains = dominiosAjedrez // <-- EL FILTRO MÁGICO
+                    sortBy = "publishedAt",
+                    domains = dominiosAjedrez
                 )
 
                 withContext(Dispatchers.Main) {
                     // Verificamos que el fragmento siga vivo antes de tocar la vista
                     if (isAdded && _binding != null && respuesta.status == "ok") {
-
-                        // 3. Tu filtro original intacto: asegurarnos de que tengan imagen y texto
                         val noticiasLimpias = respuesta.articles.filter {
                             !it.urlToImage.isNullOrEmpty() && !it.description.isNullOrEmpty()
                         }
