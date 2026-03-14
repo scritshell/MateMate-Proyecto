@@ -84,6 +84,10 @@ class ChessBoardFragment : Fragment() {
     private var lastShakeTime = 0L
     private var shakeListener: SensorEventListener? = null
 
+    // MULTIMEDIA
+    private var moveSound: android.media.MediaPlayer? = null
+    private var captureSound: android.media.MediaPlayer? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentChessBoardBinding.inflate(inflater, container, false)
         return binding.root
@@ -96,6 +100,8 @@ class ChessBoardFragment : Fragment() {
         setupUI()
         setupTimers()
         initializeGameLogic()
+        moveSound = android.media.MediaPlayer.create(requireContext(), R.raw.move)
+        captureSound = android.media.MediaPlayer.create(requireContext(), R.raw.capture)
 
         when (gameMode) {
             GameMode.APERTURA -> loadOpening(arguments?.getString("secuenciaMovimientos") ?: "")
@@ -220,14 +226,11 @@ class ChessBoardFragment : Fragment() {
         val san = move.toString()
         val moveCount = chessBoard.moveCounter
         val isWhite = chessBoard.sideToMove == Side.WHITE
-
-        // Ejecutamos la jugada
+        val esCaptura = chessBoard.getPiece(move.to) != Piece.NONE
+        reproducirSonidoMovimiento(esCaptura)
         chessBoard.doMove(move)
 
-        // Limpiamos el futuro si hacemos un movimiento nuevo
         movimientosDeshechos.clear()
-
-        // Repintamos el tablero
         boardAdapter.updateBoard(chessBoard)
         deseleccionar()
 
@@ -578,10 +581,28 @@ class ChessBoardFragment : Fragment() {
         }
     }
 
+    private fun reproducirSonidoMovimiento(esCaptura: Boolean) {
+        try {
+            if (esCaptura) {
+                captureSound?.seekTo(0)
+                captureSound?.start()
+            } else {
+                moveSound?.seekTo(0)
+                moveSound?.start()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         shakeListener?.let { sensorManager.unregisterListener(it) }
         timerWhite?.cancel(); timerBlack?.cancel()
+        moveSound?.release()
+        moveSound = null
+        captureSound?.release()
+        captureSound = null
         if (gameMode == GameMode.LIBRE) stockfishClient.close()
         _binding = null
     }

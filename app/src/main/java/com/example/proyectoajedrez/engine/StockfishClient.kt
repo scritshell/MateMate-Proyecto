@@ -27,32 +27,35 @@ class StockfishClient(private val context: Context) {
 
         // A. Copiar y dar permisos
         try {
-            // Copia forzosa para evitar archivos corruptos
+            if (stockfishFile.exists()) {
+                stockfishFile.delete()
+            }
+            // Copia forzosa desde assets
             context.assets.open(BINARY_NAME).use { inputStream ->
                 FileOutputStream(stockfishFile).use { outputStream ->
                     inputStream.copyTo(outputStream)
                 }
             }
 
-            // Permisos de ejecución (Intento nativo Java)
-            val success = stockfishFile.setExecutable(true, false)
-            Log.d(TAG, "Permisos de ejecución otorgados: $success")
+            // Permisos de ejecución absolutos (Java)
+            stockfishFile.setExecutable(true, false)
+            stockfishFile.setReadable(true, false)
+            stockfishFile.setWritable(true, false)
 
-            // Permisos de ejecución (Fallback Linux por si falla el anterior)
-            if (!success) {
-                Runtime.getRuntime().exec("chmod 744 ${stockfishFile.absolutePath}").waitFor()
-            }
+            Log.d(TAG, "Permisos de ejecución otorgados por Java")
+
+            // Permisos de ejecución absolutos (Linux)
+            Runtime.getRuntime().exec("chmod 777 ${stockfishFile.absolutePath}").waitFor()
 
         } catch (e: Exception) {
             Log.e(TAG, "Error copiando Stockfish", e)
         }
 
-        // B. Arrancar el proceso (SOLO UNA VEZ)
+        // B. Arrancar el proceso
         try {
             val processBuilder = ProcessBuilder(stockfishFile.absolutePath)
             processBuilder.redirectErrorStream(true) // Unificar errores y salida estándar
 
-            // ¡ARRANCAMOS!
             process = processBuilder.start()
 
             // Configuramos los canales de comunicación
@@ -61,10 +64,8 @@ class StockfishClient(private val context: Context) {
                 writer = OutputStreamWriter(proc.outputStream)
 
                 Log.d(TAG, "¡MOTOR STOCKFISH ARRANCADO!")
-                sendCommand("uci") // Saludo inicial al protocolo UCI
-            } ?: run {
+                sendCommand("uci")
                 Log.e(TAG, "Error: El objeto Process es nulo")
-                throw IllegalStateException("No se pudo iniciar Stockfish")
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error iniciando el proceso", e)
