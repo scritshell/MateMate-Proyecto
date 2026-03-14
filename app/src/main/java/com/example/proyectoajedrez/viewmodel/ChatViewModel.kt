@@ -101,7 +101,6 @@ class ChatViewModel : ViewModel() {
                         "imageUrl" to publicImageUrl,
                         "timestamp" to com.google.firebase.firestore.FieldValue.serverTimestamp()
                     )
-
                     db.collection("chess_chat").document("general").collection("messages").add(message)
                 } else {
                     android.util.Log.e("ChatViewModel", "Error de ImgBB: Falló la subida")
