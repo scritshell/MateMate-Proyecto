@@ -64,7 +64,7 @@ class ChatViewModel : ViewModel() {
         )
 
         db.collection("chess_chat").document("general").collection("messages").add(message)
-        _inputText.value = "" // Limpiar el campo tras enviar
+        _inputText.value = ""
     }
 
     fun sendImageMessage(context: Context, uri: Uri) {
