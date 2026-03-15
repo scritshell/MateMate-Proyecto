@@ -54,7 +54,8 @@
     <string name="explorer_label_error">Error al conectar con Lichess.</string>
 
     <string name="label_tiempo">Tiempo: </string>
-    <string name="label_dificultad_ia">Nivel Stockfish: %1$d</string> <string name="label_profundidad">Profundidad: %1$d</string>
+    <string name="label_dificultad_ia">Nivel Stockfish: %1$d</string>
+    <string name="label_profundidad">Profundidad: %1$d</string>
 
     <string name="titulo_puzzleDiario">Puzzle del Día</string>
     <string name="subtitulo_puzzleDiario">Mejora tu nivel con el reto oficial de Lichess</string>
@@ -131,4 +132,5 @@
     <string name="config_nivel_ia">Nivel Stockfish:</string>
     <string name="btn_jugar_ahora">JUGAR AHORA</string>
     <string name="btn_google_signin">Entrar con Google</string>
+    <string name="menu_mapa">Clubes Cercanos</string>
 </resources>

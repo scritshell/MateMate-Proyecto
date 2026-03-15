@@ -41,6 +41,12 @@
             android:id="@+id/chessBoardFragment"
             android:icon="@android:drawable/ic_menu_rotate"
             android:title="@string/menu_practica" />
+
+        <!-- Mapa - Mapa de clubes de ajedrez -->
+        <item
+            android:id="@+id/nav_map"
+            android:icon="@android:drawable/ic_dialog_map"
+            android:title="@string/menu_mapa" />
     </group>
 
 </menu>

@@ -102,4 +102,10 @@
         android:label="@string/titulo_ajustes"
         tools:layout="@layout/fragment_settings" />
 
+    <!-- Fragmento del mapa -->
+    <fragment
+        android:id="@+id/nav_map"
+        android:name="com.example.proyectoajedrez.fragments.MapFragment"
+        android:label="Clubes Cercanos" />
+
 </navigation>
