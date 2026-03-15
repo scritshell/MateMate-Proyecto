@@ -100,6 +100,7 @@ class ChessBoardFragment : Fragment() {
         setupUI()
         setupTimers()
         initializeGameLogic()
+        setupShakeSensor()
         moveSound = android.media.MediaPlayer.create(requireContext(), R.raw.move)
         captureSound = android.media.MediaPlayer.create(requireContext(), R.raw.capture)
 
