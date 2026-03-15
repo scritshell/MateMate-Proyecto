@@ -15,16 +15,10 @@ import com.example.proyectoajedrez.R
 import com.example.proyectoajedrez.databinding.ActivityMainBinding
 import com.example.proyectoajedrez.fragments.GameSetupDialogFragment
 import com.example.proyectoajedrez.fragments.LoginDialogFragment
-import android.hardware.Sensor
-import android.hardware.SensorEvent
-import android.hardware.SensorEventListener
-import android.hardware.SensorManager
-import androidx.appcompat.app.AppCompatDelegate
-
 
 // El contenedor principal del proyecto. Patrón utilizado: Single Activity Architecture.
 
-class   MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
 
     // Configuración para la barra de la app con Navigation Component
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -34,11 +28,6 @@ class   MainActivity : AppCompatActivity() {
 
     // Gestor de sesión de usuario
     private lateinit var session: SessionManager
-
-    // Sensores
-    private lateinit var sensorManager: SensorManager
-    private var lightSensor: Sensor? = null
-    private var lightSensorListener: SensorEventListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,6 +52,7 @@ class   MainActivity : AppCompatActivity() {
                 R.id.aperturasFragment,
                 R.id.puzzleDiarioFragment,
                 R.id.blocNotasFragment,
+                R.id.nav_map, // Aseguramos que el mapa esté en el top-level si lo deseas
                 R.id.socialFragment
             ),
             binding.drawerLayout
@@ -88,12 +78,8 @@ class   MainActivity : AppCompatActivity() {
                 // INTERCEPTAMOS LA NAVEGACIÓN A PRÁCTICA LIBRE.
                 R.id.chessBoardFragment -> {
                     // En lugar de navegar directo, mostramos diálogo
-                    // Con eso no se navega directamente al tablero.
                     val dialog = GameSetupDialogFragment { modo, side, dif, tiempo ->
 
-                        // El Callback
-                        // Teniendo los datos ya elegidos por parte del usuario, se envian
-                        // usanod Bundle.
                         val bundle = Bundle().apply {
                             putString("modo", modo)          // "libre" o "local_2p"
                             putString("side", side)          // "WHITE", "BLACK" o "BOTH"
@@ -112,7 +98,7 @@ class   MainActivity : AppCompatActivity() {
                 }
 
                 else -> {
-                    // Navegación normal para otros fragments (Aperturas, Tácticas...)
+                    // Navegación normal para otros fragments
                     navController.popBackStack(R.id.inicioFragment, false)
                     navController.navigate(item.itemId)
                     true
@@ -133,43 +119,6 @@ class   MainActivity : AppCompatActivity() {
 
         // Verificar el estado de login al iniciar
         checkLoginStatus()
-
-        // Inicializamos el sensor de luz dentro del onCreate
-        setupLightSensor()
-
-    }
-
-    private fun setupLightSensor() {
-        sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
-        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)
-
-        lightSensorListener = object : SensorEventListener {
-            override fun onSensorChanged(event: SensorEvent) {
-                val lux = event.values[0]
-                val deberiaSerOscuro = lux < 10f // Menos de 10 lux = oscuridad
-                val esOscuroActualmente = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
-
-                if (deberiaSerOscuro && !esOscuroActualmente) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                } else if (!deberiaSerOscuro && esOscuroActualmente) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                }
-            }
-            override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        lightSensorListener?.let {
-            sensorManager.registerListener(it, lightSensor, SensorManager.SENSOR_DELAY_NORMAL)
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        // Apagamos el sensor al minimizar la app
-        lightSensorListener?.let { sensorManager.unregisterListener(it) }
     }
 
     // Verificar si el usuario está logueado
@@ -219,7 +168,7 @@ class   MainActivity : AppCompatActivity() {
             R.id.action_logout -> {
                 session.logoutUser() // Cerrar sesión
                 actualizarMenu()     // Actualizar toolbar
-                mostrarLoginDialog() // Pedire el login nuevamente.
+                mostrarLoginDialog() // Pedir el login nuevamente.
                 Toast.makeText(this, "Sesión cerrada", Toast.LENGTH_SHORT).show()
                 true
             }
@@ -233,31 +182,9 @@ class   MainActivity : AppCompatActivity() {
         }
     }
 
-
-
     // Manejar botón de navegación hacia arriba
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 }
-
-/*
-* TODO: GLOBAL
-* IDEAS: Paso 1: El Puzzle Diario : COMPLETADO <=================================
-* Sustituir los puzzles estáticos por el endpoint /api/puzzle/daily.
-* Implementación de Retrofit para manejar el JSON dinámico.
-* Objetivo: Que el tablero se inicialice cada día con un reto nuevo y real.
-* -------------------------------------------------------------------------
-* Paso 2: Explorador de Aperturas (Análisis Real) COMPLETADO <=================================
-* Consumo de la API /masters enviando el FEN actual tras cada movimiento.
-* Añadir un RecyclerView que muestre jugadas probables
-* y porcentajes de victoria de Grandes Maestros.
-* Objetivo: Convertir el modo libre en una herramienta de estudio de alto nivel.
-* --------------------------------------------------------------------------
-* Paso 3: Sincronización de Perfil
-* Mostrar ELO real y estadísticas en el InicioFragment.
-* Objetivo: Gamificación y personalización real de la cuenta del usuario, que no sea estatico
-*
-* TODO EXTRA: Meter personalizacion de skin de las piezas.
-* */
