@@ -207,20 +207,22 @@ class InicioFragment : Fragment() {
 
     // Obtener noticias de ajedrez exclusivas desde News API
     private fun cargarNoticias() {
-        // Usamos viewLifecycleOwner.lifecycleScope porque es más seguro en Fragmentos
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val apiKey = BuildConfig.NEWS_API_KEY
                 val idiomaActual = java.util.Locale.getDefault().language
 
-                // Mantenemos tu lógica de idiomas original
-                val queryBusqueda = if (idiomaActual == "en") "+chess" else "+ajedrez"
+                // ✅ Query más específica con términos relacionados
+                val queryBusqueda = if (idiomaActual == "en") {
+                    "chess AND (tournament OR grandmaster OR opening OR tactics OR FIDE OR Carlsen OR Kasparov)"
+                } else {
+                    "ajedrez AND (torneo OR gran maestro OR apertura OR táctica OR FIDE OR partida)"
+                }
                 val idiomaApi = if (idiomaActual == "en") "en" else "es"
 
-                // 1. Definimos los dominios de confianza.
+                // ✅ Dominios de confianza mantenidos (buena decisión previa)
                 val dominiosAjedrez = "chess.com,lichess.org,chess24.com,fide.com,chessbase.com"
 
-                // 2. Llamada a la API con los dominios incluidos
                 val respuesta = RetrofitClient.instance.getChessNews(
                     query = queryBusqueda,
                     apiKey = apiKey,
@@ -230,10 +232,22 @@ class InicioFragment : Fragment() {
                 )
 
                 withContext(Dispatchers.Main) {
-                    // Verificamos que el fragmento siga vivo antes de tocar la vista
                     if (isAdded && _binding != null && respuesta.status == "ok") {
-                        val noticiasLimpias = respuesta.articles.filter {
-                            !it.urlToImage.isNullOrEmpty() && !it.description.isNullOrEmpty()
+                        val noticiasLimpias = respuesta.articles.filter { articulo ->
+                            // Filtro adicional para mayor precisión
+                            val textoCompleto = "${articulo.title} ${articulo.description}".lowercase()
+                            val terminosAjedrez = if (idiomaActual == "en") {
+                                listOf("chess", "grandmaster", "tournament", "checkmate",
+                                    "opening", "tactics", "fide", "blitz", "puzzle")
+                            } else {
+                                listOf("ajedrez", "gran maestro", "torneo", "jaque",
+                                    "apertura", "táctica", "fide", "partida")
+                            }
+                            // El artículo debe contener al menos un término de ajedrez
+                            // Y tener imagen y descripción
+                            !articulo.urlToImage.isNullOrEmpty() &&
+                                    !articulo.description.isNullOrEmpty() &&
+                                    terminosAjedrez.any { termino -> textoCompleto.contains(termino) }
                         }
 
                         val adapter = NewsAdapter(noticiasLimpias)

@@ -135,4 +135,14 @@
     <string name="btn_jugar_ahora">PLAY NOW</string>
     <string name="btn_google_signin">Sign in with Google</string>
     <string name="menu_mapa">Nearby Clubs</string>
+    <string name="forum_nuevo_post">New post</string>
+    <string name="forum_titulo_pantalla">Forum</string>
+    <string name="forum_sin_posts">Be the first to post something</string>
+    <string name="forum_titulo_dialogo">New Post</string>
+    <string name="forum_hint_titulo">Title</string>
+    <string name="forum_hint_contenido">What do you want to share?</string>
+    <string name="forum_label_categoria">Category</string>
+    <string name="forum_btn_publicar">Publish</string>
+    <string name="forum_btn_cancelar">Cancel</string>
+    <string name="forum_error_campos">Title and content are required</string>
 </resources>

@@ -34,15 +34,16 @@ class SettingsFragment : Fragment() {
 
     // Configurar interruptor de modo oscuro/claro
     private fun setupDarkMode() {
-        val currentNightMode = AppCompatDelegate.getDefaultNightMode()
-        binding.switchDarkMode.isChecked = currentNightMode == AppCompatDelegate.MODE_NIGHT_YES
+        val prefs = requireContext().getSharedPreferences("AjedrezPrefs", Context.MODE_PRIVATE)
+        val modoOscuroActivo = prefs.getBoolean("modo_oscuro", false)
+        binding.switchDarkMode.isChecked = modoOscuroActivo
 
         binding.switchDarkMode.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            }
+            prefs.edit().putBoolean("modo_oscuro", isChecked).apply()
+            AppCompatDelegate.setDefaultNightMode(
+                if (isChecked) AppCompatDelegate.MODE_NIGHT_YES
+                else AppCompatDelegate.MODE_NIGHT_NO
+            )
         }
     }
 

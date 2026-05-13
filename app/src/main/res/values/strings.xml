@@ -9,6 +9,7 @@
     <string name="menu_bloc_notas">Bloc de Notas</string>
     <string name="menu_comunidad">Comunidad</string>
     <string name="menu_practica">Práctica Libre</string>
+    <string name="menu_mapa">Clubes Cercanos</string>
 
     <string name="titulo_ajustes">Ajustes</string>
     <string name="apariencia">Apariencia</string>
@@ -132,5 +133,14 @@
     <string name="config_nivel_ia">Nivel Stockfish:</string>
     <string name="btn_jugar_ahora">JUGAR AHORA</string>
     <string name="btn_google_signin">Entrar con Google</string>
-    <string name="menu_mapa">Clubes Cercanos</string>
+    <string name="forum_nuevo_post">Nuevo post</string>
+    <string name="forum_titulo_pantalla">Foro</string>
+    <string name="forum_sin_posts">Sé el primero en publicar algo</string>
+    <string name="forum_titulo_dialogo">Nuevo Post</string>
+    <string name="forum_hint_titulo">Título</string>
+    <string name="forum_hint_contenido">¿Qué quieres compartir?</string>
+    <string name="forum_label_categoria">Categoría</string>
+    <string name="forum_btn_publicar">Publicar</string>
+    <string name="forum_btn_cancelar">Cancelar</string>
+    <string name="forum_error_campos">El título y el contenido son obligatorios</string>
 </resources>

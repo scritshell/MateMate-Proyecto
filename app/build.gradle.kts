@@ -115,9 +115,4 @@ dependencies {
     // --- IMÁGENES Y STORAGE (RA3) ---
     implementation("io.coil-kt:coil-compose:2.6.0")
 
-    // --- GOOGLE MAPS ---
-    implementation("com.google.maps.android:maps-compose:4.3.3")
-    implementation("com.google.android.gms:play-services-maps:18.2.0")
-    implementation("com.google.android.gms:play-services-location:21.2.0")
-
 }
