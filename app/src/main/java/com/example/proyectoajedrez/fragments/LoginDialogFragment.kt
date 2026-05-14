@@ -76,7 +76,7 @@ class LoginDialogFragment : DialogFragment() {
             if (inputEmailUser.isNotEmpty() && password.isNotEmpty()) {
                 if (esModoRegistro) {
                     if (username.isEmpty()) {
-                        Toast.makeText(context, "El nombre de usuario es obligatorio", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, getString(R.string.msg_username_obligatorio), Toast.LENGTH_SHORT).show()
                     } else {
                         verificarYRegistrar(inputEmailUser, password, username)
                     }
@@ -84,7 +84,7 @@ class LoginDialogFragment : DialogFragment() {
                     loginInteligente(inputEmailUser, password)
                 }
             } else {
-                Toast.makeText(context, "Por favor, rellena los campos", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.msg_rellena_campos), Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -133,11 +133,11 @@ class LoginDialogFragment : DialogFragment() {
                             iniciarSesionEnApp(nombreParaMostrar)
 
                         } else {
-                            Toast.makeText(context, "Error con Google: ${authTask.exception?.message}", Toast.LENGTH_LONG).show()
+                            Toast.makeText(context, getString(R.string.msg_error_google, authTask.exception?.message ?: ""), Toast.LENGTH_LONG).show()
                         }
                     }
             } catch (e: ApiException) {
-                Toast.makeText(context, "Google Sign-In cancelado", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.msg_google_cancelado), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -170,7 +170,7 @@ class LoginDialogFragment : DialogFragment() {
             .get()
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
-                    Toast.makeText(context, "Ese nombre de usuario ya existe", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, getString(R.string.msg_usuario_existe), Toast.LENGTH_SHORT).show()
                 } else {
                     auth.createUserWithEmailAndPassword(email, pass)
                         .addOnCompleteListener { task ->
@@ -185,10 +185,10 @@ class LoginDialogFragment : DialogFragment() {
                                 if (userId != null) {
                                     db.collection("usuarios").document(userId).set(datosUsuario)
                                 }
-                                Toast.makeText(context, "¡Cuenta creada!", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, getString(R.string.msg_cuenta_creada), Toast.LENGTH_SHORT).show()
                                 iniciarSesionEnApp(username)
                             } else {
-                                Toast.makeText(context, "Error: ${task.exception?.message}", Toast.LENGTH_LONG).show()
+                                Toast.makeText(context, getString(R.string.msg_error_login, task.exception?.message ?: ""), Toast.LENGTH_LONG).show()
                             }
                         }
                 }
@@ -202,7 +202,7 @@ class LoginDialogFragment : DialogFragment() {
                     if (task.isSuccessful) {
                         buscarUsernameYEntrar(auth.currentUser?.uid)
                     } else {
-                        Toast.makeText(context, "Login fallido: ${task.exception?.message}", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, getString(R.string.msg_login_fallido, task.exception?.message ?: ""), Toast.LENGTH_LONG).show()
                     }
                 }
         } else {
@@ -211,7 +211,7 @@ class LoginDialogFragment : DialogFragment() {
                 .get()
                 .addOnSuccessListener { documents ->
                     if (documents.isEmpty) {
-                        Toast.makeText(context, "Usuario no encontrado", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, getString(R.string.msg_usuario_no_encontrado), Toast.LENGTH_SHORT).show()
                     } else {
                         val email = documents.documents[0].getString("email")
                         if (email != null) {
@@ -220,14 +220,14 @@ class LoginDialogFragment : DialogFragment() {
                                     if (task.isSuccessful) {
                                         iniciarSesionEnApp(input)
                                     } else {
-                                        Toast.makeText(context, "Contraseña incorrecta", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(context, getString(R.string.msg_password_incorrecta), Toast.LENGTH_SHORT).show()
                                     }
                                 }
                         }
                     }
                 }
                 .addOnFailureListener {
-                    Toast.makeText(context, "Error de conexión", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, getString(R.string.msg_error_conexion), Toast.LENGTH_SHORT).show()
                 }
         }
     }
@@ -245,7 +245,7 @@ class LoginDialogFragment : DialogFragment() {
         val session = SessionManager(requireContext())
         session.createLoginSession(nombre)
         (activity as? MainActivity)?.actualizarMenu()
-        Toast.makeText(context, "Bienvenido, $nombre", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, getString(R.string.msg_bienvenida, nombre), Toast.LENGTH_SHORT).show()
         dismiss()
     }
 

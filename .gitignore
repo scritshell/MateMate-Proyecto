@@ -13,3 +13,9 @@
 .externalNativeBuild
 .cxx
 local.properties
+app/google-services.json
+PROJECT_SPEC.md
+.kotlin/errors/errors-1773402730983.log
+.kotlin/errors/errors-1768548287307.log
+proyecto_ajedrez_explicacion.md
+errores.txt

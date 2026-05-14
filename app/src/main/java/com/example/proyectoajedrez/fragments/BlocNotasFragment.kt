@@ -184,7 +184,7 @@ class BlocNotasFragment : Fragment() {
             .setPositiveButton("Sí, borrar") { _, _ ->
                 db.collection("notas").document(id).delete()
                     .addOnSuccessListener {
-                        Toast.makeText(context, "Nota eliminada", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, getString(R.string.msg_nota_eliminada), Toast.LENGTH_SHORT).show()
                     }
             }
             .setNegativeButton("Cancelar", null)

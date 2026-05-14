@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.proyectoajedrez.R
 import com.example.proyectoajedrez.databinding.FragmentPuzzleDiarioBinding
 import com.example.proyectoajedrez.network.LichessClient
+import com.example.proyectoajedrez.utils.PrefKeys
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -41,15 +42,15 @@ class PuzzleDiarioFragment : Fragment() {
     }
 
     private fun cargarEstadisticas() {
-        // IMPORTANTE: Usar el mismo nombre "AjedrezPrefs"
-        val sharedPref = requireContext().getSharedPreferences("AjedrezPrefs", Context.MODE_PRIVATE)
+        // IMPORTANTE: Usar el mismo nombre de preferencias
+        val sharedPref = requireContext().getSharedPreferences(PrefKeys.AJEDREZ_PREFS, Context.MODE_PRIVATE)
 
         // --- A. RACHA LOCAL ---
-        val racha = sharedPref.getInt("puzzle_streak_days", 0)
+        val racha = sharedPref.getInt(PrefKeys.KEY_PUZZLE_STREAK_DAYS, 0)
         binding.tvRacha.text = racha.toString()
 
         // --- B. RESUELTOS TOTALES ---
-        val usuarioLichess = sharedPref.getString("lichess_username", null)
+        val usuarioLichess = sharedPref.getString(PrefKeys.KEY_LICHESS_USERNAME, null)
 
         if (usuarioLichess != null) {
             lifecycleScope.launch(Dispatchers.IO) {
@@ -57,7 +58,7 @@ class PuzzleDiarioFragment : Fragment() {
                     val userResponse = LichessClient.instance.getUserPublicData(usuarioLichess)
                     // Sumamos los de Lichess + los que haya hecho en local en tu app
                     val totalLichess = userResponse.perfs?.puzzle?.games ?: 0
-                    val localSolved = sharedPref.getInt("local_puzzles_solved", 0)
+                    val localSolved = sharedPref.getInt(PrefKeys.KEY_LOCAL_PUZZLES_SOLVED, 0)
 
                     withContext(Dispatchers.Main) {
                         binding.tvTotalResueltos.text = (totalLichess + localSolved).toString()
@@ -72,7 +73,7 @@ class PuzzleDiarioFragment : Fragment() {
     }
 
     private fun mostrarDatosLocales(sharedPref: android.content.SharedPreferences) {
-        val localSolved = sharedPref.getInt("local_puzzles_solved", 0)
+        val localSolved = sharedPref.getInt(PrefKeys.KEY_LOCAL_PUZZLES_SOLVED, 0)
         binding.tvTotalResueltos.text = localSolved.toString()
     }
 

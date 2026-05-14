@@ -31,8 +31,6 @@ android {
 
         manifestPlaceholders["MAPS_API_KEY"] = localProperties.getProperty("MAPS_API_KEY") ?: ""
 
-        val imgbbKey = localProperties.getProperty("IMGBB_API_KEY") ?: ""
-        buildConfigField("String", "IMGBB_API_KEY", "\"$imgbbKey\"")
     }
 
     buildTypes {
@@ -111,8 +109,5 @@ dependencies {
     implementation("com.google.maps.android:maps-compose:4.3.3")
     implementation("com.google.android.gms:play-services-maps:19.0.0")
     implementation("com.google.android.gms:play-services-location:21.3.0")
-
-    // --- IMÁGENES Y STORAGE (RA3) ---
-    implementation("io.coil-kt:coil-compose:2.6.0")
 
 }

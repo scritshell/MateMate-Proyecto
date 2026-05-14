@@ -174,7 +174,7 @@ class ChessBoardFragment : Fragment() {
 
             // BLOQUEO MODO REVISIÓN: No deja tocar piezas en el pasado
             if (movimientosDeshechos.isNotEmpty()) {
-                Toast.makeText(context, "Modo revisión: Ve al último movimiento (>) para seguir jugando", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.msg_modo_revison), Toast.LENGTH_SHORT).show()
                 return@setOnItemClickListener
             }
 
@@ -571,7 +571,7 @@ class ChessBoardFragment : Fragment() {
                     lastShakeTime = ahora
                     requireActivity().runOnUiThread {
                         undoMove()
-                        Toast.makeText(requireContext(), "↩ Jugada deshecha por agitación", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), getString(R.string.msg_jugada_deshecha), Toast.LENGTH_SHORT).show()
                     }
                 }
             }

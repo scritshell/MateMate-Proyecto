@@ -13,6 +13,7 @@ import android.widget.ImageView
 import com.example.proyectoajedrez.R
 import com.example.proyectoajedrez.model.ChessPiece
 import com.example.proyectoajedrez.model.ChessSquare
+import com.example.proyectoajedrez.utils.PrefKeys
 import com.github.bhlangonijr.chesslib.File
 import com.github.bhlangonijr.chesslib.Rank
 import com.github.bhlangonijr.chesslib.Board
@@ -27,7 +28,7 @@ class ChessBoardAdapter(private val context: Context) : BaseAdapter() {
         ChessSquare(col = it % 8, row = it / 8)
     }
 
-    private val sharedPref = context.getSharedPreferences("AjedrezPrefs", Context.MODE_PRIVATE)
+    private val sharedPref = context.getSharedPreferences(PrefKeys.AJEDREZ_PREFS, Context.MODE_PRIVATE)
 
     private var selectedPosition: Int = -1
     private var legalMovePositions: List<Int> = emptyList()
@@ -128,7 +129,7 @@ class ChessBoardAdapter(private val context: Context) : BaseAdapter() {
 
     // SISTEMA DE SKINS
     private fun obtenerDibujoPieza(piece: ChessPiece): Int {
-        val usarSkinAlternativa = sharedPref.getBoolean("usar_skin_alt", false)
+        val usarSkinAlternativa = sharedPref.getBoolean(PrefKeys.KEY_USAR_SKIN_ALT, false)
 
         return if (usarSkinAlternativa) {
             // --- SKIN ALTERNATIVA ---

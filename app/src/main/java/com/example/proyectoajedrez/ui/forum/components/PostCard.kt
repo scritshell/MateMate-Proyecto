@@ -1,4 +1,4 @@
-package com.example.proyectoajedrez.ui.forum
+package com.example.proyectoajedrez.ui.forum.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons

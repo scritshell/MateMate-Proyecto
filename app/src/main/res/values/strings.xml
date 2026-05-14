@@ -117,11 +117,6 @@
     <string name="sin_notas">No hay notas aún</string>
     <string name="crea_primera_nota">Crea tu primera nota para empezar</string>
 
-    <string name="titulo_comunidad">Comunidad</string>
-    <string name="tab_feed">Feed</string>
-    <string name="tab_amigos">Amigos</string>
-    <string name="tab_mensajes">Messages</string>
-
     <string name="config_titulo">Configurar Partida</string>
     <string name="config_modo">Modo de Juego</string>
     <string name="modo_vs_ia">Contra IA</string>
@@ -143,4 +138,24 @@
     <string name="forum_btn_publicar">Publicar</string>
     <string name="forum_btn_cancelar">Cancelar</string>
     <string name="forum_error_campos">El título y el contenido son obligatorios</string>
+
+    <!-- Toast messages (notificaciones) -->
+    <string name="msg_sesion_cerrada">Sesión cerrada</string>
+    <string name="msg_nota_eliminada">Nota eliminada</string>
+    <string name="msg_estilo_actualizado">Estilo de piezas actualizado</string>
+    <string name="msg_usuario_lichess_guardado">Usuario de Lichess guardado</string>
+    <string name="msg_modo_revison">Modo revisión: Ve al último movimiento (>) para seguir jugando</string>
+    <string name="msg_jugada_deshecha">↩ Jugada deshecha por agitación</string>
+    <string name="msg_username_obligatorio">El nombre de usuario es obligatorio</string>
+    <string name="msg_rellena_campos">Por favor, rellena los campos</string>
+    <string name="msg_error_google">Error con Google: %1$s</string>
+    <string name="msg_google_cancelado">Google Sign-In cancelado</string>
+    <string name="msg_usuario_existe">Ese nombre de usuario ya existe</string>
+    <string name="msg_cuenta_creada">¡Cuenta creada!</string>
+    <string name="msg_error_login">Error: %1$s</string>
+    <string name="msg_login_fallido">Login fallido: %1$s</string>
+    <string name="msg_usuario_no_encontrado">Usuario no encontrado</string>
+    <string name="msg_password_incorrecta">Contraseña incorrecta</string>
+    <string name="msg_error_conexion">Error de conexión</string>
+    <string name="msg_bienvenida">Bienvenido, %1$s</string>
 </resources>

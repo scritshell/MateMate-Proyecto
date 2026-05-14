@@ -11,6 +11,7 @@ import androidx.core.os.LocaleListCompat
 import androidx.fragment.app.Fragment
 import com.example.proyectoajedrez.R
 import com.example.proyectoajedrez.databinding.FragmentSettingsBinding
+import com.example.proyectoajedrez.utils.PrefKeys
 
 // Fragmento de configuración para ajustes de la aplicación
 class SettingsFragment : Fragment() {
@@ -34,12 +35,12 @@ class SettingsFragment : Fragment() {
 
     // Configurar interruptor de modo oscuro/claro
     private fun setupDarkMode() {
-        val prefs = requireContext().getSharedPreferences("AjedrezPrefs", Context.MODE_PRIVATE)
-        val modoOscuroActivo = prefs.getBoolean("modo_oscuro", false)
+        val prefs = requireContext().getSharedPreferences(PrefKeys.AJEDREZ_PREFS, Context.MODE_PRIVATE)
+        val modoOscuroActivo = prefs.getBoolean(PrefKeys.KEY_MODO_OSCURO, false)
         binding.switchDarkMode.isChecked = modoOscuroActivo
 
         binding.switchDarkMode.setOnCheckedChangeListener { _, isChecked ->
-            prefs.edit().putBoolean("modo_oscuro", isChecked).apply()
+            prefs.edit().putBoolean(PrefKeys.KEY_MODO_OSCURO, isChecked).apply()
             AppCompatDelegate.setDefaultNightMode(
                 if (isChecked) AppCompatDelegate.MODE_NIGHT_YES
                 else AppCompatDelegate.MODE_NIGHT_NO
@@ -70,16 +71,16 @@ class SettingsFragment : Fragment() {
 
     // ALTERNAR SKIN
     private fun setupSkins() {
-        val sharedPref = requireContext().getSharedPreferences("AjedrezPrefs", Context.MODE_PRIVATE)
+        val sharedPref = requireContext().getSharedPreferences(PrefKeys.AJEDREZ_PREFS, Context.MODE_PRIVATE)
 
-        binding.switchSkinAlt.isChecked = sharedPref.getBoolean("usar_skin_alt", false)
+        binding.switchSkinAlt.isChecked = sharedPref.getBoolean(PrefKeys.KEY_USAR_SKIN_ALT, false)
 
         binding.switchSkinAlt.setOnCheckedChangeListener { _, isChecked ->
             with(sharedPref.edit()) {
-                putBoolean("usar_skin_alt", isChecked)
+                putBoolean(PrefKeys.KEY_USAR_SKIN_ALT, isChecked)
                 apply()
             }
-            Toast.makeText(context, "Estilo de piezas actualizado", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, getString(R.string.msg_estilo_actualizado), Toast.LENGTH_SHORT).show()
         }
     }
 }

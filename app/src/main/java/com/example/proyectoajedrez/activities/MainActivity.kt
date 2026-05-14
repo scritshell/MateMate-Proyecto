@@ -169,7 +169,7 @@ class MainActivity : AppCompatActivity() {
                 session.logoutUser() // Cerrar sesión
                 actualizarMenu()     // Actualizar toolbar
                 mostrarLoginDialog() // Pedir el login nuevamente.
-                Toast.makeText(this, "Sesión cerrada", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.msg_sesion_cerrada), Toast.LENGTH_SHORT).show()
                 true
             }
             R.id.action_settings -> {

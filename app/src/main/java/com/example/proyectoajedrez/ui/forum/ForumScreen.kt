@@ -17,6 +17,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.proyectoajedrez.R
 import com.example.proyectoajedrez.data.repository.ForumRepositoryImpl
 import com.example.proyectoajedrez.ui.forum.components.ForumTopBar
+import com.example.proyectoajedrez.ui.forum.components.NuevoPostDialog
+import com.example.proyectoajedrez.ui.forum.components.PostCard
 import com.example.proyectoajedrez.viewmodel.ForumViewModel
 
 @Composable
@@ -24,8 +26,12 @@ fun ForumScreen() {
 
     val factory = remember {
         object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return ForumViewModel(ForumRepositoryImpl()) as T
+                if (modelClass.isAssignableFrom(ForumViewModel::class.java)) {
+                    return ForumViewModel(ForumRepositoryImpl()) as T
+                }
+                throw IllegalArgumentException("Unknown ViewModel class")
             }
         }
     }

@@ -2,24 +2,19 @@ package com.example.proyectoajedrez.activities
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.example.proyectoajedrez.utils.PrefKeys
 
 // Clase para gestionar la sesión de usuario usando SharedPreferences.
 class SessionManager(context: Context) {
     // SharedPreferences para almacenar datos de sesión persistentes
     // SharedPreferences servirá para almacenar datos en Android.
-    private val prefs: SharedPreferences = context.getSharedPreferences("MateMateSesion", Context.MODE_PRIVATE)
-
-    // Constantes para las claves de almacenamiento
-    companion object {
-        const val KEY_IS_LOGGED_IN = "is_logged_in"  // Estado de login
-        const val KEY_USERNAME = "username"          // Nombre de usuario
-    }
+    private val prefs: SharedPreferences = context.getSharedPreferences(PrefKeys.MATE_SESSION_PREFS, Context.MODE_PRIVATE)
 
     // Crear sesión de usuario después de login exitoso
     fun createLoginSession(username: String) {
         val editor = prefs.edit()
-        editor.putBoolean(KEY_IS_LOGGED_IN, true)  // Marcar como logueado
-        editor.putString(KEY_USERNAME, username)   // Guardar nombre de usuario
+        editor.putBoolean(PrefKeys.KEY_IS_LOGGED_IN, true)  // Marcar como logueado
+        editor.putString(PrefKeys.KEY_USERNAME, username)   // Guardar nombre de usuario
         editor.apply()  // Guardar cambios
     }
 
@@ -32,11 +27,11 @@ class SessionManager(context: Context) {
 
     // Verificar si hay una sesión activa
     fun isLoggedIn(): Boolean {
-        return prefs.getBoolean(KEY_IS_LOGGED_IN, false)  // Valor por defecto: false
+        return prefs.getBoolean(PrefKeys.KEY_IS_LOGGED_IN, false)  // Valor por defecto: false
     }
 
     // Obtener el nombre de usuario guardado
     fun getUsername(): String? {
-        return prefs.getString(KEY_USERNAME, null)  // Retorna null si no existe
+        return prefs.getString(PrefKeys.KEY_USERNAME, null)  // Retorna null si no existe
     }
 }

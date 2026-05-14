@@ -21,6 +21,7 @@ import com.example.proyectoajedrez.adapters.NewsAdapter
 import com.example.proyectoajedrez.model.LichessUserResponse
 import com.google.firebase.auth.FirebaseAuth
 import com.example.proyectoajedrez.BuildConfig
+import com.example.proyectoajedrez.utils.PrefKeys
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -72,7 +73,7 @@ class InicioFragment : Fragment() {
 
     private fun verificarYcargarDatosUsuario() {
         val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
-        val lichessUser = sharedPref.getString("lichess_username", null)
+        val lichessUser = sharedPref.getString(PrefKeys.KEY_LICHESS_USERNAME, null)
 
         if (lichessUser != null) {
             obtenerDatosLichess(lichessUser)
@@ -148,10 +149,10 @@ class InicioFragment : Fragment() {
     private fun guardarUsuarioLichess(username: String) {
         val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
         with(sharedPref.edit()) {
-            putString("lichess_username", username)
+            putString(PrefKeys.KEY_LICHESS_USERNAME, username)
             apply()
         }
-        Toast.makeText(context, "Usuario de Lichess guardado", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, getString(R.string.msg_usuario_lichess_guardado), Toast.LENGTH_SHORT).show()
     }
 
     private fun obtenerDatosLichess(username: String) {

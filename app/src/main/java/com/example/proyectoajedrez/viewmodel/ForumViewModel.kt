@@ -2,9 +2,9 @@ package com.example.proyectoajedrez.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.proyectoajedrez.domain.model.ForumCategory
 import com.example.proyectoajedrez.domain.model.ForumPost
 import com.example.proyectoajedrez.domain.repository.ForumRepository
-import com.example.proyectoajedrez.data.repository.ForumRepositoryImpl
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -39,7 +39,7 @@ class ForumViewModel(
         }
     }
 
-    fun crearPost(titulo: String, contenido: String, categoria: com.example.proyectoajedrez.domain.model.ForumCategory) {
+    fun crearPost(titulo: String, contenido: String, categoria: ForumCategory) {
         viewModelScope.launch {
             val post = ForumPost(title = titulo, content = contenido, category = categoria)
             repository.createPost(post).onFailure { e ->

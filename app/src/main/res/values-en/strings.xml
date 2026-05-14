@@ -109,12 +109,6 @@
     <string name="sin_notas">No notes yet</string>
     <string name="crea_primera_nota">Create your first note to start</string>
 
-    <string name="titulo_comunidad">Community</string>
-    <string name="tab_feed">Feed</string>
-    <string name="tab_amigos">Friends</string>
-    <string name="tab_mensajes">Messages</string>
-
-
     <string name="titulo_puzzleDiario">Daily Puzzle</string>
     <string name="subtitulo_puzzleDiario">Improve your level with Lichess official challenge</string>
     <string name="btn_jugar_puzzle">PLAY NOW</string>
@@ -145,4 +139,24 @@
     <string name="forum_btn_publicar">Publish</string>
     <string name="forum_btn_cancelar">Cancel</string>
     <string name="forum_error_campos">Title and content are required</string>
+
+    <!-- Toast messages (notifications) -->
+    <string name="msg_sesion_cerrada">Session closed</string>
+    <string name="msg_nota_eliminada">Note deleted</string>
+    <string name="msg_estilo_actualizado">Piece style updated</string>
+    <string name="msg_usuario_lichess_guardado">Lichess user saved</string>
+    <string name="msg_modo_revison">Review mode: Go to the last move (>) to continue playing</string>
+    <string name="msg_jugada_deshecha">↩ Move undone by shake</string>
+    <string name="msg_username_obligatorio">Username is required</string>
+    <string name="msg_rellena_campos">Please fill in the fields</string>
+    <string name="msg_error_google">Google error: %1$s</string>
+    <string name="msg_google_cancelado">Google Sign-In canceled</string>
+    <string name="msg_usuario_existe">That username already exists</string>
+    <string name="msg_cuenta_creada">Account created!</string>
+    <string name="msg_error_login">Error: %1$s</string>
+    <string name="msg_login_fallido">Login failed: %1$s</string>
+    <string name="msg_usuario_no_encontrado">User not found</string>
+    <string name="msg_password_incorrecta">Incorrect password</string>
+    <string name="msg_error_conexion">Connection error</string>
+    <string name="msg_bienvenida">Welcome, %1$s</string>
 </resources>

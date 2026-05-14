@@ -74,8 +74,7 @@
     <fragment
         android:id="@+id/socialFragment"
         android:name="com.example.proyectoajedrez.fragments.SocialFragment"
-        android:label="Comunidad"
-        tools:layout="@layout/fragment_social" />
+        android:label="Comunidad" />
 
     <!-- Fragmento principal del tablero de ajedrez -->
     <fragment
