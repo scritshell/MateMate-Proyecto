@@ -23,11 +23,20 @@ object PrefKeys {
     /** Nombre de usuario almacenado en sesión */
     const val KEY_USERNAME = "username"
     
+    /** UID de Firebase del usuario autenticado */
+    const val KEY_USER_UID = "user_uid"
+    
+    /** Rol del usuario (USER o ADMIN) */
+    const val KEY_USER_ROLE = "user_role"
+    
     
     // ==================== CLAVES DE PREFERENCIAS GENERALES ====================
     
     /** Indica si el modo oscuro está activado */
     const val KEY_MODO_OSCURO = "modo_oscuro"
+    
+    /** Idioma seleccionado (ej: "es", "en") */
+    const val KEY_IDIOMA = "idioma"
     
     /** Indica si se usa skin alternativo para las piezas de ajedrez */
     const val KEY_USAR_SKIN_ALT = "usar_skin_alt"
