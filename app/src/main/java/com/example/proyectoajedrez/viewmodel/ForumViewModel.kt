@@ -53,6 +53,14 @@ class ForumViewModel(
             repository.likePost(postId)
         }
     }
+    
+    fun eliminarPost(postId: String) {
+        viewModelScope.launch {
+            repository.deletePost(postId).onFailure { e ->
+                _uiState.update { it.copy(error = e.message) }
+            }
+        }
+    }
 
     fun limpiarError() {
         _uiState.update { it.copy(error = null) }

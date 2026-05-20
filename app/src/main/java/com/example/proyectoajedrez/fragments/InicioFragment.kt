@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.proyectoajedrez.R
 import com.example.proyectoajedrez.databinding.FragmentInicioBinding
 import com.example.proyectoajedrez.network.LichessClient
 import com.example.proyectoajedrez.network.RetrofitClient
@@ -23,6 +24,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.example.proyectoajedrez.BuildConfig
 import com.example.proyectoajedrez.utils.PrefKeys
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -36,6 +38,9 @@ class InicioFragment : Fragment() {
     // Instancias para autenticación y base de datos Firebase
     private val auth = FirebaseAuth.getInstance()
     private val db = FirebaseFirestore.getInstance()
+    
+    // Listener de Firestore para usuario (debe liberarse en onDestroyView)
+    private var firestoreListener: ListenerRegistration? = null
 
     private companion object {
         const val TAG = "InicioFragment"  // Etiqueta para logs
@@ -87,7 +92,7 @@ class InicioFragment : Fragment() {
 
         if (userId != null) {
             // Escuchar cambios en tiempo real del documento de usuario
-            db.collection("usuarios").document(userId)
+            firestoreListener = db.collection("usuarios").document(userId)
                 .addSnapshotListener { document, e ->
                     if (e != null) {
                         Log.e(TAG, "Error al escuchar datos de usuario", e)
@@ -132,8 +137,8 @@ class InicioFragment : Fragment() {
         container.addView(input)
 
         AlertDialog.Builder(requireContext())
-            .setTitle("Vincular Cuenta Lichess")
-            .setMessage("Introduce tu usuario para ver tu ELO real y estadísticas.")
+            .setTitle(getString(R.string.dialog_vincular_lichess_titulo))
+            .setMessage(getString(R.string.dialog_vincular_lichess_mensaje))
             .setView(container)
             .setPositiveButton("Guardar") { _, _ ->
                 val username = input.text.toString().trim()
@@ -263,6 +268,9 @@ class InicioFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        // Liberar listener de Firestore para evitar memory leaks
+        firestoreListener?.remove()
+        firestoreListener = null
         _binding = null
     }
 }

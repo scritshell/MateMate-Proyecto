@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
+import com.example.proyectoajedrez.R
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -71,13 +73,13 @@ fun MapScreen() {
 
         Marker(
             state = MarkerState(position = LatLng(40.4200, -3.7000)),
-            title = "Club Ajedrez Centro",
-            snippet = "Torneos todos los viernes a las 18:00"
+            title = stringResource(R.string.map_club_name_1),
+            snippet = stringResource(R.string.map_club_address_1)
         )
         Marker(
             state = MarkerState(position = LatLng(40.4100, -3.7150)),
-            title = "Peón Aislado",
-            snippet = "Clases para principiantes. ¡Únete!"
+            title = stringResource(R.string.map_club_name_2),
+            snippet = stringResource(R.string.map_club_address_2)
         )
     }
 }

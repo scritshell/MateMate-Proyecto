@@ -29,4 +29,22 @@ enum class ChessPiece(val drawableRes: Int) {
     // Propiedad que indica si la pieza es negra
     val isBlack: Boolean
         get() = this.name.startsWith("BLACK") // bcspn (ay noo)
+
+    companion object {
+        fun fromChessLibPiece(piece: com.github.bhlangonijr.chesslib.Piece): ChessPiece = when (piece) {
+            com.github.bhlangonijr.chesslib.Piece.WHITE_PAWN -> WHITE_PAWN
+            com.github.bhlangonijr.chesslib.Piece.WHITE_ROOK -> WHITE_ROOK
+            com.github.bhlangonijr.chesslib.Piece.WHITE_KNIGHT -> WHITE_KNIGHT
+            com.github.bhlangonijr.chesslib.Piece.WHITE_BISHOP -> WHITE_BISHOP
+            com.github.bhlangonijr.chesslib.Piece.WHITE_QUEEN -> WHITE_QUEEN
+            com.github.bhlangonijr.chesslib.Piece.WHITE_KING -> WHITE_KING
+            com.github.bhlangonijr.chesslib.Piece.BLACK_PAWN -> BLACK_PAWN
+            com.github.bhlangonijr.chesslib.Piece.BLACK_ROOK -> BLACK_ROOK
+            com.github.bhlangonijr.chesslib.Piece.BLACK_KNIGHT -> BLACK_KNIGHT
+            com.github.bhlangonijr.chesslib.Piece.BLACK_BISHOP -> BLACK_BISHOP
+            com.github.bhlangonijr.chesslib.Piece.BLACK_QUEEN -> BLACK_QUEEN
+            com.github.bhlangonijr.chesslib.Piece.BLACK_KING -> BLACK_KING
+            else -> EMPTY
+        }
+    }
 }

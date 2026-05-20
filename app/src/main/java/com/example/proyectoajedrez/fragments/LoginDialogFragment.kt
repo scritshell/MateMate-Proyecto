@@ -52,18 +52,18 @@ class LoginDialogFragment : DialogFragment() {
 
             if (esModoRegistro) {
                 // Configurar interfaz para registro
-                tvTitulo.text = "Crear Cuenta"
-                btnAccion.text = "Registrarse"
-                tvCambiarModo.text = "¿Ya tienes cuenta? Inicia Sesión"
+                tvTitulo.text = getString(R.string.login_crear_cuenta)
+                btnAccion.text = getString(R.string.btn_registrarse)
+                tvCambiarModo.text = getString(R.string.ir_a_login)
                 layoutUsername.visibility = View.VISIBLE  // Mostrar campo username
-                layoutEmail.hint = "Email"                // Solo email en registro
+                layoutEmail.hint = getString(R.string.login_hint_email)                // Solo email en registro
             } else {
                 // Configurar interfaz para login
-                tvTitulo.text = "Iniciar Sesión"
-                btnAccion.text = "Entrar"
-                tvCambiarModo.text = "¿No tienes cuenta? Regístrate AQUÍ"
+                tvTitulo.text = getString(R.string.login_iniciar_sesion)
+                btnAccion.text = getString(R.string.btn_entrar)
+                tvCambiarModo.text = getString(R.string.ir_a_registro)
                 layoutUsername.visibility = View.GONE     // Ocultar campo username
-                layoutEmail.hint = "Email o Usuario"      // Acepta email o username
+                layoutEmail.hint = getString(R.string.login_hint_email_usuario)      // Acepta email o username
             }
         }
 

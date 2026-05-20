@@ -7,6 +7,7 @@ data class ForumPost(
     val id: String = "",
     val authorId: String = "",
     val authorName: String = "",
+    val authorRole: UserRole = UserRole.USER,  // Rol del autor para auditoría
     val title: String = "",
     val content: String = "",
     val category: ForumCategory = ForumCategory.GENERAL,

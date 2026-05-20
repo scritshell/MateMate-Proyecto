@@ -7,15 +7,21 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.GlobalScope
 
 class StockfishController(
     private val context: Context,
-    private val scope: CoroutineScope,
-    private val onMoveReady: (uciMove: String) -> Unit,
-    private val onThinkingChanged: (isThinking: Boolean) -> Unit
+    private val scope: CoroutineScope? = null,
+    private val onMoveReady: (uciMove: String) -> Unit = { _ -> },
+    private val onThinkingChanged: (isThinking: Boolean) -> Unit = { _ -> }
 ) {
     private val client = StockfishClient(context)
     private var depth = 1
+    private var activeScope: CoroutineScope = scope ?: GlobalScope
+
+    fun setScope(newScope: CoroutineScope) {
+        this.activeScope = newScope
+    }
 
     suspend fun initialize() {
         client.inicializar()
@@ -34,7 +40,7 @@ class StockfishController(
 
     fun requestMove(board: Board) {
         onThinkingChanged(true)
-        scope.launch(Dispatchers.IO) {
+        activeScope.launch(Dispatchers.IO) {
             delay((500..1200).random().toLong())
             client.sendCommand("position fen ${board.fen}")
             client.sendCommand("go depth $depth")

@@ -65,4 +65,11 @@ class MovesAdapter : RecyclerView.Adapter<MovesAdapter.MovesViewHolder>() {
             notifyItemRemoved(lastIndex)
         }
     }
+
+    // Reemplazar lista completa de movimientos (para MVVM StateFlow)
+    fun submitList(newMoves: List<String>) {
+        moves.clear()
+        moves.addAll(newMoves)
+        notifyDataSetChanged()
+    }
 }

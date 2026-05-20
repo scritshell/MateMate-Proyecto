@@ -164,7 +164,17 @@ class ChessBoardAdapter(private val context: Context) : BaseAdapter() {
         return if (isFlipped) 63 - logicalIndex else logicalIndex
     }
 
-    // Sincroniza tablero
+    // Sincroniza tablero con array de piezas
+    fun updateBoard(pieces: Array<ChessPiece>) {
+        for (i in 0 until 64) {
+            if (i < pieces.size) {
+                squares[i].piece = pieces[i]
+            }
+        }
+        notifyDataSetChanged()
+    }
+
+    // Sobrecarga para compatibilidad con Board (convertidor)
     fun updateBoard(board: Board) {
         for (i in 0 until 64) {
             val squareLib = getSquareFromIndex(i)

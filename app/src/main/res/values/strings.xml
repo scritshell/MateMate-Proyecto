@@ -158,4 +158,31 @@
     <string name="msg_password_incorrecta">Contraseña incorrecta</string>
     <string name="msg_error_conexion">Error de conexión</string>
     <string name="msg_bienvenida">Bienvenido, %1$s</string>
+    
+    <!-- Diálogos y alertas -->
+    <string name="dialog_vincular_lichess_titulo">Vincular Cuenta Lichess</string>
+    <string name="dialog_vincular_lichess_mensaje">Introduce tu usuario para ver tu ELO real y estadísticas.</string>
+    <string name="dialog_partida_finalizada">Partida Finalizada</string>
+    <string name="dialog_nueva_nota">Nueva Nota</string>
+    <string name="dialog_editar_nota">Editar Nota</string>
+    <string name="dialog_borrar_nota_titulo">¿Borrar nota?</string>
+    <string name="dialog_borrar_nota_mensaje">Esta acción no se puede deshacer.</string>
+    <string name="dialog_btn_si_borrar">Sí, borrar</string>
+    <string name="dialog_btn_cancelar">Cancelar</string>
+    
+    <!-- Strings de Login (hardcodes anteriores) -->
+    <string name="login_crear_cuenta">Crear Cuenta</string>
+    <string name="login_iniciar_sesion">Iniciar Sesión</string>
+    <string name="login_hint_email">Email</string>
+    <string name="login_hint_email_usuario">Email o Usuario</string>
+    
+    <!-- Strings de Mapas (hardcodes anteriores) -->
+    <string name="map_club_name_1">Club Ajedrez Centro</string>
+    <string name="map_club_address_1">Torneos todos los viernes a las 18:00</string>
+    <string name="map_club_name_2">Peón Aislado</string>
+    <string name="map_club_address_2">Clases para principiantes. ¡Únete!</string>
+    
+    <!-- Strings de Modelos -->
+    <string name="nota_categoria_general">General</string>
+    <string name="chess_board_title">Tablero de Ajedrez</string>
 </resources>

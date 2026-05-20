@@ -15,12 +15,14 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.proyectoajedrez.R
 import com.example.proyectoajedrez.adapters.NotasAdapter
 import com.example.proyectoajedrez.databinding.FragmentBlocNotasBinding
 import com.example.proyectoajedrez.model.Nota
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.ListenerRegistration
 
 // Fragmento para gestionar notas personales de ajedrez
 // Finalizado
@@ -32,6 +34,7 @@ class BlocNotasFragment : Fragment() {
     private val auth = FirebaseAuth.getInstance()        // Instancia de Firebase Auth
     private val listaNotas = mutableListOf<Nota>()       // Lista mutable de notas
     private lateinit var adapter: NotasAdapter           // Adaptador para RecyclerView
+    private var firestoreListener: ListenerRegistration? = null  // Listener para evitar memory leaks
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentBlocNotasBinding.inflate(inflater, container, false)
@@ -64,7 +67,7 @@ class BlocNotasFragment : Fragment() {
     private fun cargarNotasEnTiempoReal() {
         val userId = auth.currentUser?.uid ?: return  // ID del usuario actual
 
-        db.collection("notas").whereEqualTo("userId", userId)
+        firestoreListener = db.collection("notas").whereEqualTo("userId", userId)
             .orderBy("fecha", Query.Direction.DESCENDING)  // Ordenar por fecha descendente
             .addSnapshotListener { snapshots, e ->
                 if (e != null) return@addSnapshotListener
@@ -85,7 +88,12 @@ class BlocNotasFragment : Fragment() {
     // Mostrar diálogo para crear o editar una nota
     private fun mostrarDialogoNota(notaExistente: Nota?) {
         val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle(if (notaExistente == null) "Nueva Nota" else "Editar Nota")
+        builder.setTitle(
+            if (notaExistente == null) 
+                getString(R.string.dialog_nueva_nota) 
+            else 
+                getString(R.string.dialog_editar_nota)
+        )
 
         val layout = LinearLayout(requireContext())
         layout.orientation = LinearLayout.VERTICAL
@@ -179,9 +187,9 @@ class BlocNotasFragment : Fragment() {
     // Confirmar eliminación de una nota
     private fun confirmarBorrado(id: String) {
         AlertDialog.Builder(requireContext())
-            .setTitle("¿Borrar nota?")
-            .setMessage("Esta acción no se puede deshacer.")
-            .setPositiveButton("Sí, borrar") { _, _ ->
+            .setTitle(getString(R.string.dialog_borrar_nota_titulo))
+            .setMessage(getString(R.string.dialog_borrar_nota_mensaje))
+            .setPositiveButton(getString(R.string.dialog_btn_si_borrar)) { _, _ ->
                 db.collection("notas").document(id).delete()
                     .addOnSuccessListener {
                         Toast.makeText(context, getString(R.string.msg_nota_eliminada), Toast.LENGTH_SHORT).show()
@@ -193,6 +201,9 @@ class BlocNotasFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        // Liberar listener de Firestore para evitar memory leaks
+        firestoreListener?.remove()
+        firestoreListener = null
         _binding = null  // Limpiar binding para evitar memory leaks
     }
 }

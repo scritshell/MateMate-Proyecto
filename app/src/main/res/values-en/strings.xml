@@ -159,4 +159,31 @@
     <string name="msg_password_incorrecta">Incorrect password</string>
     <string name="msg_error_conexion">Connection error</string>
     <string name="msg_bienvenida">Welcome, %1$s</string>
+    
+    <!-- Dialogs and alerts -->
+    <string name="dialog_vincular_lichess_titulo">Link Lichess Account</string>
+    <string name="dialog_vincular_lichess_mensaje">Enter your username to see your real ELO and statistics.</string>
+    <string name="dialog_partida_finalizada">Game Over</string>
+    <string name="dialog_nueva_nota">New Note</string>
+    <string name="dialog_editar_nota">Edit Note</string>
+    <string name="dialog_borrar_nota_titulo">Delete note?</string>
+    <string name="dialog_borrar_nota_mensaje">This action cannot be undone.</string>
+    <string name="dialog_btn_si_borrar">Yes, delete</string>
+    <string name="dialog_btn_cancelar">Cancel</string>
+    
+    <!-- Login strings (previous hardcodes) -->
+    <string name="login_crear_cuenta">Create Account</string>
+    <string name="login_iniciar_sesion">Sign In</string>
+    <string name="login_hint_email">Email</string>
+    <string name="login_hint_email_usuario">Email or Username</string>
+    
+    <!-- Maps strings (previous hardcodes) -->
+    <string name="map_club_name_1">Chess Club Center</string>
+    <string name="map_club_address_1">Tournaments every Friday at 6:00 PM</string>
+    <string name="map_club_name_2">Isolated Pawn</string>
+    <string name="map_club_address_2">Classes for beginners. Join us!</string>
+    
+    <!-- Model strings -->
+    <string name="nota_categoria_general">General</string>
+    <string name="chess_board_title">Chess Board</string>
 </resources>

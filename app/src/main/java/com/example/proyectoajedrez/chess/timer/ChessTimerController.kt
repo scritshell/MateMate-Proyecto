@@ -4,8 +4,8 @@ import android.os.CountDownTimer
 import com.github.bhlangonijr.chesslib.Side
 
 class ChessTimerController(
-    private val onTick: (side: Side, remainingMillis: Long) -> Unit,
-    private val onTimeExpired: (side: Side) -> Unit
+    private val onTick: (side: Side, remainingMillis: Long) -> Unit = { _, _ -> },
+    private val onTimeExpired: (side: Side) -> Unit = { _ -> }
 ) {
 
     private var timerWhite: CountDownTimer? = null

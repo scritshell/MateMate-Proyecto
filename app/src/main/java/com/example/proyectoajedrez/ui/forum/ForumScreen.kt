@@ -9,6 +9,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
@@ -23,13 +24,16 @@ import com.example.proyectoajedrez.viewmodel.ForumViewModel
 
 @Composable
 fun ForumScreen() {
+    
+    // Obtener contexto para pasar a SessionManager en ForumRepositoryImpl
+    val context = LocalContext.current
 
     val factory = remember {
         object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 if (modelClass.isAssignableFrom(ForumViewModel::class.java)) {
-                    return ForumViewModel(ForumRepositoryImpl()) as T
+                    return ForumViewModel(ForumRepositoryImpl(context)) as T
                 }
                 throw IllegalArgumentException("Unknown ViewModel class")
             }
