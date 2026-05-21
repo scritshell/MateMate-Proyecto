@@ -1,6 +1,5 @@
 package com.example.proyectoajedrez.fragments
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -23,6 +22,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 // Fragmento para gestionar notas personales de ajedrez
 // Finalizado
@@ -87,7 +87,7 @@ class BlocNotasFragment : Fragment() {
 
     // Mostrar diálogo para crear o editar una nota
     private fun mostrarDialogoNota(notaExistente: Nota?) {
-        val builder = AlertDialog.Builder(requireContext())
+        val builder = MaterialAlertDialogBuilder(requireContext())
         builder.setTitle(
             if (notaExistente == null) 
                 getString(R.string.dialog_nueva_nota) 
@@ -195,7 +195,7 @@ class BlocNotasFragment : Fragment() {
 
     // Confirmar eliminación de una nota
     private fun confirmarBorrado(id: String) {
-        AlertDialog.Builder(requireContext())
+        MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.dialog_borrar_nota_titulo))
             .setMessage(getString(R.string.dialog_borrar_nota_mensaje))
             .setPositiveButton(getString(R.string.dialog_btn_si_borrar)) { _, _ ->

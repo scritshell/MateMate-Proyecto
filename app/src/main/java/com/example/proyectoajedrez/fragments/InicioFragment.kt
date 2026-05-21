@@ -1,49 +1,38 @@
 package com.example.proyectoajedrez.fragments
 
-import android.app.AlertDialog
-import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.FrameLayout
-import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.proyectoajedrez.R
-import com.example.proyectoajedrez.databinding.FragmentInicioBinding
-import com.example.proyectoajedrez.network.LichessClient
-import com.example.proyectoajedrez.network.RetrofitClient
-import com.example.proyectoajedrez.adapters.NewsAdapter
-import com.example.proyectoajedrez.model.LichessUserResponse
-import com.google.firebase.auth.FirebaseAuth
 import com.example.proyectoajedrez.BuildConfig
-import com.example.proyectoajedrez.utils.PrefKeys
+import com.example.proyectoajedrez.R
+import com.example.proyectoajedrez.adapters.NewsAdapter
+import com.example.proyectoajedrez.databinding.FragmentInicioBinding
+import com.example.proyectoajedrez.network.RetrofitClient
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-// Fragmento principal de inicio con información de usuario y noticias
 class InicioFragment : Fragment() {
 
     private var _binding: FragmentInicioBinding? = null
     private val binding get() = _binding!!
 
-    // Instancias para autenticación y base de datos Firebase
     private val auth = FirebaseAuth.getInstance()
     private val db = FirebaseFirestore.getInstance()
-    
-    // Listener de Firestore para usuario (debe liberarse en onDestroyView)
+
     private var firestoreListener: ListenerRegistration? = null
 
-    private companion object {
-        const val TAG = "InicioFragment"  // Etiqueta para logs
+    companion object {
+        private const val TAG = "InicioFragment"
     }
 
     override fun onCreateView(
@@ -57,177 +46,119 @@ class InicioFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d(TAG, "Vista creada: Iniciando...")
 
-        // 1. Configurar RecyclerView para noticias
-        binding.recyclerNoticias.layoutManager = LinearLayoutManager(context)
+        Log.d(TAG, "InicioFragment iniciado")
 
-        // 2. Cargar datos del usuario (Combinación Firebase + Lichess)
-        verificarYcargarDatosUsuario()
-
-        // 3. Cargar noticias de ajedrez desde API
-        cargarNoticias()
-
-        // Listener: Cambiar usuario Lichess al tocar el nombre
-        binding.tvBienvenidaSubtitulo.setOnClickListener {
-            mostrarDialogoConfigurarUsuario()
-        }
+        setupNoticias()
+        refrescarUsuario()
     }
 
-    // --- LÓGICA DE USUARIO (Firebase + Lichess) ---
-
-    private fun verificarYcargarDatosUsuario() {
-        val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
-        val lichessUser = sharedPref.getString(PrefKeys.KEY_LICHESS_USERNAME, null)
-
-        if (lichessUser != null) {
-            obtenerDatosLichess(lichessUser)
-        } else {
-            cargarDatosFirebase()
-        }
+    override fun onResume() {
+        super.onResume()
+        refrescarUsuario()
     }
 
-    private fun cargarDatosFirebase() {
+    // =========================
+    // USUARIO FIREBASE
+    // =========================
+
+    private fun refrescarUsuario() {
+
+        // 🔥 evitar listeners duplicados
+        firestoreListener?.remove()
+        firestoreListener = null
+
         val userId = auth.currentUser?.uid
 
-        if (userId != null) {
-            // Escuchar cambios en tiempo real del documento de usuario
-            firestoreListener = db.collection("usuarios").document(userId)
-                .addSnapshotListener { document, e ->
-                    if (e != null) {
-                        Log.e(TAG, "Error al escuchar datos de usuario", e)
-                        return@addSnapshotListener
-                    }
-                    if (_binding != null && isAdded && document != null && document.exists()) {
-                        // Extraer datos del documento Firestore
-                        val username = document.getString("username") ?: getString(R.string.default_player_name)
-                        val elo = document.getLong("elo") ?: 1200
+        if (userId == null) {
 
-                        // Actualizar UI con datos básicos de Firebase
-                        binding.tvBienvenidaSubtitulo.text = getString(R.string.inicio_saludo_usuario, username)
-                        binding.textElo.text = elo.toString()
-                        binding.textPorcentajeTacticas.text = "-"
-                        binding.textAmigos.text = "0"
-                        binding.textAmigos.setTextColor(Color.GRAY)
-                    }
-                }
-        } else {
-            // Mostrar datos para modo invitado
-            if (_binding != null && isAdded) {
-                binding.tvBienvenidaSubtitulo.text = getString(R.string.inicio_modo_invitado)
-                binding.textElo.text = "-"
-                binding.textPorcentajeTacticas.text = "-"
-                binding.textAmigos.text = "-"
-            }
+            binding.tvBienvenidaSubtitulo.text =
+                getString(R.string.inicio_modo_invitado)
+
+            binding.textElo.text = "-"
+            binding.textPorcentajeTacticas.text = "-"
+            binding.textAmigos.text = "-"
+
+            return
         }
-    }
 
-    private fun mostrarDialogoConfigurarUsuario() {
-        val input = EditText(requireContext())
-        input.hint = getString(R.string.hint_lichess_user)
+        firestoreListener = db.collection("usuarios")
+            .document(userId)
+            .addSnapshotListener { document, error ->
 
-        // Contenedor para márgenes
-        val container = FrameLayout(requireContext())
-        val params = FrameLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-        params.leftMargin = 60; params.rightMargin = 60
-        input.layoutParams = params
-        container.addView(input)
-
-        AlertDialog.Builder(requireContext())
-            .setTitle(getString(R.string.dialog_vincular_lichess_titulo))
-            .setMessage(getString(R.string.dialog_vincular_lichess_mensaje))
-            .setView(container)
-            .setPositiveButton(getString(R.string.btn_guardar)) { _, _ ->
-                val username = input.text.toString().trim()
-                if (username.isNotEmpty()) {
-                    guardarUsuarioLichess(username)
-                    obtenerDatosLichess(username)
+                if (error != null) {
+                    Log.e(TAG, "Error cargando usuario", error)
+                    return@addSnapshotListener
                 }
-            }
-            .setNegativeButton(getString(R.string.dialog_btn_cancelar), null)
-            .show()
-    }
 
-    private fun guardarUsuarioLichess(username: String) {
-        val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
-        with(sharedPref.edit()) {
-            putString(PrefKeys.KEY_LICHESS_USERNAME, username)
-            apply()
-        }
-        Toast.makeText(context, getString(R.string.msg_usuario_lichess_guardado), Toast.LENGTH_SHORT).show()
-    }
+                if (!isAdded || _binding == null) return@addSnapshotListener
 
-    private fun obtenerDatosLichess(username: String) {
-        // Mostrar estado de carga
-        binding.tvBienvenidaSubtitulo.text = getString(R.string.lichess_loading, username)
+                if (document != null && document.exists()) {
 
-        lifecycleScope.launch(Dispatchers.IO) {
-            try {
-                // Llamada a la API de Lichess
-                val user = LichessClient.instance.getUserPublicData(username)
-                withContext(Dispatchers.Main) {
-                    actualizarInterfazConLichess(user)
-                }
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    binding.tvBienvenidaSubtitulo.text = username
-                    binding.textElo.text = "-"
-                    Log.e(TAG, "Error conectando con Lichess", e)
-                    // Si falla Lichess, intentamos recuperar los datos de Firebase como respaldo
-                    cargarDatosFirebase()
-                }
-            }
-        }
-    }
+                    val username =
+                        document.getString("username")
+                            ?: getString(R.string.default_player_name)
 
-    private fun actualizarInterfazConLichess(user: LichessUserResponse) {
-        // 1. Nombre y Título
-        val displayName = if (user.title != null) "[${user.title}] ${user.username}" else user.username
-        binding.tvBienvenidaSubtitulo.text = displayName
+                    val elo =
+                        document.getLong("elo") ?: 1200
 
-        // 2. ELO (Prioridad: Blitz -> Rapid -> Puzzle)
-        val eloBlitz = user.perfs?.blitz?.rating
-        val eloRapid = user.perfs?.rapid?.rating
-        val eloPuzzle = user.perfs?.puzzle?.rating
-        val eloMostrado = eloBlitz ?: eloRapid ?: eloPuzzle ?: "?"
+                    binding.tvBienvenidaSubtitulo.text =
+                        getString(R.string.inicio_saludo_usuario, username)
 
-        binding.textElo.text = eloMostrado.toString()
+                    binding.textElo.text = elo.toString()
 
-        // 3. ELO Tácticas
-        binding.textPorcentajeTacticas.text = (eloPuzzle?.toString() ?: "-")
+                    binding.textPorcentajeTacticas.text =
+                        getString(R.string.no_disponible)
 
-        // 4. Estado Online
-        if (user.online) {
-            binding.textAmigos.text = getString(R.string.estado_en_linea)
-            binding.textAmigos.setTextColor(Color.parseColor("#4CAF50")) // Verde
-        } else {
-            binding.textAmigos.text = getString(R.string.estado_offline)
-            binding.textAmigos.setTextColor(Color.GRAY)
-        }
-    }
+                    binding.textAmigos.text =
+                        getString(R.string.no_disponible)
 
-    // --- LÓGICA DE NOTICIAS ---
+                    binding.textAmigos.setTextColor(
+                        ContextCompat.getColor(requireContext(), R.color.text_secondary)
+                    )
 
-    // Obtener noticias de ajedrez exclusivas desde News API
-    private fun cargarNoticias() {
-        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-            try {
-                val apiKey = BuildConfig.NEWS_API_KEY
-                val idiomaActual = java.util.Locale.getDefault().language
-
-                // ✅ Query más específica con términos relacionados
-                val queryBusqueda = if (idiomaActual == "en") {
-                    "chess AND (tournament OR grandmaster OR opening OR tactics OR FIDE OR Carlsen OR Kasparov)"
                 } else {
-                    "ajedrez AND (torneo OR gran maestro OR apertura OR táctica OR FIDE OR partida)"
-                }
-                val idiomaApi = if (idiomaActual == "en") "en" else "es"
 
-                // ✅ Dominios de confianza mantenidos (buena decisión previa)
-                val dominiosAjedrez = "chess.com,lichess.org,chess24.com,fide.com,chessbase.com"
+                    binding.tvBienvenidaSubtitulo.text =
+                        getString(R.string.default_player_name)
+                }
+            }
+    }
+
+    // =========================
+    // NOTICIAS
+    // =========================
+
+    private fun setupNoticias() {
+        binding.recyclerNoticias.layoutManager =
+            LinearLayoutManager(requireContext())
+
+        cargarNoticias()
+    }
+
+    private fun cargarNoticias() {
+
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+
+            try {
+
+                val apiKey = BuildConfig.NEWS_API_KEY
+
+                val idiomaActual =
+                    java.util.Locale.getDefault().language
+
+                val queryBusqueda =
+                    if (idiomaActual == "en") {
+                        "chess AND (tournament OR grandmaster OR opening OR tactics OR FIDE)"
+                    } else {
+                        "ajedrez AND (torneo OR gran maestro OR apertura OR táctica OR FIDE)"
+                    }
+
+                val idiomaApi =
+                    if (idiomaActual == "en") "en" else "es"
+
+                val dominiosAjedrez =
+                    "chess.com,lichess.org,chess24.com,fide.com,chessbase.com"
 
                 val respuesta = RetrofitClient.instance.getChessNews(
                     query = queryBusqueda,
@@ -238,28 +169,51 @@ class InicioFragment : Fragment() {
                 )
 
                 withContext(Dispatchers.Main) {
-                    if (isAdded && _binding != null && respuesta.status == "ok") {
-                        val noticiasLimpias = respuesta.articles.filter { articulo ->
-                            // Filtro adicional para mayor precisión
-                            val textoCompleto = "${articulo.title} ${articulo.description}".lowercase()
-                            val terminosAjedrez = if (idiomaActual == "en") {
-                                listOf("chess", "grandmaster", "tournament", "checkmate",
-                                    "opening", "tactics", "fide", "blitz", "puzzle")
-                            } else {
-                                listOf("ajedrez", "gran maestro", "torneo", "jaque",
-                                    "apertura", "táctica", "fide", "partida")
-                            }
-                            // El artículo debe contener al menos un término de ajedrez
-                            // Y tener imagen y descripción
-                            !articulo.urlToImage.isNullOrEmpty() &&
-                                    !articulo.description.isNullOrEmpty() &&
-                                    terminosAjedrez.any { termino -> textoCompleto.contains(termino) }
-                        }
 
-                        val adapter = NewsAdapter(noticiasLimpias)
-                        binding.recyclerNoticias.adapter = adapter
+                    if (!isAdded || _binding == null) return@withContext
+
+                    if (respuesta.status == "ok") {
+
+                        val noticiasFiltradas =
+                            respuesta.articles.filter { articulo ->
+
+                                val texto =
+                                    "${articulo.title} ${articulo.description}"
+                                        .lowercase()
+
+                                val keywords =
+                                    if (idiomaActual == "en") {
+                                        listOf(
+                                            "chess",
+                                            "grandmaster",
+                                            "opening",
+                                            "tournament",
+                                            "fide",
+                                            "blitz",
+                                            "checkmate"
+                                        )
+                                    } else {
+                                        listOf(
+                                            "ajedrez",
+                                            "gran maestro",
+                                            "apertura",
+                                            "torneo",
+                                            "fide",
+                                            "partida",
+                                            "jaque"
+                                        )
+                                    }
+
+                                !articulo.urlToImage.isNullOrEmpty() &&
+                                        !articulo.description.isNullOrEmpty() &&
+                                        keywords.any { texto.contains(it) }
+                            }
+
+                        binding.recyclerNoticias.adapter =
+                            NewsAdapter(noticiasFiltradas)
                     }
                 }
+
             } catch (e: Exception) {
                 Log.e(TAG, "Error cargando noticias", e)
             }
@@ -268,9 +222,10 @@ class InicioFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        // Liberar listener de Firestore para evitar memory leaks
+
         firestoreListener?.remove()
         firestoreListener = null
+
         _binding = null
     }
 }

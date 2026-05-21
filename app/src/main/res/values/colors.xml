@@ -1,6 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#90CAF9</color> <color name="purple_500">#263238</color> <color name="purple_700">#000a12</color> <color name="teal_200">#FFD700</color> <color name="teal_700">#018786</color>
+    <color name="purple_200">#90CAF9</color>
+    <color name="purple_500">#263238</color>
+    <color name="purple_700">#000A12</color>
+    <color name="teal_200">#FFD700</color>
+    <color name="teal_700">#018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="chess_square_light">#EEEED2</color>
+    <color name="chess_square_dark">#769656</color>
+    <color name="chess_square_selected">#829769</color>
+    <color name="chess_square_error">#FF5252</color>
+    <color name="chess_legal_empty">#80666666</color>
+    <color name="chess_legal_capture">#80FF0000</color>
+
+    <color name="timer_active">#81C784</color>
+    <color name="timer_inactive">#E0E0E0</color>
+    <color name="tab_active">#FFD700</color>
+    <color name="tab_inactive">#E0E0E0</color>
+    <color name="divider_color">#E0E0E0</color>
+    <color name="text_secondary">#757575</color>
+    <color name="explorer_bar_track">#DDDDDD</color>
+    <color name="explorer_bar_white">#F0F0F0</color>
+    <color name="explorer_bar_draw">#999999</color>
+    <color name="explorer_bar_black">#333333</color>
+    <color name="note_delete_tint">#F44336</color>
+    <color name="popup_menu_surface">#FFFFFFFF</color>
+    <color name="popup_menu_text">#FF000000</color>
 </resources>

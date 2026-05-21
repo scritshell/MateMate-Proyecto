@@ -13,7 +13,7 @@
         android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:textColor="@color/black"
+        android:textColor="?attr/colorOnSurface"
         android:textSize="16sp"
         tools:text="e4" />
 
@@ -23,19 +23,19 @@
         android:layout_weight="1"
         android:orientation="horizontal"
         android:layout_marginHorizontal="12dp"
-        android:background="#DDDDDD">
+        android:background="@color/explorer_bar_track">
 
         <View android:id="@+id/viewWhiteBar"
             android:layout_width="0dp" android:layout_height="match_parent"
-            android:layout_weight="1" android:background="#F0F0F0"/>
+            android:layout_weight="1" android:background="@color/explorer_bar_white"/>
 
         <View android:id="@+id/viewDrawBar"
             android:layout_width="0dp" android:layout_height="match_parent"
-            android:layout_weight="1" android:background="#999999"/>
+            android:layout_weight="1" android:background="@color/explorer_bar_draw"/>
 
         <View android:id="@+id/viewBlackBar"
             android:layout_width="0dp" android:layout_height="match_parent"
-            android:layout_weight="1" android:background="#333333"/>
+            android:layout_weight="1" android:background="@color/explorer_bar_black"/>
     </LinearLayout>
 
     <TextView
@@ -43,6 +43,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="12sp"
-        android:textColor="#666666"
+        android:textColor="@color/text_secondary"
         tools:text="1200"/>
 </LinearLayout>

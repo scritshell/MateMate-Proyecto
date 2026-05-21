@@ -19,13 +19,18 @@ fun PostCard(
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        )
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
                 text = post.title,
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
@@ -37,6 +42,7 @@ fun PostCard(
             Text(
                 text = post.content,
                 style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 3
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -47,7 +53,11 @@ fun PostCard(
             ) {
                 AssistChip(
                     onClick = {},
-                    label = { Text(post.category.name) }
+                    label = { Text(post.category.name) },
+                    colors = AssistChipDefaults.assistChipColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        labelColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 )
                 IconButton(onClick = onLike) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -57,7 +67,10 @@ fun PostCard(
                             tint = MaterialTheme.colorScheme.primary
                         )
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text(text = post.likes.toString())
+                        Text(
+                            text = post.likes.toString(),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     }
                 }
             }

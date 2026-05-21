@@ -4,11 +4,11 @@ import android.app.Dialog
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.SeekBar
-import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import com.example.proyectoajedrez.R
 import com.example.proyectoajedrez.databinding.FragmentGameSetupDialogBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class GameSetupDialogFragment(
     // Callback para enviar los datos seleccionados al MainActivity
@@ -19,7 +19,7 @@ class GameSetupDialogFragment(
     private val binding get() = _binding!!
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val builder = AlertDialog.Builder(requireContext())
+        val builder = MaterialAlertDialogBuilder(requireContext())
         val inflater = requireActivity().layoutInflater
         _binding = FragmentGameSetupDialogBinding.inflate(inflater)
         builder.setView(binding.root)

@@ -5,8 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     app:cardCornerRadius="16dp"
-    app:cardElevation="8dp"
-    app:cardBackgroundColor="@color/white">
+    app:cardElevation="8dp">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -24,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/config_titulo"
                 android:textSize="20sp"
-                android:textColor="@color/purple_700"
+                android:textColor="?attr/colorPrimary"
                 android:textStyle="bold"
                 android:gravity="center"
                 android:layout_marginBottom="16dp" />
@@ -46,7 +45,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/config_modo"
-                        android:textColor="@color/purple_500"
+                        android:textColor="?attr/colorPrimary"
                         android:textStyle="bold"
                         android:layout_marginBottom="8dp"/>
 
@@ -81,7 +80,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/config_bando"
-                            android:textColor="@color/purple_500"
+                            android:textColor="?attr/colorPrimary"
                             android:textStyle="bold"
                             android:layout_marginBottom="8dp"/>
 
@@ -112,7 +111,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="#DDDDDD"
+                    android:background="@color/divider_color"
                     android:layout_marginBottom="8dp"/>
 
                 <LinearLayout
@@ -126,7 +125,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/config_tiempo"
-                        android:textColor="@color/purple_500"
+                        android:textColor="?attr/colorPrimary"
                         android:textStyle="bold"
                         android:layout_marginBottom="8dp"/>
 
@@ -153,7 +152,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/config_nivel_ia"
-                                android:textColor="@color/purple_500"
+                                android:textColor="?attr/colorPrimary"
                                 android:textStyle="bold"/>
 
                             <TextView
@@ -171,8 +170,8 @@
                             android:layout_height="wrap_content"
                             android:max="20"
                             android:progress="5"
-                            android:thumbTint="@color/teal_700"
-                            android:progressTint="@color/teal_700"/>
+                            android:thumbTint="?attr/colorPrimary"
+                            android:progressTint="?attr/colorPrimary"/>
                     </LinearLayout>
 
                     <Button
@@ -180,8 +179,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:text="@string/btn_jugar_ahora"
-                        android:backgroundTint="@color/teal_700"
-                        android:textColor="@color/white"
+                        android:backgroundTint="?attr/colorPrimary"
+                        android:textColor="?attr/colorOnPrimary"
                         android:textSize="14sp"
                         android:textStyle="bold" />
                 </LinearLayout>

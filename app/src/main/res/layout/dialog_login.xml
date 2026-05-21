@@ -63,7 +63,8 @@
         android:layout_height="wrap_content"
         android:text="@string/btn_entrar"
         android:layout_marginTop="24dp"
-        android:backgroundTint="#673AB7"/>
+        android:backgroundTint="?attr/colorPrimary"
+        android:textColor="?attr/colorOnPrimary"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnGoogleSignIn"
@@ -79,7 +80,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/ir_a_registro"
-        android:textColor="#673AB7"
+        android:textColor="?attr/colorPrimary"
         android:textStyle="bold"
         android:gravity="center"
         android:clickable="true"

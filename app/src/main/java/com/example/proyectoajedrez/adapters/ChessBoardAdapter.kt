@@ -1,7 +1,6 @@
 package com.example.proyectoajedrez.adapters
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Handler
 import android.os.Looper
@@ -20,6 +19,7 @@ import com.github.bhlangonijr.chesslib.Board
 import com.github.bhlangonijr.chesslib.Piece
 import com.github.bhlangonijr.chesslib.Square
 import android.widget.AbsListView
+import androidx.core.content.ContextCompat
 
 class ChessBoardAdapter(private val context: Context) : BaseAdapter() {
 
@@ -84,10 +84,10 @@ class ChessBoardAdapter(private val context: Context) : BaseAdapter() {
         // 1. FONDO
         val bgView = View(context)
         when {
-            logicalIndex == errorPosition -> bgView.setBackgroundColor(Color.parseColor("#FF5252"))
-            logicalIndex == selectedPosition -> bgView.setBackgroundColor(Color.parseColor("#829769"))
+            logicalIndex == errorPosition -> bgView.setBackgroundColor(color(R.color.chess_square_error))
+            logicalIndex == selectedPosition -> bgView.setBackgroundColor(color(R.color.chess_square_selected))
             else -> bgView.setBackgroundColor(
-                if (square.isLightSquare) Color.parseColor("#EEEED2") else Color.parseColor("#769656")
+                color(if (square.isLightSquare) R.color.chess_square_light else R.color.chess_square_dark)
             )
         }
         container.addView(bgView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
@@ -113,10 +113,10 @@ class ChessBoardAdapter(private val context: Context) : BaseAdapter() {
             val indicatorDrawable = GradientDrawable().apply {
                 shape = GradientDrawable.OVAL
                 if (square.piece == ChessPiece.EMPTY) {
-                    setColor(Color.parseColor("#80666666"))
+                    setColor(color(R.color.chess_legal_empty))
                 } else {
-                    setColor(Color.TRANSPARENT)
-                    setStroke(10, Color.parseColor("#80FF0000"))
+                    setColor(color(android.R.color.transparent))
+                    setStroke(10, color(R.color.chess_legal_capture))
                 }
             }
             indicator.background = indicatorDrawable
@@ -126,6 +126,8 @@ class ChessBoardAdapter(private val context: Context) : BaseAdapter() {
 
         return container
     }
+
+    private fun color(resId: Int): Int = ContextCompat.getColor(context, resId)
 
     // SISTEMA DE SKINS
     private fun obtenerDibujoPieza(piece: ChessPiece): Int {

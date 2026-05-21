@@ -20,6 +20,9 @@
     <string name="menu_puzzleDiario">Daily Puzzle</string>
     <string name="menu_comunidad">Community</string>
     <string name="menu_practica">Free Practice</string>
+    <string name="menu_login">Sign In</string>
+    <string name="menu_settings">Settings</string>
+    <string name="menu_logout">Sign Out</string>
 
     <string name="login_titulo">Sign In</string>
     <string name="registro_titulo">Sign Up</string>
@@ -221,6 +224,7 @@
     <string name="map_club_address_2">Classes for beginners. Join us!</string>
     
     <!-- Model strings -->
+    <string name="no_disponible">Not available</string>
     <string name="nota_categoria_general">General</string>
     <string name="chess_board_title">Chess Board</string>
 

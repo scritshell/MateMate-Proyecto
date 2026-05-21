@@ -1,8 +1,7 @@
 package com.example.proyectoajedrez.fragments
 
-import android.app.AlertDialog
 import android.content.Context
-import android.graphics.Color
+import android.content.res.ColorStateList
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -13,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -31,6 +31,7 @@ import com.example.proyectoajedrez.model.GameMode
 import com.example.proyectoajedrez.model.toGameMode
 import com.example.proyectoajedrez.network.ExplorerClient
 import com.github.bhlangonijr.chesslib.Side
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -195,7 +196,7 @@ class ChessBoardFragment : Fragment() {
         }
 
         binding.chessBoard.isEnabled = false
-        AlertDialog.Builder(requireContext())
+        MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.dialog_partida_finalizada))
             .setMessage(mensaje)
             .setPositiveButton(getString(R.string.dialog_btn_aceptar), null)
@@ -212,10 +213,10 @@ class ChessBoardFragment : Fragment() {
         if (!showHistory && explorerAdapter.itemCount == 0) binding.tvExplorerStatus?.isVisible = true
         else binding.tvExplorerStatus?.isVisible = false
 
-        val activeColor = parseColor("#FFD700")
-        val inactiveColor = parseColor("#E0E0E0")
-        binding.btnTabHistory?.backgroundTintList = android.content.res.ColorStateList.valueOf(if (showHistory) activeColor else inactiveColor)
-        binding.btnTabExplorer?.backgroundTintList = android.content.res.ColorStateList.valueOf(if (!showHistory) activeColor else inactiveColor)
+        val activeColor = ContextCompat.getColor(requireContext(), R.color.tab_active)
+        val inactiveColor = ContextCompat.getColor(requireContext(), R.color.tab_inactive)
+        binding.btnTabHistory?.backgroundTintList = ColorStateList.valueOf(if (showHistory) activeColor else inactiveColor)
+        binding.btnTabExplorer?.backgroundTintList = ColorStateList.valueOf(if (!showHistory) activeColor else inactiveColor)
 
         if (!showHistory) fetchOpeningData()
     }
@@ -243,7 +244,9 @@ class ChessBoardFragment : Fragment() {
         if (isEmpty) {
             if (opening != null) {
                 binding.tvExplorerStatus?.text = getString(R.string.explorer_book_end, opening.name, opening.eco)
-                binding.tvExplorerStatus?.setTextColor(Color.BLACK)
+                binding.tvExplorerStatus?.setTextColor(
+                    ContextCompat.getColor(requireContext(), R.color.text_secondary)
+                )
             } else {
                 binding.tvExplorerStatus?.text = getString(R.string.explorer_label_empty)
             }
@@ -254,8 +257,8 @@ class ChessBoardFragment : Fragment() {
      * Highlight which timer is active (white or black)
      */
     private fun highlightActiveTimer(side: Side) {
-        val active = parseColor("#81C784")
-        val inactive = parseColor("#E0E0E0")
+        val active = ContextCompat.getColor(requireContext(), R.color.timer_active)
+        val inactive = ContextCompat.getColor(requireContext(), R.color.timer_inactive)
         binding.tvTimerWhite.setBackgroundColor(if (side == Side.WHITE) active else inactive)
         binding.tvTimerBlack.setBackgroundColor(if (side == Side.BLACK) active else inactive)
     }
@@ -289,8 +292,6 @@ class ChessBoardFragment : Fragment() {
             sensorManager.registerListener(it, accelerometer, SensorManager.SENSOR_DELAY_GAME)
         }
     }
-
-    private fun parseColor(hex: String) = Color.parseColor(hex)
 
     override fun onDestroyView() {
         super.onDestroyView()

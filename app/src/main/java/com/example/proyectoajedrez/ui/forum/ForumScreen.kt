@@ -1,5 +1,6 @@
 package com.example.proyectoajedrez.ui.forum
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -46,12 +47,16 @@ fun ForumScreen() {
     var mostrarDialogo by remember { mutableStateOf(false) }
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
+        contentColor = MaterialTheme.colorScheme.onBackground,
         topBar = {
             ForumTopBar()
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { mostrarDialogo = true }
+                onClick = { mostrarDialogo = true },
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -63,8 +68,9 @@ fun ForumScreen() {
 
         Box(
             modifier = Modifier
-                .padding(padding)
                 .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(padding)
         ) {
 
             when {
@@ -77,12 +83,14 @@ fun ForumScreen() {
                 uiState.posts.isEmpty() -> {
                     Text(
                         text = stringResource(R.string.forum_sin_posts),
-                        modifier = Modifier.align(Alignment.Center)
+                        modifier = Modifier.align(Alignment.Center),
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                 }
 
                 else -> {
                     LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
                         contentPadding = PaddingValues(16.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {

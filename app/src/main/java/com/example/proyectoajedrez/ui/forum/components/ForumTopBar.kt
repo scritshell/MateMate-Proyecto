@@ -9,8 +9,16 @@ import com.example.proyectoajedrez.R
 @Composable
 fun ForumTopBar() {
     TopAppBar(
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            titleContentColor = MaterialTheme.colorScheme.onSurface,
+            actionIconContentColor = MaterialTheme.colorScheme.onSurface
+        ),
         title = {
-            Text(text = stringResource(R.string.forum_titulo_pantalla))
+            Text(
+                text = stringResource(R.string.forum_titulo_pantalla),
+                color = MaterialTheme.colorScheme.onSurface
+            )
         }
     )
 }

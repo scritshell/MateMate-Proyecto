@@ -7,7 +7,7 @@
     android:orientation="horizontal"
     android:padding="8dp"
     android:baselineAligned="false"
-    android:background="#FAFAFA"
+    android:background="?android:attr/colorBackground"
     tools:context=".fragments.ChessBoardFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -46,7 +46,7 @@
             android:textSize="18sp"
             android:textStyle="bold"
             android:gravity="center"
-            android:textColor="#333333"
+            android:textColor="?attr/colorOnBackground"
             android:layout_marginBottom="4dp" />
 
         <LinearLayout
@@ -67,7 +67,7 @@
                 android:textStyle="bold"
                 android:gravity="center"
                 android:background="@drawable/bg_timer_active"
-                android:textColor="@color/black"
+                android:textColor="?attr/colorOnSurface"
                 android:padding="6dp"
                 android:layout_marginEnd="6dp"/>
 
@@ -80,8 +80,8 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:gravity="center"
-                android:background="#E0E0E0"
-                android:textColor="@color/black"
+                android:background="@color/timer_inactive"
+                android:textColor="?attr/colorOnSurface"
                 android:padding="6dp" />
         </LinearLayout>
 
@@ -90,15 +90,14 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:background="@drawable/bg_timer_active"
-            android:backgroundTint="#FFFFFF"
+            android:background="?attr/colorSurface"
             android:elevation="2dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="36dp"
                 android:orientation="horizontal"
-                android:background="#EEEEEE">
+                android:background="@color/divider_color">
 
                 <Button
                     android:id="@+id/btnTabHistory"
@@ -107,8 +106,8 @@
                     android:layout_weight="1"
                     android:text="@string/tab_history"
                     android:textSize="11sp"
-                    android:backgroundTint="#FFD700"
-                    android:textColor="@color/black"
+                    android:backgroundTint="@color/tab_active"
+                    android:textColor="?attr/colorOnSurface"
                     style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"/>
@@ -120,8 +119,8 @@
                     android:layout_weight="1"
                     android:text="@string/tab_explorer"
                     android:textSize="11sp"
-                    android:backgroundTint="#E0E0E0"
-                    android:textColor="@color/black"
+                    android:backgroundTint="@color/tab_inactive"
+                    android:textColor="?attr/colorOnSurface"
                     style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"/>
@@ -152,7 +151,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="@string/explorer_label_empty"
-                    android:textColor="#757575"
+                    android:textColor="@color/text_secondary"
                     android:gravity="center"
                     android:visibility="gone"/>
             </FrameLayout>
@@ -172,7 +171,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/btn_exit"
                 android:src="@drawable/ic_close"
-                app:tint="#555555" />
+                app:tint="?attr/colorOnSurfaceVariant" />
 
             <View android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" />
 
@@ -184,7 +183,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/btn_deshacer"
                 android:src="@drawable/ic_undo"
-                app:tint="#555555" />
+                app:tint="?attr/colorOnSurfaceVariant" />
 
             <ImageButton
                 android:id="@+id/btnRedo"
@@ -193,7 +192,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/btn_rehacer"
                 android:src="@drawable/ic_redo"
-                app:tint="#555555" />
+                app:tint="?attr/colorOnSurfaceVariant" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

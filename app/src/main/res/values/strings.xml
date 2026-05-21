@@ -11,6 +11,9 @@
     <string name="menu_comunidad">Comunidad</string>
     <string name="menu_practica">Práctica Libre</string>
     <string name="menu_mapa">Clubes Cercanos</string>
+    <string name="menu_login">Iniciar Sesión</string>
+    <string name="menu_settings">Ajustes</string>
+    <string name="menu_logout">Cerrar Sesión</string>
 
     <string name="titulo_ajustes">Ajustes</string>
     <string name="apariencia">Apariencia</string>
@@ -219,6 +222,7 @@
     <string name="map_club_address_2">Clases para principiantes. ¡Únete!</string>
     
     <!-- Strings de Modelos -->
+    <string name="no_disponible">No disponible</string>
     <string name="nota_categoria_general">General</string>
     <string name="chess_board_title">Tablero de Ajedrez</string>
 

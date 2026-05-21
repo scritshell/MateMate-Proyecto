@@ -25,10 +25,14 @@ fun NuevoPostDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
+        containerColor = MaterialTheme.colorScheme.surface,
+        titleContentColor = MaterialTheme.colorScheme.onSurface,
+        textContentColor = MaterialTheme.colorScheme.onSurface,
         title = {
             Text(
                 text = stringResource(R.string.forum_titulo_dialogo),
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onSurface
             )
         },
         text = {
@@ -47,7 +51,22 @@ fun NuevoPostDialog(
                     label = { Text(stringResource(R.string.forum_hint_titulo)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
-                    isError = mostrarError && titulo.isBlank()
+                    isError = mostrarError && titulo.isBlank(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        cursorColor = MaterialTheme.colorScheme.primary,
+                        focusedContainerColor = MaterialTheme.colorScheme.surface,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        focusedLabelColor = MaterialTheme.colorScheme.primary,
+                        unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        errorBorderColor = MaterialTheme.colorScheme.error,
+                        errorLabelColor = MaterialTheme.colorScheme.error
+                    )
                 )
 
                 // Campo contenido
@@ -61,7 +80,22 @@ fun NuevoPostDialog(
                     modifier = Modifier.fillMaxWidth(),
                     minLines = 3,
                     maxLines = 5,
-                    isError = mostrarError && contenido.isBlank()
+                    isError = mostrarError && contenido.isBlank(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        cursorColor = MaterialTheme.colorScheme.primary,
+                        focusedContainerColor = MaterialTheme.colorScheme.surface,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        focusedLabelColor = MaterialTheme.colorScheme.primary,
+                        unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        errorBorderColor = MaterialTheme.colorScheme.error,
+                        errorLabelColor = MaterialTheme.colorScheme.error
+                    )
                 )
 
                 // Selector de categoría (100% estable)
@@ -90,11 +124,17 @@ fun NuevoPostDialog(
                     DropdownMenu(
                         expanded = expandirMenu,
                         onDismissRequest = { expandirMenu = false },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        containerColor = MaterialTheme.colorScheme.surface
                     ) {
                         ForumCategory.entries.forEach { categoria ->
                             DropdownMenuItem(
-                                text = { Text(categoria.name) },
+                                text = {
+                                    Text(
+                                        text = categoria.name,
+                                        color = MaterialTheme.colorScheme.onSurface
+                                    )
+                                },
                                 onClick = {
                                     categoriaSeleccionada = categoria
                                     expandirMenu = false

@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="@android:color/black"
+                android:textColor="?attr/colorOnSurface"
                 tools:text="Análisis partida vs Carlos"/>
 
             <!-- Fecha de creación de la nota -->
@@ -43,7 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
-                android:textColor="#666"
+                android:textColor="@color/text_secondary"
                 android:layout_marginTop="2dp"
                 tools:text="Hoy, 15:30" />
 
@@ -67,7 +67,7 @@
             android:src="@android:drawable/ic_menu_delete"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/note_delete_content_description"
-            app:tint="#F44336" />
+            app:tint="@color/note_delete_tint" />
 
     </LinearLayout>
 

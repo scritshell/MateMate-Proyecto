@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="#F5F5F5">
+    android:background="?android:attr/colorBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,7 +20,7 @@
             android:layout_margin="8dp"
             app:cardCornerRadius="16dp"
             app:cardElevation="6dp"
-            app:cardBackgroundColor="#263238">
+            app:cardBackgroundColor="?attr/colorSurface">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -34,13 +34,13 @@
                     android:layout_height="64dp"
                     android:src="@android:drawable/ic_dialog_map"
                     android:layout_marginBottom="12dp"
-                    app:tint="#FFD700" />
+                    app:tint="?attr/colorPrimary" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/titulo_puzzleDiario"
-                    android:textColor="@color/white"
+                    android:textColor="?attr/colorOnSurface"
                     android:textSize="24sp"
                     android:textStyle="bold"
                     android:gravity="center"/>
@@ -49,7 +49,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/subtitulo_puzzleDiario"
-                    android:textColor="#B0BEC5"
+                    android:textColor="?attr/colorOnSurfaceVariant"
                     android:textSize="12sp"
                     android:layout_marginBottom="16dp"/>
 
@@ -58,8 +58,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:text="@string/btn_jugar_puzzle"
-                    android:backgroundTint="#FFD700"
-                    android:textColor="@color/black"
+                    android:backgroundTint="?attr/colorPrimary"
+                    android:textColor="?attr/colorOnPrimary"
                     android:textStyle="bold"
                     android:textSize="16sp"/>
             </LinearLayout>
@@ -76,7 +76,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/titulo_puzzleDiario"
-                android:textColor="@color/purple_700"
+                android:textColor="?attr/colorPrimary"
                 android:textSize="22sp"
                 android:textStyle="bold" />
 
@@ -84,7 +84,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/subtitulo_puzzleDiario"
-                android:textColor="#757575"
+                android:textColor="@color/text_secondary"
                 android:textSize="12sp"
                 android:layout_marginBottom="16dp"/>
 
@@ -117,7 +117,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/stat_dias_racha"
                         android:textSize="14sp"
-                        android:textColor="#757575"/>
+                        android:textColor="@color/text_secondary"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -149,7 +149,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/stat_puzzles_resueltos"
                         android:textSize="14sp"
-                        android:textColor="#757575"/>
+                        android:textColor="@color/text_secondary"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
