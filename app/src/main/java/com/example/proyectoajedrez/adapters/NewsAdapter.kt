@@ -31,7 +31,8 @@ class NewsAdapter(private val noticias: List<Article>) : RecyclerView.Adapter<Ne
         val noticia = noticias[position]
 
         holder.titulo.text = noticia.title                          // Establecer título
-        holder.fuente.text = noticia.source?.name ?: "Desconocido"  // Fuente o valor por defecto
+        holder.fuente.text = noticia.source?.name
+            ?: holder.itemView.context.getString(R.string.news_unknown_source)
 
         // Cargar imagen usando Glide con manejo de URL
         Glide.with(holder.itemView.context)

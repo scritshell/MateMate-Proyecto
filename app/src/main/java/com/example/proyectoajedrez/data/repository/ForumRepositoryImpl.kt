@@ -1,6 +1,7 @@
 package com.example.proyectoajedrez.data.repository
 
 import android.content.Context
+import com.example.proyectoajedrez.R
 import com.example.proyectoajedrez.activities.SessionManager
 import com.example.proyectoajedrez.domain.model.ForumPost
 import com.example.proyectoajedrez.domain.model.UserRole
@@ -23,6 +24,7 @@ class ForumRepositoryImpl(
     
     // SessionManager para acceso a rol del usuario actual
     private val sessionManager: SessionManager? = context?.let { SessionManager(it) }
+    private val defaultAuthorName = context?.getString(R.string.default_player_name) ?: "Jugador"
 
     override fun getPosts(): Flow<List<ForumPost>> = callbackFlow {
         val listener = postsCollection
@@ -48,7 +50,7 @@ class ForumRepositoryImpl(
         
         val newPost = post.copy(
             authorId = user.uid,
-            authorName = user.displayName ?: user.email?.substringBefore("@") ?: "Jugador",
+            authorName = user.displayName ?: user.email?.substringBefore("@") ?: defaultAuthorName,
             authorRole = userRole  // Guardar rol del autor para auditoría
         )
         postsCollection.add(newPost).await()

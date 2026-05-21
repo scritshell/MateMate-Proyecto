@@ -78,7 +78,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tablero y Piezas"
+            android:text="@string/settings_board_pieces"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="?attr/colorPrimary"/>
@@ -94,7 +94,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Usar estilo de piezas alternativo"
+                android:text="@string/settings_alt_piece_style"
                 android:textSize="16sp" />
 
             <com.google.android.material.materialswitch.MaterialSwitch

@@ -2,6 +2,7 @@
 <!-- Layout para item de noticia en RecyclerView -->
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
@@ -33,10 +34,10 @@
                 android:id="@+id/txtTitulo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Título de la noticia de Ajedrez"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@android:color/black" />
+                android:textColor="@android:color/black"
+                tools:text="Título de la noticia de Ajedrez" />
 
             <!-- Fuente/origen de la noticia -->
             <TextView
@@ -44,9 +45,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Fuente: Chess.com"
                 android:textSize="12sp"
-                android:textColor="@android:color/darker_gray" />
+                android:textColor="@android:color/darker_gray"
+                tools:text="Fuente: Chess.com" />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

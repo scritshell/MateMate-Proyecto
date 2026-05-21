@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">MateMate</string>
+    <string name="default_player_name">Jugador</string>
 
     <string name="navigation_drawer_open">Abrir menú</string>
     <string name="navigation_drawer_close">Cerrar menú</string>
@@ -17,6 +18,8 @@
     <string name="idioma">Idioma</string>
     <string name="lang_es">Español</string>
     <string name="lang_en">English</string>
+    <string name="settings_board_pieces">Tablero y Piezas</string>
+    <string name="settings_alt_piece_style">Usar estilo de piezas alternativo</string>
 
     <string name="login_titulo">Iniciar Sesión</string>
     <string name="registro_titulo">Crear Cuenta</string>
@@ -36,10 +39,17 @@
     <string name="texto_tacticas">Tácticas</string>
     <string name="texto_amigos">Amigos</string>
     <string name="titulo_noticias">Noticias de Ajedrez</string>
+    <string name="inicio_saludo_usuario">¡Hola, %1$s!</string>
+    <string name="inicio_modo_invitado">Modo Invitado</string>
+    <string name="hint_lichess_user">Usuario Lichess (ej: MagnusCarlsen)</string>
+    <string name="lichess_loading">Cargando %1$s...</string>
+    <string name="estado_en_linea">En línea</string>
+    <string name="estado_offline">Offline</string>
+    <string name="news_unknown_source">Desconocido</string>
 
     <string name="titulo_tablero">Tablero de Ajedrez</string>
     <string name="titulo_historial">Historial de Partida</string>
-    <string name="btn_exit">Salir"</string>
+    <string name="btn_exit">Salir</string>
     <string name="btn_deshacer">Deshacer</string>
     <string name="btn_rehacer">Rehacer</string>
     <string name="btn_reiniciar">Reiniciar</string>
@@ -53,6 +63,7 @@
     <string name="explorer_label_loading">Cargando datos de maestros...</string>
     <string name="explorer_label_empty">Realiza una jugada para ver datos.</string>
     <string name="explorer_label_error">Error al conectar con Lichess.</string>
+    <string name="explorer_book_end">Fin del libro.\n\n%1$s\n(%2$s)</string>
 
     <string name="label_tiempo">Tiempo: </string>
     <string name="label_dificultad_ia">Nivel Stockfish: %1$d</string>
@@ -63,6 +74,14 @@
     <string name="btn_jugar_puzzle">JUGAR AHORA</string>
     <string name="stat_racha">Racha (Días)</string>
     <string name="stat_resueltos">Resueltos</string>
+    <string name="stat_default_zero">0</string>
+    <string name="stat_default_percent" formatted="false">0%</string>
+    <string name="placeholder_dash">-</string>
+    <string name="puzzle_powered_by">Powered by Lichess API</string>
+    <string name="puzzle_daily_description">Resuelve el mismo problema táctico que están jugando miles de maestros hoy.</string>
+    <string name="puzzle_progress_title">Tu Progreso</string>
+    <string name="stat_dias_racha">Días de racha</string>
+    <string name="stat_puzzles_resueltos">Puzzles resueltos</string>
     <string name="msg_reto_completado">🏆 ¡RETO COMPLETADO! 🏆</string>
     <string name="msg_jugada_incorrecta">Esa no es la jugada correcta. Sigue buscando.</string>
 
@@ -112,10 +131,18 @@
 
     <string name="titulo_bloc_notas">Bloc de Notas</string>
     <string name="subtitulo_bloc_notas">Guarda tus ideas, análisis y partidas</string>
+    <string name="note_icon">📝</string>
     <string name="nueva_nota">Nueva Nota</string>
     <string name="notas_recientes">Notas Recientes</string>
     <string name="sin_notas">No hay notas aún</string>
     <string name="crea_primera_nota">Crea tu primera nota para empezar</string>
+    <string name="note_hint_title">Título</string>
+    <string name="note_label_category">Categoría:</string>
+    <string name="note_hint_content">Escribe aquí...</string>
+    <string name="note_btn_share">Compartir Nota</string>
+    <string name="note_share_text">%1$s\n\n%2$s\n\n- Vía MateMate App</string>
+    <string name="note_share_chooser">Compartir con:</string>
+    <string name="note_delete_content_description">Borrar nota</string>
 
     <string name="config_titulo">Configurar Partida</string>
     <string name="config_modo">Modo de Juego</string>
@@ -127,6 +154,8 @@
     <string name="config_tiempo">Ritmo de Juego</string>
     <string name="config_nivel_ia">Nivel Stockfish:</string>
     <string name="btn_jugar_ahora">JUGAR AHORA</string>
+    <string name="config_dificultad_valor">%1$d</string>
+    <string name="default_difficulty_value">5</string>
     <string name="btn_google_signin">Entrar con Google</string>
     <string name="forum_nuevo_post">Nuevo post</string>
     <string name="forum_titulo_pantalla">Foro</string>
@@ -163,12 +192,19 @@
     <string name="dialog_vincular_lichess_titulo">Vincular Cuenta Lichess</string>
     <string name="dialog_vincular_lichess_mensaje">Introduce tu usuario para ver tu ELO real y estadísticas.</string>
     <string name="dialog_partida_finalizada">Partida Finalizada</string>
+    <string name="dialog_btn_aceptar">Aceptar</string>
     <string name="dialog_nueva_nota">Nueva Nota</string>
     <string name="dialog_editar_nota">Editar Nota</string>
     <string name="dialog_borrar_nota_titulo">¿Borrar nota?</string>
     <string name="dialog_borrar_nota_mensaje">Esta acción no se puede deshacer.</string>
     <string name="dialog_btn_si_borrar">Sí, borrar</string>
     <string name="dialog_btn_cancelar">Cancelar</string>
+    <string name="game_status_white_wins">¡Victoria! Ganan las Blancas</string>
+    <string name="game_status_black_wins">¡Victoria! Ganan las Negras</string>
+    <string name="game_status_draw_stalemate">Empate por ahogado</string>
+    <string name="game_status_draw_repetition">Empate por repetición</string>
+    <string name="game_status_puzzle_failed">Puzzle fallido</string>
+    <string name="game_status_finished">Partida finalizada</string>
     
     <!-- Strings de Login (hardcodes anteriores) -->
     <string name="login_crear_cuenta">Crear Cuenta</string>
@@ -185,4 +221,21 @@
     <!-- Strings de Modelos -->
     <string name="nota_categoria_general">General</string>
     <string name="chess_board_title">Tablero de Ajedrez</string>
+
+    <string-array name="game_time_options">
+        <item>Sin Límite</item>
+        <item>1 min (Bullet)</item>
+        <item>3 min (Blitz)</item>
+        <item>5 min (Blitz)</item>
+        <item>10 min (Rápida)</item>
+        <item>30 min (Clásica)</item>
+    </string-array>
+
+    <string-array name="note_category_options">
+        <item>General</item>
+        <item>Apertura</item>
+        <item>Partida</item>
+        <item>Análisis</item>
+        <item>Torneo</item>
+    </string-array>
 </resources>

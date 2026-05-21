@@ -50,7 +50,7 @@ class ChessBoardFragment : Fragment() {
         val gameMode = (arguments?.getString("modo") ?: "libre").toGameMode()
         val playerSide = if (arguments?.getString("side") == "BLACK") Side.BLACK else Side.WHITE
         val difficulty = arguments?.getInt("difficulty", 1) ?: 1
-        val title = arguments?.getString("titulo") ?: "Tablero"
+        val title = arguments?.getString("titulo") ?: getString(R.string.titulo_tablero)
         
         ChessBoardViewModelFactory(
             requireContext(),
@@ -185,20 +185,20 @@ class ChessBoardFragment : Fragment() {
      */
     private fun handleGameEnd(status: GameStatus) {
         val mensaje = when (status) {
-            GameStatus.WHITE_WINS -> "¡Victoria! Ganan las Blancas"
-            GameStatus.BLACK_WINS -> "¡Victoria! Ganan las Negras"
-            GameStatus.DRAW_STALEMATE -> "Empate por ahogado"
-            GameStatus.DRAW_REPETITION -> "Empate por repetición"
+            GameStatus.WHITE_WINS -> getString(R.string.game_status_white_wins)
+            GameStatus.BLACK_WINS -> getString(R.string.game_status_black_wins)
+            GameStatus.DRAW_STALEMATE -> getString(R.string.game_status_draw_stalemate)
+            GameStatus.DRAW_REPETITION -> getString(R.string.game_status_draw_repetition)
             GameStatus.PUZZLE_SOLVED -> getString(R.string.msg_reto_completado)
-            GameStatus.PUZZLE_FAILED -> "Puzzle fallido"
-            else -> "Partida finalizada"
+            GameStatus.PUZZLE_FAILED -> getString(R.string.game_status_puzzle_failed)
+            else -> getString(R.string.game_status_finished)
         }
 
         binding.chessBoard.isEnabled = false
         AlertDialog.Builder(requireContext())
             .setTitle(getString(R.string.dialog_partida_finalizada))
             .setMessage(mensaje)
-            .setPositiveButton("Aceptar", null)
+            .setPositiveButton(getString(R.string.dialog_btn_aceptar), null)
             .setCancelable(false)
             .show()
     }
@@ -242,7 +242,7 @@ class ChessBoardFragment : Fragment() {
 
         if (isEmpty) {
             if (opening != null) {
-                binding.tvExplorerStatus?.text = "Fin del libro.\n\n${opening.name}\n(${opening.eco})"
+                binding.tvExplorerStatus?.text = getString(R.string.explorer_book_end, opening.name, opening.eco)
                 binding.tvExplorerStatus?.setTextColor(Color.BLACK)
             } else {
                 binding.tvExplorerStatus?.text = getString(R.string.explorer_label_empty)

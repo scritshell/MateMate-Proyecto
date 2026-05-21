@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">MateMate</string>
+    <string name="default_player_name">Player</string>
 
     <string name="navigation_drawer_open">Open menu</string>
     <string name="navigation_drawer_close">Close menu</string>
@@ -10,6 +11,8 @@
     <string name="idioma">Language</string>
     <string name="lang_es">Español</string>
     <string name="lang_en">English</string>
+    <string name="settings_board_pieces">Board and Pieces</string>
+    <string name="settings_alt_piece_style">Use alternative piece style</string>
 
     <string name="menu_inicio">Home</string>
     <string name="menu_bloc_notas">Notepad</string>
@@ -36,6 +39,13 @@
     <string name="texto_tacticas">Tactics</string>
     <string name="texto_amigos">Friends</string>
     <string name="titulo_noticias">Chess News</string>
+    <string name="inicio_saludo_usuario">Hi, %1$s!</string>
+    <string name="inicio_modo_invitado">Guest Mode</string>
+    <string name="hint_lichess_user">Lichess username (for example: MagnusCarlsen)</string>
+    <string name="lichess_loading">Loading %1$s...</string>
+    <string name="estado_en_linea">Online</string>
+    <string name="estado_offline">Offline</string>
+    <string name="news_unknown_source">Unknown</string>
 
     <string name="titulo_aperturas">Openings</string>
     <string name="apertura_italiana">Italian Game</string>
@@ -83,7 +93,7 @@
 
     <string name="titulo_tablero">Chess Board</string>
     <string name="titulo_historial">Game History</string>
-    <string name="btn_exit">Exit"</string>
+    <string name="btn_exit">Exit</string>
     <string name="btn_deshacer">Undo</string>
     <string name="btn_rehacer">Redo</string>
     <string name="btn_reiniciar">Reset</string>
@@ -97,23 +107,41 @@
     <string name="explorer_label_loading">Loading data from masters...</string>
     <string name="explorer_label_empty">Do a move to see data.</string>
     <string name="explorer_label_error">Error after trying to connect to Lichess.</string>
+    <string name="explorer_book_end">End of book.\n\n%1$s\n(%2$s)</string>
 
     <string name="label_tiempo">Time: </string>
-    <string name="label_dificultad_ia">Stockfish Level: %1$d</string> <string name="label_profundidad">Profundidad: %1$d</string>
+    <string name="label_dificultad_ia">Stockfish Level: %1$d</string>
+    <string name="label_profundidad">Depth: %1$d</string>
 
 
     <string name="titulo_bloc_notas">Notepad</string>
     <string name="subtitulo_bloc_notas">Save your ideas, analysis and games</string>
+    <string name="note_icon">📝</string>
     <string name="nueva_nota">New Note</string>
     <string name="notas_recientes">Recent Notes</string>
     <string name="sin_notas">No notes yet</string>
     <string name="crea_primera_nota">Create your first note to start</string>
+    <string name="note_hint_title">Title</string>
+    <string name="note_label_category">Category:</string>
+    <string name="note_hint_content">Write here...</string>
+    <string name="note_btn_share">Share Note</string>
+    <string name="note_share_text">%1$s\n\n%2$s\n\n- Via MateMate App</string>
+    <string name="note_share_chooser">Share with:</string>
+    <string name="note_delete_content_description">Delete note</string>
 
     <string name="titulo_puzzleDiario">Daily Puzzle</string>
     <string name="subtitulo_puzzleDiario">Improve your level with Lichess official challenge</string>
     <string name="btn_jugar_puzzle">PLAY NOW</string>
     <string name="stat_racha">Streak (Days)</string>
     <string name="stat_resueltos">Solved</string>
+    <string name="stat_default_zero">0</string>
+    <string name="stat_default_percent" formatted="false">0%</string>
+    <string name="placeholder_dash">-</string>
+    <string name="puzzle_powered_by">Powered by Lichess API</string>
+    <string name="puzzle_daily_description">Solve the same tactical problem thousands of masters are playing today.</string>
+    <string name="puzzle_progress_title">Your Progress</string>
+    <string name="stat_dias_racha">Streak days</string>
+    <string name="stat_puzzles_resueltos">Puzzles solved</string>
     <string name="msg_reto_completado">🏆 CHALLENGE COMPLETED! 🏆</string>
     <string name="msg_jugada_incorrecta">That is not the correct move. Keep looking.</string>
 
@@ -127,6 +155,8 @@
     <string name="config_tiempo">Time Control</string>
     <string name="config_nivel_ia">Stockfish Level:</string>
     <string name="btn_jugar_ahora">PLAY NOW</string>
+    <string name="config_dificultad_valor">%1$d</string>
+    <string name="default_difficulty_value">5</string>
     <string name="btn_google_signin">Sign in with Google</string>
     <string name="menu_mapa">Nearby Clubs</string>
     <string name="forum_nuevo_post">New post</string>
@@ -164,12 +194,19 @@
     <string name="dialog_vincular_lichess_titulo">Link Lichess Account</string>
     <string name="dialog_vincular_lichess_mensaje">Enter your username to see your real ELO and statistics.</string>
     <string name="dialog_partida_finalizada">Game Over</string>
+    <string name="dialog_btn_aceptar">OK</string>
     <string name="dialog_nueva_nota">New Note</string>
     <string name="dialog_editar_nota">Edit Note</string>
     <string name="dialog_borrar_nota_titulo">Delete note?</string>
     <string name="dialog_borrar_nota_mensaje">This action cannot be undone.</string>
     <string name="dialog_btn_si_borrar">Yes, delete</string>
     <string name="dialog_btn_cancelar">Cancel</string>
+    <string name="game_status_white_wins">White wins!</string>
+    <string name="game_status_black_wins">Black wins!</string>
+    <string name="game_status_draw_stalemate">Draw by stalemate</string>
+    <string name="game_status_draw_repetition">Draw by repetition</string>
+    <string name="game_status_puzzle_failed">Puzzle failed</string>
+    <string name="game_status_finished">Game finished</string>
     
     <!-- Login strings (previous hardcodes) -->
     <string name="login_crear_cuenta">Create Account</string>
@@ -186,4 +223,21 @@
     <!-- Model strings -->
     <string name="nota_categoria_general">General</string>
     <string name="chess_board_title">Chess Board</string>
+
+    <string-array name="game_time_options">
+        <item>No Limit</item>
+        <item>1 min (Bullet)</item>
+        <item>3 min (Blitz)</item>
+        <item>5 min (Blitz)</item>
+        <item>10 min (Rapid)</item>
+        <item>30 min (Classical)</item>
+    </string-array>
+
+    <string-array name="note_category_options">
+        <item>General</item>
+        <item>Opening</item>
+        <item>Game</item>
+        <item>Analysis</item>
+        <item>Tournament</item>
+    </string-array>
 </resources>

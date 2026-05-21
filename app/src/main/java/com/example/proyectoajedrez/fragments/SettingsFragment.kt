@@ -11,6 +11,7 @@ import androidx.core.os.LocaleListCompat
 import androidx.fragment.app.Fragment
 import com.example.proyectoajedrez.R
 import com.example.proyectoajedrez.databinding.FragmentSettingsBinding
+import com.example.proyectoajedrez.utils.LocaleManager
 import com.example.proyectoajedrez.utils.PrefKeys
 
 // Fragmento de configuración para ajustes de la aplicación
@@ -50,9 +51,10 @@ class SettingsFragment : Fragment() {
 
     // Configurar selección de idioma (español/inglés)
     private fun setupLanguage() {
-        val currentLocale = AppCompatDelegate.getApplicationLocales().toLanguageTags()
+        val localeManager = LocaleManager(requireContext())
+        val currentLocale = localeManager.getLanguage()
 
-        if (currentLocale.contains("en")) {
+        if (currentLocale == "en") {
             binding.rbEnglish.isChecked = true
         } else {
             binding.rbSpanish.isChecked = true
@@ -64,6 +66,7 @@ class SettingsFragment : Fragment() {
                 else -> "es"
             }
 
+            localeManager.setLanguage(idioma)
             val appLocale = LocaleListCompat.forLanguageTags(idioma)
             AppCompatDelegate.setApplicationLocales(appLocale)
         }

@@ -39,7 +39,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Puzzle Diario"
+                    android:text="@string/titulo_puzzleDiario"
                     android:textColor="@color/white"
                     android:textSize="24sp"
                     android:textStyle="bold"
@@ -48,7 +48,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Reto oficial de Lichess.org"
+                    android:text="@string/subtitulo_puzzleDiario"
                     android:textColor="#B0BEC5"
                     android:textSize="12sp"
                     android:layout_marginBottom="16dp"/>
@@ -57,7 +57,7 @@
                     android:id="@+id/btnJugarDiario"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:text="JUGAR AHORA"
+                    android:text="@string/btn_jugar_puzzle"
                     android:backgroundTint="#FFD700"
                     android:textColor="@color/black"
                     android:textStyle="bold"
@@ -106,7 +106,7 @@
                         android:id="@+id/tvRacha"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0"
+                        android:text="@string/stat_default_zero"
                         android:textSize="24sp"
                         android:textStyle="bold"
                         android:textColor="@color/teal_700"
@@ -115,7 +115,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Días de racha"
+                        android:text="@string/stat_dias_racha"
                         android:textSize="14sp"
                         android:textColor="#757575"/>
                 </LinearLayout>
@@ -138,7 +138,7 @@
                         android:id="@+id/tvTotalResueltos"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0"
+                        android:text="@string/stat_default_zero"
                         android:textSize="24sp"
                         android:textStyle="bold"
                         android:textColor="@color/purple_500"
@@ -147,7 +147,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Puzzles resueltos"
+                        android:text="@string/stat_puzzles_resueltos"
                         android:textSize="14sp"
                         android:textColor="#757575"/>
                 </LinearLayout>

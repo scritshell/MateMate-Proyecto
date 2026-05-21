@@ -2,6 +2,7 @@
 <!-- Layout para item de nota en RecyclerView del bloc de notas -->
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
@@ -31,31 +32,31 @@
                 android:id="@+id/tituloNota"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Análisis partida vs Carlos"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="@android:color/black"/>
+                android:textColor="@android:color/black"
+                tools:text="Análisis partida vs Carlos"/>
 
             <!-- Fecha de creación de la nota -->
             <TextView
                 android:id="@+id/fechaNota"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Hoy, 15:30"
                 android:textSize="12sp"
                 android:textColor="#666"
-                android:layout_marginTop="2dp" />
+                android:layout_marginTop="2dp"
+                tools:text="Hoy, 15:30" />
 
             <!-- Vista previa del contenido (recortada) -->
             <TextView
                 android:id="@+id/previewNota"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1.e4 e5..."
                 android:textSize="14sp"
                 android:maxLines="2"
                 android:ellipsize="end"
-                android:layout_marginTop="4dp" />
+                android:layout_marginTop="4dp"
+                tools:text="1.e4 e5..." />
         </LinearLayout>
 
         <!-- Botón para eliminar la nota -->
@@ -65,7 +66,7 @@
             android:layout_height="40dp"
             android:src="@android:drawable/ic_menu_delete"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Borrar nota"
+            android:contentDescription="@string/note_delete_content_description"
             app:tint="#F44336" />
 
     </LinearLayout>

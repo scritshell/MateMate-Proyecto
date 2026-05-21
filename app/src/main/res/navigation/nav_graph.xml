@@ -10,7 +10,7 @@
     <fragment
         android:id="@+id/inicioFragment"
         android:name="com.example.proyectoajedrez.fragments.InicioFragment"
-        android:label="Inicio"
+        android:label="@string/menu_inicio"
         tools:layout="@layout/fragment_inicio">
 
         <action
@@ -38,7 +38,7 @@
     <fragment
         android:id="@+id/aperturasFragment"
         android:name="com.example.proyectoajedrez.fragments.AperturasFragment"
-        android:label="Aperturas"
+        android:label="@string/menu_aperturas"
         tools:layout="@layout/fragment_aperturas">
 
         <action
@@ -50,7 +50,7 @@
     <fragment
         android:id="@+id/puzzleDiarioFragment"
         android:name="com.example.proyectoajedrez.fragments.PuzzleDiarioFragment"
-        android:label="Puzzle Diario"
+        android:label="@string/menu_puzzleDiario"
         tools:layout="@layout/fragment_puzzle_diario">
 
         <action
@@ -62,7 +62,7 @@
     <fragment
         android:id="@+id/blocNotasFragment"
         android:name="com.example.proyectoajedrez.fragments.BlocNotasFragment"
-        android:label="Bloc de Notas"
+        android:label="@string/menu_bloc_notas"
         tools:layout="@layout/fragment_bloc_notas">
 
         <action
@@ -74,13 +74,13 @@
     <fragment
         android:id="@+id/socialFragment"
         android:name="com.example.proyectoajedrez.fragments.SocialFragment"
-        android:label="Comunidad" />
+        android:label="@string/menu_comunidad" />
 
     <!-- Fragmento principal del tablero de ajedrez -->
     <fragment
         android:id="@+id/chessBoardFragment"
         android:name="com.example.proyectoajedrez.fragments.ChessBoardFragment"
-        android:label="Tablero de Ajedrez"
+        android:label="@string/titulo_tablero"
         tools:layout="@layout/fragment_chess_board">
 
         <argument
@@ -105,6 +105,6 @@
     <fragment
         android:id="@+id/nav_map"
         android:name="com.example.proyectoajedrez.fragments.MapFragment"
-        android:label="Clubes Cercanos" />
+        android:label="@string/menu_mapa" />
 
 </navigation>

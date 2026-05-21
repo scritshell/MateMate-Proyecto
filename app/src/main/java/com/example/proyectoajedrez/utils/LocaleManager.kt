@@ -26,7 +26,7 @@ class LocaleManager(context: Context) {
      */
     fun getLanguage(): String {
         val saved = prefs.getString(PrefKeys.KEY_IDIOMA, null)
-        return saved ?: getSystemLanguage()
+        return normalizeLanguage(saved ?: getSystemLanguage())
     }
     
     /**
@@ -34,7 +34,7 @@ class LocaleManager(context: Context) {
      * @param languageCode código de idioma ("es", "en", etc)
      */
     fun setLanguage(languageCode: String) {
-        prefs.edit().putString(PrefKeys.KEY_IDIOMA, languageCode).apply()
+        prefs.edit().putString(PrefKeys.KEY_IDIOMA, normalizeLanguage(languageCode)).apply()
     }
     
     /**
@@ -43,6 +43,10 @@ class LocaleManager(context: Context) {
      */
     private fun getSystemLanguage(): String {
         return Locale.getDefault().language
+    }
+
+    private fun normalizeLanguage(languageCode: String): String {
+        return if (languageCode == "en") "en" else "es"
     }
     
     /**

@@ -101,18 +101,23 @@ class BlocNotasFragment : Fragment() {
 
         // Campo para título de la nota
         val inputTitulo = EditText(requireContext())
-        inputTitulo.hint = "Título"
+        inputTitulo.hint = getString(R.string.note_hint_title)
         inputTitulo.setText(notaExistente?.titulo ?: "")
         layout.addView(inputTitulo)
 
         // Spinner para seleccionar categoría
         val tvCategoria = TextView(requireContext())
-        tvCategoria.text = "Categoría:"
+        tvCategoria.text = getString(R.string.note_label_category)
         tvCategoria.setPadding(0, 20, 0, 5)
         layout.addView(tvCategoria)
 
         val spinner = Spinner(requireContext())
-        val opciones = listOf("General", "Apertura", "Partida", "Análisis", "Torneo")
+        val opcionesBase = resources.getStringArray(R.array.note_category_options).toList()
+        val opciones = if (notaExistente?.categoria != null && notaExistente.categoria !in opcionesBase) {
+            listOf(notaExistente.categoria) + opcionesBase
+        } else {
+            opcionesBase
+        }
         val adapterSpinner = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, opciones)
         spinner.adapter = adapterSpinner
 
@@ -125,7 +130,7 @@ class BlocNotasFragment : Fragment() {
 
         // Campo para contenido de la nota
         val inputContenido = EditText(requireContext())
-        inputContenido.hint = "Escribe aquí..."
+        inputContenido.hint = getString(R.string.note_hint_content)
         inputContenido.minLines = 4
         inputContenido.setText(notaExistente?.contenido ?: "")
         layout.addView(inputContenido)
@@ -133,15 +138,19 @@ class BlocNotasFragment : Fragment() {
         // Botón para compartir nota (solo disponible en edición)
         if (notaExistente != null) {
             val btnShare = Button(requireContext())
-            btnShare.text = "📤 Compartir Nota"
+            btnShare.text = getString(R.string.note_btn_share)
             btnShare.setOnClickListener {
-                val textoACompartir = "📌 ${inputTitulo.text}\n\n${inputContenido.text}\n\n- Vía MateMate App"
+                val textoACompartir = getString(
+                    R.string.note_share_text,
+                    inputTitulo.text.toString(),
+                    inputContenido.text.toString()
+                )
                 val sendIntent = Intent().apply {
                     action = Intent.ACTION_SEND
                     putExtra(Intent.EXTRA_TEXT, textoACompartir)
                     type = "text/plain"
                 }
-                startActivity(Intent.createChooser(sendIntent, "Compartir con:"))
+                startActivity(Intent.createChooser(sendIntent, getString(R.string.note_share_chooser)))
             }
             layout.addView(btnShare)
         }
@@ -149,7 +158,7 @@ class BlocNotasFragment : Fragment() {
         builder.setView(layout)
 
         // Botón para guardar cambios
-        builder.setPositiveButton("Guardar") { _, _ ->
+        builder.setPositiveButton(getString(R.string.btn_guardar)) { _, _ ->
             val titulo = inputTitulo.text.toString()
             val contenido = inputContenido.text.toString()
             val categoria = spinner.selectedItem.toString()
@@ -158,7 +167,7 @@ class BlocNotasFragment : Fragment() {
                 guardarEnFirebase(notaExistente?.id, titulo, contenido, categoria)
             }
         }
-        builder.setNegativeButton("Cancelar", null)
+        builder.setNegativeButton(getString(R.string.dialog_btn_cancelar), null)
 
         builder.show()
     }
@@ -195,7 +204,7 @@ class BlocNotasFragment : Fragment() {
                         Toast.makeText(context, getString(R.string.msg_nota_eliminada), Toast.LENGTH_SHORT).show()
                     }
             }
-            .setNegativeButton("Cancelar", null)
+            .setNegativeButton(getString(R.string.dialog_btn_cancelar), null)
             .show()
     }
 

@@ -13,8 +13,13 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.proyectoajedrez.R
 import com.example.proyectoajedrez.databinding.ActivityMainBinding
+import com.example.proyectoajedrez.domain.model.UserRole
 import com.example.proyectoajedrez.fragments.GameSetupDialogFragment
 import com.example.proyectoajedrez.fragments.LoginDialogFragment
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 // El contenedor principal del proyecto. Patrón utilizado: Single Activity Architecture.
 
@@ -28,6 +33,8 @@ class MainActivity : AppCompatActivity() {
 
     // Gestor de sesión de usuario
     private lateinit var session: SessionManager
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -123,9 +130,29 @@ class MainActivity : AppCompatActivity() {
 
     // Verificar si el usuario está logueado
     private fun checkLoginStatus() {
-        if (!session.isLoggedIn()) {
+        val firebaseUser = auth.currentUser
+        if (!session.isLoggedIn() || firebaseUser == null) {
+            session.logoutUser()
+            auth.signOut()
             mostrarLoginDialog()
+            return
         }
+
+        val savedUid = session.getUserUid()
+        if (!savedUid.isNullOrBlank() && savedUid != firebaseUser.uid) {
+            session.logoutUser()
+            auth.signOut()
+            mostrarLoginDialog()
+            return
+        }
+
+        refrescarSesionDesdeFirestore(
+            uid = firebaseUser.uid,
+            fallbackUsername = session.getUsername()
+                ?: firebaseUser.displayName
+                ?: firebaseUser.email?.substringBefore("@")
+                ?: getString(R.string.default_player_name)
+        )
     }
 
     // Mostrar diálogo de login
@@ -166,6 +193,7 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             R.id.action_logout -> {
+                cerrarSesionFirebase()
                 session.logoutUser() // Cerrar sesión
                 actualizarMenu()     // Actualizar toolbar
                 mostrarLoginDialog() // Pedir el login nuevamente.
@@ -186,5 +214,39 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    private fun refrescarSesionDesdeFirestore(uid: String, fallbackUsername: String) {
+        db.collection("usuarios").document(uid).get()
+            .addOnSuccessListener { document ->
+                val username = document.getString("username")
+                    ?.takeIf { it.isNotBlank() }
+                    ?: fallbackUsername
+                val role = parseUserRole(document.getString("role"))
+                session.createLoginSession(username, uid, role)
+                actualizarMenu()
+            }
+            .addOnFailureListener {
+                if (session.getUserUid().isNullOrBlank()) {
+                    session.createLoginSession(fallbackUsername, uid, session.getUserRole())
+                    actualizarMenu()
+                }
+            }
+    }
+
+    private fun parseUserRole(role: String?): UserRole {
+        return runCatching {
+            UserRole.valueOf(role?.uppercase() ?: UserRole.USER.name)
+        }.getOrDefault(UserRole.USER)
+    }
+
+    private fun cerrarSesionFirebase() {
+        auth.signOut()
+
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        GoogleSignIn.getClient(this, gso).signOut()
     }
 }

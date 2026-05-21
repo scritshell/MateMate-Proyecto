@@ -65,7 +65,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Puzzle Diario"
+                            android:text="@string/titulo_puzzleDiario"
                             android:textColor="@color/white"
                             android:textSize="22sp"
                             android:textStyle="bold"/>
@@ -73,7 +73,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Powered by Lichess API"
+                            android:text="@string/puzzle_powered_by"
                             android:textColor="#B0BEC5"
                             android:textSize="12sp"/>
                     </LinearLayout>
@@ -82,7 +82,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Resuelve el mismo problema táctico que están jugando miles de maestros hoy."
+                    android:text="@string/puzzle_daily_description"
                     android:textColor="#CFD8DC"
                     android:layout_marginBottom="20dp"/>
 
@@ -90,7 +90,7 @@
                     android:id="@+id/btnJugarDiario"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:text="JUGAR AHORA"
+                    android:text="@string/btn_jugar_puzzle"
                     android:backgroundTint="#FFD700"
                     android:textColor="@color/black"
                     android:textSize="16sp"
@@ -101,7 +101,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tu Progreso"
+            android:text="@string/puzzle_progress_title"
             android:textColor="@color/purple_500"
             android:textStyle="bold"
             android:textSize="18sp"
@@ -132,7 +132,7 @@
                         android:id="@+id/tvRacha"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0"
+                        android:text="@string/stat_default_zero"
                         android:textSize="32sp"
                         android:textStyle="bold"
                         android:textColor="@color/teal_700"/>
@@ -140,7 +140,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Racha (Días)"
+                        android:text="@string/stat_racha"
                         android:textSize="12sp"
                         android:textColor="#757575"/>
                 </LinearLayout>
@@ -165,7 +165,7 @@
                         android:id="@+id/tvTotalResueltos"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0"
+                        android:text="@string/stat_default_zero"
                         android:textSize="32sp"
                         android:textStyle="bold"
                         android:textColor="@color/purple_500"/>
@@ -173,7 +173,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Resueltos"
+                        android:text="@string/stat_resueltos"
                         android:textSize="12sp"
                         android:textColor="#757575"/>
                 </LinearLayout>

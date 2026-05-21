@@ -13,6 +13,7 @@ import androidx.fragment.app.DialogFragment
 import com.example.proyectoajedrez.R
 import com.example.proyectoajedrez.activities.MainActivity
 import com.example.proyectoajedrez.activities.SessionManager
+import com.example.proyectoajedrez.domain.model.UserRole
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
@@ -21,75 +22,66 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 
-// Fragmento de diálogo para login/registro de usuarios
 class LoginDialogFragment : DialogFragment() {
 
-    private var esModoRegistro = false                // Controla si estamos en registro o login
-    private val auth = FirebaseAuth.getInstance()     // Autenticación Firebase
-    private val db = FirebaseFirestore.getInstance()  // Base de datos Firestore
+    private var esModoRegistro = false
+    private val auth = FirebaseAuth.getInstance()
+    private val db = FirebaseFirestore.getInstance()
+
+    // Referencias a vistas que necesitamos fuera de onCreateDialog
+    private var tvTitulo: TextView? = null
+    private var btnAccion: Button? = null
+    private var tvCambiarModo: TextView? = null
+    private var layoutUsername: TextInputLayout? = null
+    private var layoutEmail: TextInputLayout? = null
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(requireActivity())
         val inflater = requireActivity().layoutInflater
         val view = inflater.inflate(R.layout.dialog_login, null)
 
-        // Referencias a elementos de la vista
-        val tvTitulo = view.findViewById<TextView>(R.id.tvTitulo)
-        val layoutUsername = view.findViewById<TextInputLayout>(R.id.layoutUsername)
+        // Referencias a vistas
+        tvTitulo = view.findViewById(R.id.tvTitulo)
+        layoutUsername = view.findViewById(R.id.layoutUsername)
         val etUsername = view.findViewById<EditText>(R.id.etUsername)
-        val layoutEmail = view.findViewById<TextInputLayout>(R.id.layoutEmail)
-        val etEmail = view.findViewById<EditText>(R.id.etEmail)  // Email en registro, Email/Usuario en login
+        layoutEmail = view.findViewById(R.id.layoutEmail)
+        val etEmail = view.findViewById<EditText>(R.id.etEmail)
         val etPassword = view.findViewById<EditText>(R.id.etPassword)
-        val btnAccion = view.findViewById<Button>(R.id.btnLogin)
-        val btnGoogleSignIn = view.findViewById<Button>(R.id.btnGoogleSignIn) // <-- NUEVO BOTÓN DE GOOGLE
-        val tvCambiarModo = view.findViewById<TextView>(R.id.tvCambiarModo)
+        btnAccion = view.findViewById(R.id.btnLogin)
+        val btnGoogleSignIn = view.findViewById<Button>(R.id.btnGoogleSignIn)
+        tvCambiarModo = view.findViewById(R.id.tvCambiarModo)
 
-        isCancelable = false  // Diálogo no cancelable (obligatorio login)
+        isCancelable = false
 
-        // Cambiar entre modos Login y Registro
-        tvCambiarModo.setOnClickListener {
+        // Alternar entre modo login y registro
+        tvCambiarModo?.setOnClickListener {
             esModoRegistro = !esModoRegistro
-
-            if (esModoRegistro) {
-                // Configurar interfaz para registro
-                tvTitulo.text = getString(R.string.login_crear_cuenta)
-                btnAccion.text = getString(R.string.btn_registrarse)
-                tvCambiarModo.text = getString(R.string.ir_a_login)
-                layoutUsername.visibility = View.VISIBLE  // Mostrar campo username
-                layoutEmail.hint = getString(R.string.login_hint_email)                // Solo email en registro
-            } else {
-                // Configurar interfaz para login
-                tvTitulo.text = getString(R.string.login_iniciar_sesion)
-                btnAccion.text = getString(R.string.btn_entrar)
-                tvCambiarModo.text = getString(R.string.ir_a_registro)
-                layoutUsername.visibility = View.GONE     // Ocultar campo username
-                layoutEmail.hint = getString(R.string.login_hint_email_usuario)      // Acepta email o username
-            }
+            actualizarModoUI()
         }
 
-        // Botón principal de acción (Login o Registro Normal)
-        btnAccion.setOnClickListener {
+        // Botón principal
+        btnAccion?.setOnClickListener {
             val inputEmailUser = etEmail.text.toString().trim()
             val password = etPassword.text.toString().trim()
             val username = etUsername.text.toString().trim()
 
-            if (inputEmailUser.isNotEmpty() && password.isNotEmpty()) {
-                if (esModoRegistro) {
-                    if (username.isEmpty()) {
-                        Toast.makeText(context, getString(R.string.msg_username_obligatorio), Toast.LENGTH_SHORT).show()
-                    } else {
-                        verificarYRegistrar(inputEmailUser, password, username)
-                    }
+            if (inputEmailUser.isEmpty() || password.isEmpty()) {
+                mostrarToast(getString(R.string.msg_rellena_campos))
+                return@setOnClickListener
+            }
+
+            if (esModoRegistro) {
+                if (username.isEmpty()) {
+                    mostrarToast(getString(R.string.msg_username_obligatorio))
                 } else {
-                    loginInteligente(inputEmailUser, password)
+                    verificarYRegistrar(inputEmailUser, password, username)
                 }
             } else {
-                Toast.makeText(context, getString(R.string.msg_rellena_campos), Toast.LENGTH_SHORT).show()
+                loginInteligente(inputEmailUser, password)
             }
         }
 
-        // --- LÓGICA DEL BOTÓN DE GOOGLE ---
-        btnGoogleSignIn.setOnClickListener {
+        btnGoogleSignIn?.setOnClickListener {
             iniciarGoogleSignIn()
         }
 
@@ -97,112 +89,161 @@ class LoginDialogFragment : DialogFragment() {
         return builder.create()
     }
 
-    // --- FUNCIONES DE GOOGLE SIGN-IN ---
-
-    private fun iniciarGoogleSignIn() {
-        // El Web Client ID se auto-genera gracias a google-services.json
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-
-        val googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
-        // Lanzamos la ventana emergente de Google
-        startActivityForResult(googleSignInClient.signInIntent, RC_SIGN_IN)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        // Recogemos el resultado de la ventana de Google
-        if (requestCode == RC_SIGN_IN) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            try {
-                val account = task.getResult(ApiException::class.java)
-                val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-
-                // Le pasamos las credenciales a Firebase
-                auth.signInWithCredential(credential)
-                    .addOnCompleteListener(requireActivity()) { authTask ->
-                        if (authTask.isSuccessful) {
-                            val user = auth.currentUser
-                            guardarUsuarioGoogleEnFirestore(user)
-
-                            // Extraemos el nombre para mostrarlo en el Toast
-                            val nombreParaMostrar = user?.displayName ?: user?.email?.substringBefore("@") ?: "Jugador"
-                            iniciarSesionEnApp(nombreParaMostrar)
-
-                        } else {
-                            Toast.makeText(context, getString(R.string.msg_error_google, authTask.exception?.message ?: ""), Toast.LENGTH_LONG).show()
-                        }
-                    }
-            } catch (e: ApiException) {
-                Toast.makeText(context, getString(R.string.msg_google_cancelado), Toast.LENGTH_SHORT).show()
-            }
+    // Centraliza el cambio de UI al alternar modos
+    private fun actualizarModoUI() {
+        if (esModoRegistro) {
+            tvTitulo?.text = getString(R.string.login_crear_cuenta)
+            btnAccion?.text = getString(R.string.btn_registrarse)
+            tvCambiarModo?.text = getString(R.string.ir_a_login)
+            layoutUsername?.visibility = View.VISIBLE
+            layoutEmail?.hint = getString(R.string.login_hint_email)
+        } else {
+            tvTitulo?.text = getString(R.string.login_iniciar_sesion)
+            btnAccion?.text = getString(R.string.btn_entrar)
+            tvCambiarModo?.text = getString(R.string.ir_a_registro)
+            layoutUsername?.visibility = View.GONE
+            layoutEmail?.hint = getString(R.string.login_hint_email_usuario)
         }
     }
 
-    private fun guardarUsuarioGoogleEnFirestore(user: com.google.firebase.auth.FirebaseUser?) {
-        user ?: return
-
-        // Solo creamos el documento si es su primera vez en la app
-        db.collection("usuarios").document(user.uid)
-            .get()
-            .addOnSuccessListener { doc ->
-                if (!doc.exists()) {
-                    val datos = hashMapOf(
-                        "username" to (user.displayName ?: user.email?.substringBefore("@") ?: "Jugador"),
-                        "email" to (user.email ?: ""),
-                        "elo" to 1200,
-                        "fechaRegistro" to System.currentTimeMillis()
-                    )
-                    db.collection("usuarios").document(user.uid).set(datos)
-                }
-            }
-    }
-
-
-    // --- FUNCIONES DE LOGIN TRADICIONAL ---
+    // --- REGISTRO ---
 
     private fun verificarYRegistrar(email: String, pass: String, username: String) {
         db.collection("usuarios")
             .whereEqualTo("username", username)
             .get()
             .addOnSuccessListener { documents ->
+                // Verificamos que el fragment sigue activo antes de tocar la UI
+                if (!isAdded) return@addOnSuccessListener
+
                 if (!documents.isEmpty) {
-                    Toast.makeText(context, getString(R.string.msg_usuario_existe), Toast.LENGTH_SHORT).show()
+                    mostrarToast(getString(R.string.msg_usuario_existe))
                 } else {
-                    auth.createUserWithEmailAndPassword(email, pass)
-                        .addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                val userId = auth.currentUser?.uid
-                                val datosUsuario = hashMapOf(
-                                    "username" to username,
-                                    "email" to email,
-                                    "elo" to 1200,
-                                    "fechaRegistro" to System.currentTimeMillis()
-                                )
-                                if (userId != null) {
-                                    db.collection("usuarios").document(userId).set(datosUsuario)
-                                }
-                                Toast.makeText(context, getString(R.string.msg_cuenta_creada), Toast.LENGTH_SHORT).show()
-                                iniciarSesionEnApp(username)
-                            } else {
-                                Toast.makeText(context, getString(R.string.msg_error_login, task.exception?.message ?: ""), Toast.LENGTH_LONG).show()
+                    crearCuentaFirebase(email, pass, username)
+                }
+            }
+            .addOnFailureListener { exception ->
+                // ESTE BLOQUE ERA EL QUE FALTABA — sin él, los errores de Firestore
+                // (reglas de seguridad, red, etc.) se tragaban en silencio
+                if (!isAdded) return@addOnFailureListener
+                mostrarToast(getString(R.string.msg_error_conexion))
+            }
+    }
+
+    private fun crearCuentaFirebase(email: String, pass: String, username: String) {
+        auth.createUserWithEmailAndPassword(email, pass)
+            .addOnCompleteListener(requireActivity()) { task ->
+                // requireActivity() como executor garantiza que el callback
+                // se ejecuta en el hilo principal y ligado al ciclo de vida
+                if (!isAdded) return@addOnCompleteListener
+
+                if (task.isSuccessful) {
+                    val userId = auth.currentUser?.uid
+                    if (userId != null) {
+                        guardarUsuarioEnFirestore(userId, username, email)
+                            .addOnSuccessListener {
+                                if (!isAdded) return@addOnSuccessListener
+                                mostrarToast(getString(R.string.msg_cuenta_creada))
+                                iniciarSesionEnApp(username, userId, UserRole.USER)
                             }
-                        }
+                            .addOnFailureListener {
+                                if (!isAdded) return@addOnFailureListener
+                                mostrarToast(getString(R.string.msg_error_conexion))
+                            }
+                    } else {
+                        mostrarToast(getString(R.string.msg_error_conexion))
+                    }
+                } else {
+                    val mensaje = task.exception?.message ?: ""
+                    mostrarToast(getString(R.string.msg_error_login, mensaje))
                 }
             }
     }
 
+    private fun guardarUsuarioEnFirestore(userId: String, username: String, email: String) =
+        db.collection("usuarios").document(userId).set(
+            hashMapOf(
+                "uid" to userId,
+                "username" to username,
+                "email" to email,
+                "elo" to 1200,
+                "role" to UserRole.USER.name,
+                "createdAt" to System.currentTimeMillis(),
+                "fechaRegistro" to System.currentTimeMillis()
+            )
+        )
+
+    private fun parseUserRole(role: String?): UserRole {
+        return runCatching {
+            UserRole.valueOf(role?.uppercase() ?: UserRole.USER.name)
+        }.getOrDefault(UserRole.USER)
+    }
+
+    private fun getDocumentRole(document: com.google.firebase.firestore.DocumentSnapshot): UserRole {
+        return parseUserRole(document.getString("role"))
+    }
+
+    private fun getDocumentUsername(document: com.google.firebase.firestore.DocumentSnapshot, fallback: String): String {
+        return document.getString("username")?.takeIf { it.isNotBlank() } ?: fallback
+    }
+
+    private fun crearDatosUsuarioGoogle(user: com.google.firebase.auth.FirebaseUser): HashMap<String, Any> {
+        val username = user.displayName ?: user.email?.substringBefore("@") ?: getString(R.string.default_player_name)
+        return hashMapOf(
+            "uid" to user.uid,
+            "username" to username,
+            "email" to (user.email ?: ""),
+            "elo" to 1200,
+            "role" to UserRole.USER.name,
+            "createdAt" to System.currentTimeMillis(),
+            "fechaRegistro" to System.currentTimeMillis()
+        )
+    }
+
+    private fun entrarConUsuarioGoogle(user: com.google.firebase.auth.FirebaseUser?) {
+        user ?: return
+        val fallbackName = user.displayName ?: user.email?.substringBefore("@") ?: getString(R.string.default_player_name)
+        val userDoc = db.collection("usuarios").document(user.uid)
+
+        userDoc.get()
+            .addOnSuccessListener { doc ->
+                if (!isAdded) return@addOnSuccessListener
+                if (doc.exists()) {
+                    iniciarSesionEnApp(
+                        getDocumentUsername(doc, fallbackName),
+                        user.uid,
+                        getDocumentRole(doc)
+                    )
+                } else {
+                    userDoc.set(crearDatosUsuarioGoogle(user))
+                        .addOnSuccessListener {
+                            if (!isAdded) return@addOnSuccessListener
+                            iniciarSesionEnApp(fallbackName, user.uid, UserRole.USER)
+                        }
+                        .addOnFailureListener {
+                            if (!isAdded) return@addOnFailureListener
+                            mostrarToast(getString(R.string.msg_error_conexion))
+                        }
+                }
+            }
+            .addOnFailureListener {
+                if (!isAdded) return@addOnFailureListener
+                mostrarToast(getString(R.string.msg_error_conexion))
+            }
+    }
+
+    // --- LOGIN ---
+
     private fun loginInteligente(input: String, pass: String) {
         if (input.contains("@")) {
             auth.signInWithEmailAndPassword(input, pass)
-                .addOnCompleteListener { task ->
+                .addOnCompleteListener(requireActivity()) { task ->
+                    if (!isAdded) return@addOnCompleteListener
                     if (task.isSuccessful) {
                         buscarUsernameYEntrar(auth.currentUser?.uid)
                     } else {
-                        Toast.makeText(context, getString(R.string.msg_login_fallido, task.exception?.message ?: ""), Toast.LENGTH_LONG).show()
+                        val mensaje = task.exception?.message ?: ""
+                        mostrarToast(getString(R.string.msg_login_fallido, mensaje))
                     }
                 }
         } else {
@@ -210,24 +251,33 @@ class LoginDialogFragment : DialogFragment() {
                 .whereEqualTo("username", input)
                 .get()
                 .addOnSuccessListener { documents ->
+                    if (!isAdded) return@addOnSuccessListener
                     if (documents.isEmpty) {
-                        Toast.makeText(context, getString(R.string.msg_usuario_no_encontrado), Toast.LENGTH_SHORT).show()
-                    } else {
-                        val email = documents.documents[0].getString("email")
-                        if (email != null) {
-                            auth.signInWithEmailAndPassword(email, pass)
-                                .addOnCompleteListener { task ->
-                                    if (task.isSuccessful) {
-                                        iniciarSesionEnApp(input)
-                                    } else {
-                                        Toast.makeText(context, getString(R.string.msg_password_incorrecta), Toast.LENGTH_SHORT).show()
-                                    }
+                        mostrarToast(getString(R.string.msg_usuario_no_encontrado))
+                        return@addOnSuccessListener
+                    }
+                    val email = documents.documents[0].getString("email")
+                    val document = documents.documents[0]
+                    val username = getDocumentUsername(document, input)
+                    val role = getDocumentRole(document)
+                    if (email != null) {
+                        auth.signInWithEmailAndPassword(email, pass)
+                            .addOnCompleteListener(requireActivity()) { task ->
+                                if (!isAdded) return@addOnCompleteListener
+                                if (task.isSuccessful) {
+                                    val uid = auth.currentUser?.uid ?: document.id
+                                    iniciarSesionEnApp(username, uid, role)
+                                } else {
+                                    mostrarToast(getString(R.string.msg_password_incorrecta))
                                 }
-                        }
+                            }
+                    } else {
+                        mostrarToast(getString(R.string.msg_error_conexion))
                     }
                 }
                 .addOnFailureListener {
-                    Toast.makeText(context, getString(R.string.msg_error_conexion), Toast.LENGTH_SHORT).show()
+                    if (!isAdded) return@addOnFailureListener
+                    mostrarToast(getString(R.string.msg_error_conexion))
                 }
         }
     }
@@ -236,21 +286,76 @@ class LoginDialogFragment : DialogFragment() {
         if (uid == null) return
         db.collection("usuarios").document(uid).get()
             .addOnSuccessListener { document ->
-                val username = document.getString("username") ?: "Jugador"
-                iniciarSesionEnApp(username)
+                if (!isAdded) return@addOnSuccessListener
+                val username = getDocumentUsername(document, getString(R.string.default_player_name))
+                iniciarSesionEnApp(username, uid, getDocumentRole(document))
+            }
+            .addOnFailureListener {
+                if (!isAdded) return@addOnFailureListener
+                // Entramos igual aunque no encontremos el username en Firestore
+                iniciarSesionEnApp(
+                    auth.currentUser?.email?.substringBefore("@") ?: getString(R.string.default_player_name),
+                    uid,
+                    UserRole.USER
+                )
             }
     }
 
-    private fun iniciarSesionEnApp(nombre: String) {
+    // --- GOOGLE SIGN-IN ---
+
+    private fun iniciarGoogleSignIn() {
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        val googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
+        @Suppress("DEPRECATION")
+        startActivityForResult(googleSignInClient.signInIntent, RC_SIGN_IN)
+    }
+
+    @Suppress("DEPRECATION")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode != RC_SIGN_IN) return
+
+        val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+        try {
+            val account = task.getResult(ApiException::class.java)
+            val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+            auth.signInWithCredential(credential)
+                .addOnCompleteListener(requireActivity()) { authTask ->
+                    if (!isAdded) return@addOnCompleteListener
+                    if (authTask.isSuccessful) {
+                        val user = auth.currentUser
+                        entrarConUsuarioGoogle(user)
+                    } else {
+                        val mensaje = authTask.exception?.message ?: ""
+                        mostrarToast(getString(R.string.msg_error_google, mensaje))
+                    }
+                }
+        } catch (e: ApiException) {
+            mostrarToast(getString(R.string.msg_google_cancelado))
+        }
+    }
+
+    // --- HELPERS ---
+
+    private fun iniciarSesionEnApp(nombre: String, uid: String, role: UserRole) {
         val session = SessionManager(requireContext())
-        session.createLoginSession(nombre)
+        session.createLoginSession(nombre, uid, role)
         (activity as? MainActivity)?.actualizarMenu()
-        Toast.makeText(context, getString(R.string.msg_bienvenida, nombre), Toast.LENGTH_SHORT).show()
+        mostrarToast(getString(R.string.msg_bienvenida, nombre))
         dismiss()
     }
 
+    // Centraliza los Toasts con comprobación de isAdded
+    private fun mostrarToast(mensaje: String) {
+        if (isAdded) {
+            Toast.makeText(requireContext(), mensaje, Toast.LENGTH_SHORT).show()
+        }
+    }
+
     companion object {
-        // Código de respuesta constante para saber que volvemos de la ventana de Google
         private const val RC_SIGN_IN = 9001
     }
 }

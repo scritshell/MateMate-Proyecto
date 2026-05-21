@@ -2,6 +2,7 @@
 <!-- Layout para item de apertura en RecyclerView (lista vertical) -->
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
@@ -23,9 +24,9 @@
             android:id="@+id/tvEmojiApertura"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="♟️"
             android:textSize="24sp"
-            android:layout_marginEnd="16dp" />
+            android:layout_marginEnd="16dp"
+            tools:text="♟️" />
 
         <!-- Contenedor vertical para nombre y descripción -->
         <LinearLayout
@@ -39,18 +40,18 @@
                 android:id="@+id/tvNombreApertura"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Apertura Italiana"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:text="Apertura Italiana" />
 
             <!-- Movimientos principales de la apertura -->
             <TextView
                 android:id="@+id/tvDescripcionApertura"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1.e4 e5 2.Cf3 Cc6 3.Ac4"
                 android:textSize="14sp"
-                android:textColor="#666" />
+                android:textColor="#666"
+                tools:text="1.e4 e5 2.Cf3 Cc6 3.Ac4" />
 
         </LinearLayout>
 

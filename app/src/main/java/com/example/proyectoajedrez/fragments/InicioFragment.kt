@@ -100,11 +100,11 @@ class InicioFragment : Fragment() {
                     }
                     if (_binding != null && isAdded && document != null && document.exists()) {
                         // Extraer datos del documento Firestore
-                        val username = document.getString("username") ?: "Jugador"
+                        val username = document.getString("username") ?: getString(R.string.default_player_name)
                         val elo = document.getLong("elo") ?: 1200
 
                         // Actualizar UI con datos básicos de Firebase
-                        binding.tvBienvenidaSubtitulo.text = "¡Hola, $username!"
+                        binding.tvBienvenidaSubtitulo.text = getString(R.string.inicio_saludo_usuario, username)
                         binding.textElo.text = elo.toString()
                         binding.textPorcentajeTacticas.text = "-"
                         binding.textAmigos.text = "0"
@@ -114,7 +114,7 @@ class InicioFragment : Fragment() {
         } else {
             // Mostrar datos para modo invitado
             if (_binding != null && isAdded) {
-                binding.tvBienvenidaSubtitulo.text = "Modo Invitado"
+                binding.tvBienvenidaSubtitulo.text = getString(R.string.inicio_modo_invitado)
                 binding.textElo.text = "-"
                 binding.textPorcentajeTacticas.text = "-"
                 binding.textAmigos.text = "-"
@@ -124,7 +124,7 @@ class InicioFragment : Fragment() {
 
     private fun mostrarDialogoConfigurarUsuario() {
         val input = EditText(requireContext())
-        input.hint = "Usuario Lichess (ej: MagnusCarlsen)"
+        input.hint = getString(R.string.hint_lichess_user)
 
         // Contenedor para márgenes
         val container = FrameLayout(requireContext())
@@ -140,14 +140,14 @@ class InicioFragment : Fragment() {
             .setTitle(getString(R.string.dialog_vincular_lichess_titulo))
             .setMessage(getString(R.string.dialog_vincular_lichess_mensaje))
             .setView(container)
-            .setPositiveButton("Guardar") { _, _ ->
+            .setPositiveButton(getString(R.string.btn_guardar)) { _, _ ->
                 val username = input.text.toString().trim()
                 if (username.isNotEmpty()) {
                     guardarUsuarioLichess(username)
                     obtenerDatosLichess(username)
                 }
             }
-            .setNegativeButton("Cancelar", null)
+            .setNegativeButton(getString(R.string.dialog_btn_cancelar), null)
             .show()
     }
 
@@ -162,7 +162,7 @@ class InicioFragment : Fragment() {
 
     private fun obtenerDatosLichess(username: String) {
         // Mostrar estado de carga
-        binding.tvBienvenidaSubtitulo.text = "Cargando $username..."
+        binding.tvBienvenidaSubtitulo.text = getString(R.string.lichess_loading, username)
 
         lifecycleScope.launch(Dispatchers.IO) {
             try {
@@ -201,10 +201,10 @@ class InicioFragment : Fragment() {
 
         // 4. Estado Online
         if (user.online) {
-            binding.textAmigos.text = "En línea"
+            binding.textAmigos.text = getString(R.string.estado_en_linea)
             binding.textAmigos.setTextColor(Color.parseColor("#4CAF50")) // Verde
         } else {
-            binding.textAmigos.text = "Offline"
+            binding.textAmigos.text = getString(R.string.estado_offline)
             binding.textAmigos.setTextColor(Color.GRAY)
         }
     }

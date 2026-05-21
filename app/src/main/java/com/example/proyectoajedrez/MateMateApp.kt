@@ -2,6 +2,7 @@ package com.example.proyectoajedrez
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import com.example.proyectoajedrez.utils.LocaleManager
 import com.example.proyectoajedrez.utils.PrefKeys
 
@@ -23,6 +24,8 @@ class MateMateApp : Application() {
      */
     private fun aplicarIdiomaGuardado() {
         val localeManager = LocaleManager(this)
+        val language = localeManager.getLanguage()
+        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(language))
         localeManager.applyLanguage()
     }
 

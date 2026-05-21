@@ -83,7 +83,7 @@
                             android:id="@+id/textElo"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="-"/>
+                            android:text="@string/placeholder_dash"/>
                     </LinearLayout>
 
                     <!-- Porcentaje de tácticas -->
@@ -104,7 +104,7 @@
                             android:id="@+id/textPorcentajeTacticas"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0%"/>
+                            android:text="@string/stat_default_percent"/>
                     </LinearLayout>
 
                     <!-- Número de amigos -->
@@ -124,7 +124,7 @@
                             android:id="@+id/textAmigos"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0"/>
+                            android:text="@string/stat_default_zero"/>
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>

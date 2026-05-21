@@ -33,7 +33,7 @@ class GameSetupDialogFragment(
 
     private fun setupUI() {
         // 1. Spinner Tiempos
-        val tiempos = arrayOf("Sin Límite", "1 min (Bullet)", "3 min (Blitz)", "5 min (Blitz)", "10 min (Rápida)", "30 min (Clásica)")
+        val tiempos = resources.getStringArray(R.array.game_time_options)
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, tiempos)
         binding.spinnerTimeDialog.adapter = adapter
         binding.spinnerTimeDialog.setSelection(3)
@@ -49,7 +49,7 @@ class GameSetupDialogFragment(
         binding.seekBarDifficultyDialog.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 val nivel = if (progress < 1) 1 else progress
-                binding.tvDifficultyValue.text = " $nivel"
+                binding.tvDifficultyValue.text = getString(R.string.config_dificultad_valor, nivel)
             }
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
