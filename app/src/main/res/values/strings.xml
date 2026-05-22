@@ -42,6 +42,8 @@
     <string name="texto_tacticas">Tácticas</string>
     <string name="texto_amigos">Amigos</string>
     <string name="titulo_noticias">Noticias de Ajedrez</string>
+    <string name="noticias_no_disponibles">No hay noticias disponibles ahora mismo.\nInténtalo de nuevo más tarde.</string>
+    <string name="noticias_error_red">Error de conexión al cargar noticias.</string>
     <string name="inicio_saludo_usuario">¡Hola, %1$s!</string>
     <string name="inicio_modo_invitado">Modo Invitado</string>
     <string name="hint_lichess_user">Usuario Lichess (ej: MagnusCarlsen)</string>

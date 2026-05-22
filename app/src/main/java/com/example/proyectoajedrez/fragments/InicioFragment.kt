@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -64,7 +65,6 @@ class InicioFragment : Fragment() {
 
     private fun refrescarUsuario() {
 
-        // 🔥 evitar listeners duplicados
         firestoreListener?.remove()
         firestoreListener = null
 
@@ -117,10 +117,6 @@ class InicioFragment : Fragment() {
                         ContextCompat.getColor(requireContext(), R.color.text_secondary)
                     )
 
-                } else {
-
-                    binding.tvBienvenidaSubtitulo.text =
-                        getString(R.string.default_player_name)
                 }
             }
     }
@@ -138,84 +134,98 @@ class InicioFragment : Fragment() {
 
     private fun cargarNoticias() {
 
+        mostrarEstadoNoticias(EstadoNoticias.CARGANDO)
+
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
 
             try {
 
                 val apiKey = BuildConfig.NEWS_API_KEY
 
-                val idiomaActual =
-                    java.util.Locale.getDefault().language
+                if (apiKey.isBlank()) {
+                    Log.e(TAG, "NEWS_API_KEY vacía")
+                    withContext(Dispatchers.Main) {
+                        mostrarEstadoNoticias(EstadoNoticias.ERROR)
+                    }
+                    return@launch
+                }
+
+                val idiomaActual = java.util.Locale.getDefault().language
+                val idiomaApi = if (idiomaActual == "en") "en" else "es"
 
                 val queryBusqueda =
-                    if (idiomaActual == "en") {
-                        "chess AND (tournament OR grandmaster OR opening OR tactics OR FIDE)"
-                    } else {
-                        "ajedrez AND (torneo OR gran maestro OR apertura OR táctica OR FIDE)"
-                    }
+                    if (idiomaActual == "en") "chess"
+                    else "ajedrez"
 
-                val idiomaApi =
-                    if (idiomaActual == "en") "en" else "es"
-
-                val dominiosAjedrez =
-                    "chess.com,lichess.org,chess24.com,fide.com,chessbase.com"
+                Log.d(TAG, "Noticias — idioma=$idiomaApi query=$queryBusqueda")
 
                 val respuesta = RetrofitClient.instance.getChessNews(
                     query = queryBusqueda,
                     apiKey = apiKey,
                     language = idiomaApi,
                     sortBy = "publishedAt",
-                    domains = dominiosAjedrez
+                    pageSize = 20
+                )
+
+                Log.d(
+                    TAG,
+                    "API: status=${respuesta.status}, total=${respuesta.totalResults}, artículos=${respuesta.articles.size}"
                 )
 
                 withContext(Dispatchers.Main) {
 
                     if (!isAdded || _binding == null) return@withContext
 
-                    if (respuesta.status == "ok") {
+                    if (respuesta.status != "ok") {
+                        mostrarEstadoNoticias(EstadoNoticias.ERROR)
+                        return@withContext
+                    }
 
-                        val noticiasFiltradas =
-                            respuesta.articles.filter { articulo ->
+                    // 🔥 FILTRO REAL DE AJEDREZ (mucho más estricto)
+                    val keywords = listOf(
+                        "chess",
+                        "ajedrez",
+                        "fide",
+                        "grandmaster",
+                        "tournament",
+                        "torneo",
+                        "opening",
+                        "apertura",
+                        "checkmate",
+                        "blitz"
+                    )
 
-                                val texto =
-                                    "${articulo.title} ${articulo.description}"
-                                        .lowercase()
+                    val noticiasFiltradas = respuesta.articles.filter { articulo ->
 
-                                val keywords =
-                                    if (idiomaActual == "en") {
-                                        listOf(
-                                            "chess",
-                                            "grandmaster",
-                                            "opening",
-                                            "tournament",
-                                            "fide",
-                                            "blitz",
-                                            "checkmate"
-                                        )
-                                    } else {
-                                        listOf(
-                                            "ajedrez",
-                                            "gran maestro",
-                                            "apertura",
-                                            "torneo",
-                                            "fide",
-                                            "partida",
-                                            "jaque"
-                                        )
-                                    }
+                        val texto =
+                            "${articulo.title} ${articulo.description}".lowercase()
 
-                                !articulo.urlToImage.isNullOrEmpty() &&
-                                        !articulo.description.isNullOrEmpty() &&
-                                        keywords.any { texto.contains(it) }
-                            }
+                        val score = keywords.count { texto.contains(it) }
 
+                        !articulo.title.isNullOrBlank() &&
+                                !articulo.urlToImage.isNullOrBlank() &&
+                                score >= 2
+                    }
+
+                    Log.d(TAG, "Filtradas: ${noticiasFiltradas.size}")
+
+                    if (noticiasFiltradas.isEmpty()) {
+                        mostrarEstadoNoticias(EstadoNoticias.VACIO)
+                    } else {
+                        mostrarEstadoNoticias(EstadoNoticias.CON_DATOS)
                         binding.recyclerNoticias.adapter =
                             NewsAdapter(noticiasFiltradas)
                     }
                 }
 
             } catch (e: Exception) {
-                Log.e(TAG, "Error cargando noticias", e)
+
+                Log.e(TAG, "Error noticias", e)
+
+                withContext(Dispatchers.Main) {
+                    if (!isAdded || _binding == null) return@withContext
+                    mostrarEstadoNoticias(EstadoNoticias.ERROR)
+                }
             }
         }
     }
@@ -227,5 +237,27 @@ class InicioFragment : Fragment() {
         firestoreListener = null
 
         _binding = null
+    }
+
+    private enum class EstadoNoticias {
+        CARGANDO, CON_DATOS, VACIO, ERROR
+    }
+
+    private fun mostrarEstadoNoticias(estado: EstadoNoticias) {
+
+        binding.progressNoticias?.isVisible =
+            estado == EstadoNoticias.CARGANDO
+
+        binding.recyclerNoticias.isVisible =
+            estado == EstadoNoticias.CON_DATOS
+
+        binding.tvSinNoticias?.isVisible =
+            estado == EstadoNoticias.VACIO || estado == EstadoNoticias.ERROR
+
+        binding.tvSinNoticias?.text =
+            when (estado) {
+                EstadoNoticias.ERROR -> getString(R.string.noticias_error_red)
+                else -> getString(R.string.noticias_no_disponibles)
+            }
     }
 }

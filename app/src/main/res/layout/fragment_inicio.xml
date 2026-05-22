@@ -133,6 +133,25 @@
             android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
 
+        <!-- Loading indicator -->
+        <ProgressBar
+            android:id="@+id/progressNoticias"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone" />
+
+        <!-- Estado vacío/error -->
+        <TextView
+            android:id="@+id/tvSinNoticias"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="24dp"
+            android:text="@string/noticias_no_disponibles"
+            android:textColor="@color/text_secondary"
+            android:visibility="gone" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerNoticias"
             android:layout_width="match_parent"
