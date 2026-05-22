@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import com.example.proyectoajedrez.domain.model.ForumReply
-import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FieldValue
 
 class ForumRepositoryImpl(
@@ -48,8 +47,13 @@ class ForumRepositoryImpl(
     override suspend fun createPost(post: ForumPost): Result<Unit> = runCatching {
         val user = auth.currentUser ?: error("Usuario no autenticado")
         
-        // Obtener el rol del usuario actual (por defecto USER si no está disponible)
-        val userRole = sessionManager?.getUserRole() ?: UserRole.USER
+        // Obtener el rol del usuario actual directamente desde Firestore
+        val roleDoc = db.collection("usuarios").document(user.uid).get().await()
+        val userRole = try {
+            UserRole.valueOf(roleDoc.getString("role") ?: "USER")
+        } catch (_: Exception) {
+            UserRole.USER
+        }
         
         val newPost = post.copy(
             authorId = user.uid,
@@ -70,26 +74,24 @@ class ForumRepositoryImpl(
     override suspend fun deletePost(postId: String): Result<Unit> = runCatching {
         val user = auth.currentUser ?: error("Usuario no autenticado")
         
-        // Obtener el post para verificar permisos
-        val post = postsCollection.document(postId).get().await().toObject(ForumPost::class.java)
+        val postDoc = postsCollection.document(postId)
+        val post = postDoc.get().await().toObject(ForumPost::class.java)
             ?: error("Post no encontrado")
         
-        // Validar: Solo admin u autor pueden borrar
         val isAuthor = post.authorId == user.uid
-        var isAdmin = sessionManager?.isAdmin() ?: false
+        val roleDoc = db.collection("usuarios").document(user.uid).get().await()
+        val currentRole = roleDoc.getString("role") ?: "USER"
+        val isAdmin = currentRole.uppercase() == "ADMIN"
         
-        // Fallback: check post's authorRole if sessionManager is null
-        if (!isAdmin && sessionManager == null) {
-            isAdmin = post.authorRole.name.uppercase() == "ADMIN" && post.authorId == user.uid
-        }
-        
-        val canDelete = isAdmin || isAuthor
-        
-        if (!canDelete) {
+        if (!isAuthor && !isAdmin) {
             error("No tienes permisos para eliminar este post")
         }
         
-        postsCollection.document(postId).delete().await()
+        val batch = db.batch()
+        val repliesSnap = postDoc.collection("replies").get().await()
+        repliesSnap.documents.forEach { batch.delete(it.reference) }
+        batch.delete(postDoc)
+        batch.commit().await()
         Unit
     }
 
@@ -109,13 +111,20 @@ class ForumRepositoryImpl(
         awaitClose { listener.remove() }
     }
 
-    override suspend fun addReply(postId: String, reply: ForumReply): Result<Unit> = runCatching {
+    override suspend fun addReply(postId: String, replyContent: String): Result<Unit> = runCatching {
         val user = auth.currentUser ?: error("Usuario no autenticado")
-        val repliesCol = postsCollection.document(postId).collection("replies")
-        val newReply = reply.copy(authorId = user.uid, authorName = user.displayName ?: user.email?.substringBefore("@") ?: defaultAuthorName)
-        repliesCol.add(newReply).await()
-        // increment repliesCount on post document
-        postsCollection.document(postId).update("repliesCount", FieldValue.increment(1)).await()
+        val postDoc = postsCollection.document(postId)
+        val repliesCol = postDoc.collection("replies")
+        val newReplyRef = repliesCol.document()
+        val newReply = ForumReply(
+            authorId = user.uid,
+            authorName = user.displayName ?: user.email?.substringBefore("@") ?: defaultAuthorName,
+            content = replyContent
+        )
+        val batch = db.batch()
+        batch.set(newReplyRef, newReply)
+        batch.update(postDoc, "repliesCount", FieldValue.increment(1))
+        batch.commit().await()
         Unit
     }
 }

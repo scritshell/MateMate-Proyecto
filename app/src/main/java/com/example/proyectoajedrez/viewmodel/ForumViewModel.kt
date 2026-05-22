@@ -7,6 +7,7 @@ import com.example.proyectoajedrez.domain.model.ForumPost
 import com.example.proyectoajedrez.domain.repository.ForumRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -27,6 +28,10 @@ class ForumViewModel(
 
     private val _uiState = MutableStateFlow(ForumUiState(isLoading = true))
     val uiState: StateFlow<ForumUiState> = _uiState.asStateFlow()
+
+    private val _replies = MutableStateFlow<List<ForumReply>>(emptyList())
+    val replies: StateFlow<List<ForumReply>> = _replies.asStateFlow()
+    private var repliesJob: Job? = null
 
     init {
         cargarPosts()
@@ -96,12 +101,22 @@ class ForumViewModel(
     }
 
     // Replies
-    fun getRepliesFlow(postId: String): Flow<List<ForumReply>> = repository.getReplies(postId)
+    fun cargarReplies(postId: String) {
+        repliesJob?.cancel()
+        repliesJob = viewModelScope.launch {
+            repository.getReplies(postId)
+                .catch { /* ignore for now */ }
+                .collect { _replies.value = it }
+        }
+    }
+
+    fun limpiarReplies() {
+        _replies.value = emptyList()
+    }
 
     fun enviarReply(postId: String, content: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val reply = ForumReply(content = content)
-            repository.addReply(postId, reply).onFailure { e ->
+            repository.addReply(postId, content).onFailure { e ->
                 _uiState.update { it.copy(error = e.message) }
             }
         }

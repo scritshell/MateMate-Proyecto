@@ -113,6 +113,7 @@ fun PostDetailDialog(
 
                 // Reply composer
                 var replyText by remember { mutableStateOf("") }
+                var sendingReply by remember { mutableStateOf(false) }
                 OutlinedTextField(
                     value = replyText,
                     onValueChange = { replyText = it },
@@ -120,14 +121,21 @@ fun PostDetailDialog(
                     modifier = Modifier.fillMaxWidth()
                 )
                 Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
-                    TextButton(onClick = { replyText = "" }) { Text("Cancelar") }
+                    TextButton(onClick = { if (!sendingReply) replyText = "" }) { Text("Cancelar") }
                     Spacer(modifier = Modifier.width(8.dp))
-                    Button(onClick = {
-                        if (replyText.isNotBlank()) {
-                            onSendReply(replyText.trim())
-                            replyText = ""
-                        }
-                    }) { Text("Responder") }
+                    Button(
+                        onClick = {
+                            if (replyText.isNotBlank() && !sendingReply) {
+                                sendingReply = true
+                                onSendReply(replyText.trim())
+                                replyText = ""
+                                sendingReply = false
+                            }
+                        },
+                        enabled = replyText.isNotBlank() && !sendingReply
+                    ) {
+                        Text("Responder")
+                    }
                 }
             }
         },

@@ -10,5 +10,5 @@ interface ForumRepository {
     suspend fun likePost(postId: String): Result<Unit>
     suspend fun deletePost(postId: String): Result<Unit>
     fun getReplies(postId: String): Flow<List<ForumReply>>
-    suspend fun addReply(postId: String, reply: ForumReply): Result<Unit>
+    suspend fun addReply(postId: String, replyContent: String): Result<Unit>
 }

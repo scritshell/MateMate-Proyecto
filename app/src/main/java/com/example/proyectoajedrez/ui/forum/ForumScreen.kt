@@ -50,6 +50,7 @@ fun ForumScreen() {
     val currentUserIsAdmin = uiState.currentUserIsAdmin
     var mostrarDialogo by remember { mutableStateOf(false) }
     var selectedPost by remember { mutableStateOf<ForumPost?>(null) }
+    val replies by forumViewModel.replies.collectAsState()
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -116,13 +117,19 @@ fun ForumScreen() {
             }
         }
 
-        if (selectedPost != null) {
-            val replies by forumViewModel.getRepliesFlow(selectedPost!!.id).collectAsState(initial = emptyList())
+        selectedPost?.let { post ->
+            LaunchedEffect(post.id) {
+                forumViewModel.cargarReplies(post.id)
+            }
+
             PostDetailDialog(
-                post = selectedPost!!,
+                post = post,
                 replies = replies,
-                onSendReply = { content -> forumViewModel.enviarReply(selectedPost!!.id, content) },
-                onDismiss = { selectedPost = null }
+                onSendReply = { content -> forumViewModel.enviarReply(post.id, content) },
+                onDismiss = {
+                    selectedPost = null
+                    forumViewModel.limpiarReplies()
+                }
             )
         }
 
