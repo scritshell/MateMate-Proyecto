@@ -18,9 +18,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.proyectoajedrez.R
 import com.example.proyectoajedrez.data.repository.ForumRepositoryImpl
+import com.example.proyectoajedrez.domain.model.ForumPost
 import com.example.proyectoajedrez.ui.forum.components.ForumTopBar
 import com.example.proyectoajedrez.ui.forum.components.NuevoPostDialog
 import com.example.proyectoajedrez.ui.forum.components.PostCard
+import com.example.proyectoajedrez.ui.forum.components.PostDetailDialog
 import com.example.proyectoajedrez.viewmodel.ForumViewModel
 
 @Composable
@@ -44,7 +46,10 @@ fun ForumScreen() {
     val forumViewModel: ForumViewModel = viewModel(factory = factory)
 
     val uiState by forumViewModel.uiState.collectAsState()
+    val currentUserId = uiState.currentUserId
+    val currentUserIsAdmin = uiState.currentUserIsAdmin
     var mostrarDialogo by remember { mutableStateOf(false) }
+    var selectedPost by remember { mutableStateOf<ForumPost?>(null) }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -100,12 +105,25 @@ fun ForumScreen() {
                         ) { post ->
                             PostCard(
                                 post = post,
-                                onLike = { forumViewModel.darLike(post.id) }
+                                currentUserId = currentUserId,
+                                currentUserIsAdmin = currentUserIsAdmin,
+                                onDelete = { forumViewModel.eliminarPost(post.id) },
+                                onPostClick = { selectedPost = post }
                             )
                         }
                     }
                 }
             }
+        }
+
+        if (selectedPost != null) {
+            val replies by forumViewModel.getRepliesFlow(selectedPost!!.id).collectAsState(initial = emptyList())
+            PostDetailDialog(
+                post = selectedPost!!,
+                replies = replies,
+                onSendReply = { content -> forumViewModel.enviarReply(selectedPost!!.id, content) },
+                onDismiss = { selectedPost = null }
+            )
         }
 
         if (mostrarDialogo) {

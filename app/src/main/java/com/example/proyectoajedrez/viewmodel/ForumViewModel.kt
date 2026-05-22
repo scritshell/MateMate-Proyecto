@@ -5,13 +5,20 @@ import androidx.lifecycle.viewModelScope
 import com.example.proyectoajedrez.domain.model.ForumCategory
 import com.example.proyectoajedrez.domain.model.ForumPost
 import com.example.proyectoajedrez.domain.repository.ForumRepository
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import com.example.proyectoajedrez.domain.model.ForumReply
+import kotlinx.coroutines.Dispatchers
 
 data class ForumUiState(
     val posts: List<ForumPost> = emptyList(),
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val currentUserId: String = "",
+    val currentUserIsAdmin: Boolean = false
 )
 
 class ForumViewModel(
@@ -23,6 +30,28 @@ class ForumViewModel(
 
     init {
         cargarPosts()
+        loadCurrentUser()
+    }
+
+    private fun loadCurrentUser() {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+        if (uid.isNotEmpty()) {
+            viewModelScope.launch {
+                try {
+                    val doc = FirebaseFirestore.getInstance()
+                        .collection("usuarios").document(uid).get().await()
+                    val role = doc.getString("role") ?: "USER"
+                    _uiState.update { it.copy(
+                        currentUserId = uid,
+                        currentUserIsAdmin = role.uppercase() == "ADMIN"
+                    )}
+                } catch (e: Exception) {
+                    _uiState.update { it.copy(currentUserId = uid, currentUserIsAdmin = false) }
+                }
+            }
+        } else {
+            _uiState.update { it.copy(currentUserId = "", currentUserIsAdmin = false) }
+        }
     }
 
     private fun cargarPosts() {
@@ -64,5 +93,17 @@ class ForumViewModel(
 
     fun limpiarError() {
         _uiState.update { it.copy(error = null) }
+    }
+
+    // Replies
+    fun getRepliesFlow(postId: String): Flow<List<ForumReply>> = repository.getReplies(postId)
+
+    fun enviarReply(postId: String, content: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val reply = ForumReply(content = content)
+            repository.addReply(postId, reply).onFailure { e ->
+                _uiState.update { it.copy(error = e.message) }
+            }
+        }
     }
 }

@@ -13,6 +13,9 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
+import com.example.proyectoajedrez.domain.model.ForumReply
+import com.google.firebase.firestore.DocumentChange
+import com.google.firebase.firestore.FieldValue
 
 class ForumRepositoryImpl(
     context: Context? = null,
@@ -66,7 +69,6 @@ class ForumRepositoryImpl(
 
     override suspend fun deletePost(postId: String): Result<Unit> = runCatching {
         val user = auth.currentUser ?: error("Usuario no autenticado")
-        val isAdmin = sessionManager?.isAdmin() ?: false
         
         // Obtener el post para verificar permisos
         val post = postsCollection.document(postId).get().await().toObject(ForumPost::class.java)
@@ -74,6 +76,13 @@ class ForumRepositoryImpl(
         
         // Validar: Solo admin u autor pueden borrar
         val isAuthor = post.authorId == user.uid
+        var isAdmin = sessionManager?.isAdmin() ?: false
+        
+        // Fallback: check post's authorRole if sessionManager is null
+        if (!isAdmin && sessionManager == null) {
+            isAdmin = post.authorRole.name.uppercase() == "ADMIN" && post.authorId == user.uid
+        }
+        
         val canDelete = isAdmin || isAuthor
         
         if (!canDelete) {
@@ -81,6 +90,32 @@ class ForumRepositoryImpl(
         }
         
         postsCollection.document(postId).delete().await()
+        Unit
+    }
+
+    override fun getReplies(postId: String) = callbackFlow {
+        val repliesCol = postsCollection.document(postId).collection("replies")
+            .orderBy("createdAt", Query.Direction.ASCENDING)
+        val listener = repliesCol.addSnapshotListener { snapshot, error ->
+            if (error != null) {
+                trySend(emptyList())
+                return@addSnapshotListener
+            }
+            val replies = snapshot?.documents?.mapNotNull { doc ->
+                doc.toObject(ForumReply::class.java)?.copy(id = doc.id)
+            } ?: emptyList()
+            trySend(replies)
+        }
+        awaitClose { listener.remove() }
+    }
+
+    override suspend fun addReply(postId: String, reply: ForumReply): Result<Unit> = runCatching {
+        val user = auth.currentUser ?: error("Usuario no autenticado")
+        val repliesCol = postsCollection.document(postId).collection("replies")
+        val newReply = reply.copy(authorId = user.uid, authorName = user.displayName ?: user.email?.substringBefore("@") ?: defaultAuthorName)
+        repliesCol.add(newReply).await()
+        // increment repliesCount on post document
+        postsCollection.document(postId).update("repliesCount", FieldValue.increment(1)).await()
         Unit
     }
 }
