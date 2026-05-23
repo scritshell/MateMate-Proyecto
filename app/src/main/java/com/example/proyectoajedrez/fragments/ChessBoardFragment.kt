@@ -25,6 +25,7 @@ import com.example.proyectoajedrez.adapters.MovesAdapter
 import com.example.proyectoajedrez.chess.ChessBoardViewModel
 import com.example.proyectoajedrez.chess.ChessBoardViewModelFactory
 import com.example.proyectoajedrez.chess.ChessGameEvent
+import com.example.proyectoajedrez.chess.ChessUiEvent
 import com.example.proyectoajedrez.chess.GameStatus
 import com.example.proyectoajedrez.databinding.FragmentChessBoardBinding
 import com.example.proyectoajedrez.model.GameMode
@@ -36,38 +37,32 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-/**
- * ChessBoardFragment - UI Layer (PHASE 5 REFACTORED)
- * Displays chess board and collects user input, delegating all logic to ChessBoardViewModel.
- * Responsibilities: Board rendering, user input collection, reactive UI updates from ViewModel state.
- */
 class ChessBoardFragment : Fragment() {
 
     private var _binding: FragmentChessBoardBinding? = null
     private val binding get() = _binding!!
 
-    // ViewModel with dependency injection
     private val viewModel: ChessBoardViewModel by viewModels {
         val gameMode = (arguments?.getString("modo") ?: "libre").toGameMode()
         val playerSide = if (arguments?.getString("side") == "BLACK") Side.BLACK else Side.WHITE
         val difficulty = arguments?.getInt("difficulty", 1) ?: 1
         val title = arguments?.getString("titulo") ?: getString(R.string.titulo_tablero)
-        
+        val openingMoves = arguments?.getString("secuenciaMovimientos") ?: ""
+
         ChessBoardViewModelFactory(
             requireContext(),
             gameMode,
             playerSide,
             difficulty,
-            title
+            title,
+            openingMoves
         )
     }
 
-    // UI Adapters
     private lateinit var boardAdapter: ChessBoardAdapter
     private val historyAdapter = MovesAdapter()
     private val explorerAdapter = ExplorerAdapter()
 
-    // Sensors
     private lateinit var sensorManager: SensorManager
     private var accelerometer: Sensor? = null
     private var lastShakeTime = 0L
@@ -84,17 +79,12 @@ class ChessBoardFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setupUI()
         setupShakeSensor()
         observeViewModel()
     }
 
-    /**
-     * Initialize UI components: adapters, button listeners, board interaction
-     */
     private fun setupUI() {
-        // Setup adapters
         boardAdapter = ChessBoardAdapter(requireContext())
         binding.chessBoard.adapter = boardAdapter
 
@@ -104,7 +94,6 @@ class ChessBoardFragment : Fragment() {
         binding.recyclerExplorer?.layoutManager = LinearLayoutManager(context)
         binding.recyclerExplorer?.adapter = explorerAdapter
 
-        // Button listeners - dispatch events to ViewModel
         binding.btnExit.setOnClickListener {
             viewModel.onEvent(ChessGameEvent.ExitRequested)
             findNavController().popBackStack()
@@ -121,30 +110,30 @@ class ChessBoardFragment : Fragment() {
         binding.btnTabHistory?.setOnClickListener { switchTab(showHistory = true) }
         binding.btnTabExplorer?.setOnClickListener { switchTab(showHistory = false) }
 
-        // Board interaction
         setupBoardInteraction()
     }
 
     /**
-     * Setup board click listener - dispatches square taps to ViewModel
+     * FIX 5: pasar la posición visual cruda sin conversión previa
      */
     private fun setupBoardInteraction() {
         binding.chessBoard.setOnItemClickListener { _, _, position, _ ->
-            val visualPosition = boardAdapter.getLogicalIndex(position)
-            viewModel.onEvent(ChessGameEvent.SquareTapped(visualPosition))
+            // Antes: val visualPosition = boardAdapter.getLogicalIndex(position)
+            // Ahora: enviamos la posición visual directamente
+            viewModel.onEvent(ChessGameEvent.SquareTapped(position))
         }
     }
 
-    /**
-     * Observe ViewModel state and update UI reactively
-     */
     private fun observeViewModel() {
         lifecycleScope.launch {
             viewModel.uiState.collect { state ->
-                // Update board pieces
+                // Actualizar piezas
                 boardAdapter.updateBoard(state.pieces)
 
-                // Update selection and legal moves highlight
+                // FIX 6: aplicar orientación del tablero al adapter
+                boardAdapter.setFlipped(state.isFlipped)
+
+                // Selección y movimientos legales
                 if (state.selectedSquare != null) {
                     boardAdapter.setSelectedPosition(state.selectedSquare)
                     boardAdapter.setLegalMoves(state.legalMoveSquares)
@@ -153,37 +142,42 @@ class ChessBoardFragment : Fragment() {
                     boardAdapter.clearLegalMoves()
                 }
 
-                // Update move history
+                // Historial
                 historyAdapter.submitList(state.moveHistory)
                 if (state.moveHistory.isNotEmpty()) {
                     binding.recyclerHistory.scrollToPosition(state.moveHistory.size - 1)
                 }
 
-                // Update timers
+                // Temporizadores
                 binding.tvTimerWhite.text = state.timerWhiteText
                 binding.tvTimerBlack.text = state.timerBlackText
                 highlightActiveTimer(state.activeTimer)
 
-                // Update title
                 binding.titleTextView.text = state.title
-
-                // Show/hide timers based on game mode
                 binding.layoutTimers.isVisible = state.isTimerVisible
 
-                // Handle game end
                 if (state.gameStatus != GameStatus.PLAYING) {
                     handleGameEnd(state.gameStatus)
                 }
 
-                // Disable board while engine thinks
                 binding.chessBoard.isEnabled = !state.isEngineThinking
+            }
+        }
+
+        lifecycleScope.launch {
+            viewModel.uiEvents.collect { event ->
+                when (event) {
+                    ChessUiEvent.IncorrectPuzzleMove -> {
+                        Toast.makeText(requireContext(), getString(R.string.msg_jugada_incorrecta), Toast.LENGTH_SHORT).show()
+                    }
+                    ChessUiEvent.PuzzleSolved -> {
+                        Toast.makeText(requireContext(), getString(R.string.msg_reto_completado), Toast.LENGTH_LONG).show()
+                    }
+                }
             }
         }
     }
 
-    /**
-     * Display game end dialog and disable board
-     */
     private fun handleGameEnd(status: GameStatus) {
         val mensaje = when (status) {
             GameStatus.WHITE_WINS -> getString(R.string.game_status_white_wins)
@@ -204,9 +198,6 @@ class ChessBoardFragment : Fragment() {
             .show()
     }
 
-    /**
-     * Switch between history and opening explorer tabs
-     */
     private fun switchTab(showHistory: Boolean) {
         binding.recyclerHistory.isVisible = showHistory
         binding.recyclerExplorer?.isVisible = !showHistory
@@ -221,13 +212,10 @@ class ChessBoardFragment : Fragment() {
         if (!showHistory) fetchOpeningData()
     }
 
-    /**
-     * Fetch opening moves from Lichess Explorer API
-     */
     private fun fetchOpeningData() {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                val fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" // Placeholder
+                val fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
                 val response = ExplorerClient.instance.getOpeningMoves(fen)
                 withContext(Dispatchers.Main) {
                     explorerAdapter.submitList(response.moves)
@@ -253,9 +241,6 @@ class ChessBoardFragment : Fragment() {
         }
     }
 
-    /**
-     * Highlight which timer is active (white or black)
-     */
     private fun highlightActiveTimer(side: Side) {
         val active = ContextCompat.getColor(requireContext(), R.color.timer_active)
         val inactive = ContextCompat.getColor(requireContext(), R.color.timer_inactive)
@@ -263,9 +248,6 @@ class ChessBoardFragment : Fragment() {
         binding.tvTimerBlack.setBackgroundColor(if (side == Side.BLACK) active else inactive)
     }
 
-    /**
-     * Setup accelerometer for shake gesture undo
-     */
     private fun setupShakeSensor() {
         sensorManager = requireContext().getSystemService(Context.SENSOR_SERVICE) as SensorManager
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)

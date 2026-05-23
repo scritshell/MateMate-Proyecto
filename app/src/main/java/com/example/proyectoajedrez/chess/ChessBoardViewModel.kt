@@ -4,6 +4,9 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import com.example.proyectoajedrez.chess.engine.ChessGameManager
 import com.example.proyectoajedrez.chess.engine.MoveResult
 import com.example.proyectoajedrez.chess.engine.StockfishController
@@ -26,24 +29,28 @@ class ChessBoardViewModel(
     private val playerSide: Side,
     private val difficulty: Int,
     private val title: String,
-    private val context: Context
+    private val context: Context,
+    private val openingMoves: String = ""
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ChessGameUiState())
     val uiState: StateFlow<ChessGameUiState> = _uiState.asStateFlow()
 
-    // Controllers - inicializados en init block
     private lateinit var gameManager: ChessGameManager
     private lateinit var timerController: ChessTimerController
     private lateinit var stockfishController: StockfishController
     private lateinit var puzzleController: PuzzleController
 
-    // Estado local
+    private val _uiEvents = MutableSharedFlow<ChessUiEvent>(extraBufferCapacity = 4)
+    val uiEvents: SharedFlow<ChessUiEvent> = _uiEvents.asSharedFlow()
+
     private var selectedSquareIdx: Int? = null
     private var moveHistoryList = mutableListOf<String>()
 
+    // FIX 1: lado efectivo actualizable tras cargar el puzzle
+    private var effectivePlayerSide: Side = playerSide
+
     init {
-        // Crear controllers con callbacks
         gameManager = ChessGameManager()
         timerController = ChessTimerController(
             onTick = { side, millis -> updateTimerDisplay(side, millis) },
@@ -55,43 +62,45 @@ class ChessBoardViewModel(
             onThinkingChanged = { isThinking -> _uiState.value = _uiState.value.copy(isEngineThinking = isThinking) }
         )
         puzzleController = PuzzleController(context)
-        
+
         initializeGame()
     }
 
     private fun initializeGame() {
-        // Configurar timers
         val timeMinutes = when {
             gameMode in listOf(GameMode.APERTURA, GameMode.DAILY_PUZZLE) -> -1
-            else -> 5 // Por defecto 5 minutos
+            else -> 5
         }
         timerController.configure(timeMinutes)
 
-        // Configurar Stockfish si es necesario
-        if (gameMode == GameMode.LIBRE || gameMode == GameMode.APERTURA) {
+        if (gameMode == GameMode.APERTURA) {
+            viewModelScope.launch {
+                replayOpeningMoves(openingMoves)
+            }
+        } else if (gameMode == GameMode.LIBRE || gameMode == GameMode.LOCAL_2P) {
             viewModelScope.launch {
                 stockfishController.initialize()
                 stockfishController.setDifficulty(difficulty)
-                if (playerSide == Side.BLACK) {
+                if (gameMode == GameMode.LIBRE && playerSide == Side.BLACK) {
                     requestEngineMove()
                 }
             }
         }
 
-        // Cargar puzzle si es necesario
         if (gameMode == GameMode.DAILY_PUZZLE) {
             viewModelScope.launch {
                 val result = puzzleController.loadDailyPuzzle(gameManager.board)
                 when (result) {
                     is com.example.proyectoajedrez.chess.puzzle.PuzzleLoadResult.Success -> {
+                        // FIX 2: actualizar el lado real del puzzle Y voltear el tablero
+                        effectivePlayerSide = result.playerSide
                         _uiState.value = _uiState.value.copy(
-                            title = "Puzzle Diario (${result.rating})"
+                            title = "Puzzle Diario (${result.rating})",
+                            isFlipped = result.playerSide == Side.BLACK
                         )
                         updateBoardDisplay()
                     }
-                    is com.example.proyectoajedrez.chess.puzzle.PuzzleLoadResult.Error -> {
-                        // Error loading puzzle
-                    }
+                    is com.example.proyectoajedrez.chess.puzzle.PuzzleLoadResult.Error -> { }
                 }
             }
         }
@@ -101,6 +110,21 @@ class ChessBoardViewModel(
             title = title,
             isTimerVisible = !timerController.isUnlimited
         )
+    }
+
+    private suspend fun replayOpeningMoves(movesString: String) {
+        if (movesString.isBlank()) return
+        val sanMoves = movesString
+            .replace(Regex("\\d+\\."), " ")
+            .trim()
+            .split(Regex("\\s+"))
+            .filter { it.isNotBlank() }
+        for (san in sanMoves) {
+            delay(700L)
+            val move = ChessUtils.sanToMove(san, gameManager.board) ?: continue
+            gameManager.executeMove(move)
+            updateBoardDisplay()
+        }
     }
 
     fun onEvent(event: ChessGameEvent) {
@@ -113,29 +137,22 @@ class ChessBoardViewModel(
     }
 
     private fun onSquareTapped(visualPosition: Int) {
-        // Si estamos en modo review, no permitir tocar piezas
         if (gameManager.isInReviewMode) return
-
-        // Si está pensando Stockfish, no permitir
         if (_uiState.value.isEngineThinking) return
-
-        // Si es modo apertura, no permitir
         if (gameMode == GameMode.APERTURA) return
 
-        // Si no es turno del jugador en modo LIBRE/PUZZLE, no permitir
-        if ((gameMode == GameMode.LIBRE || gameMode == GameMode.DAILY_PUZZLE) && gameManager.board.sideToMove != playerSide) return
+        // FIX 3: usar effectivePlayerSide en lugar de playerSide
+        if ((gameMode == GameMode.LIBRE || gameMode == GameMode.DAILY_PUZZLE)
+            && gameManager.board.sideToMove != effectivePlayerSide) return
 
         val logicalIdx = convertVisualToLogical(visualPosition)
 
         if (selectedSquareIdx == null) {
-            // Seleccionar pieza
             selectSquare(logicalIdx)
         } else {
             if (logicalIdx == selectedSquareIdx) {
-                // Deseleccionar
                 deselectSquare()
             } else {
-                // Intentar mover
                 attemptMove(selectedSquareIdx!!, logicalIdx)
             }
         }
@@ -145,7 +162,7 @@ class ChessBoardViewModel(
         val piece = boardPieceAt(idx)
         if (piece != ChessPiece.EMPTY) {
             val isMyPiece = (gameManager.board.sideToMove == Side.WHITE && piece.isWhite) ||
-                           (gameManager.board.sideToMove == Side.BLACK && piece.isBlack)
+                    (gameManager.board.sideToMove == Side.BLACK && piece.isBlack)
             if (isMyPiece) {
                 selectedSquareIdx = idx
                 val moves = gameManager.getLegalMovesFor(idx)
@@ -173,15 +190,17 @@ class ChessBoardViewModel(
                 deselectSquare()
             }
             is MoveResult.Success -> {
-                // En modo puzzle, validar primero
                 if (gameMode == GameMode.DAILY_PUZZLE) {
                     val move = gameManager.board.backup.last.move
                     val puzzleResult = puzzleController.validateMove(move)
-                    
+
                     when (puzzleResult) {
                         PuzzleMoveResult.Incorrect -> {
-                            // Deshacer movimiento inválido
-                            gameManager.undoMove()
+                            gameManager.board.undoMove()
+                            deselectSquare()
+                            updateBoardDisplay()
+                            viewModelScope.launch { _uiEvents.emit(ChessUiEvent.IncorrectPuzzleMove) }
+                            return
                         }
                         is PuzzleMoveResult.CorrectContinue -> {
                             moveHistoryList.add(moveResult.historyEntry)
@@ -189,12 +208,10 @@ class ChessBoardViewModel(
                             deselectSquare()
                             updateBoardDisplay()
                             startTimer(gameManager.board.sideToMove)
-                            
-                            // Engine juega siguiente movimiento
                             viewModelScope.launch {
-                                delay(800)
-                                val engineMove = puzzleResult.nextEngineMove
-                                val engineMoveObj = ChessUtils.sanToMove(engineMove, gameManager.board)
+                                delay(600)
+                                val engineSan = puzzleResult.nextEngineMove
+                                val engineMoveObj = ChessUtils.sanToMove(engineSan, gameManager.board)
                                 if (engineMoveObj != null) {
                                     gameManager.executeMove(engineMoveObj)
                                     puzzleController.consumeEngineMove()
@@ -206,12 +223,13 @@ class ChessBoardViewModel(
                         PuzzleMoveResult.Solved -> {
                             moveHistoryList.add(moveResult.historyEntry)
                             playMoveSound(moveResult.wasCapture)
+                            deselectSquare()
+                            updateBoardDisplay()
                             viewModelScope.launch {
                                 puzzleController.saveProgress()
+                                _uiEvents.emit(ChessUiEvent.PuzzleSolved)
                             }
                             _uiState.value = _uiState.value.copy(gameStatus = GameStatus.PUZZLE_SOLVED)
-                            updateBoardDisplay()
-                            deselectSquare()
                             return
                         }
                     }
@@ -223,8 +241,14 @@ class ChessBoardViewModel(
                 updateBoardDisplay()
                 startTimer(gameManager.board.sideToMove)
 
-                // Si el motor debe jugar
-                if (gameMode == GameMode.LIBRE && gameManager.board.sideToMove != playerSide) {
+                // FIX 4: en LOCAL_2P, voltear el tablero tras cada movimiento
+                if (gameMode == GameMode.LOCAL_2P) {
+                    _uiState.value = _uiState.value.copy(
+                        isFlipped = gameManager.board.sideToMove == Side.BLACK
+                    )
+                }
+
+                if (gameMode == GameMode.LIBRE && gameManager.board.sideToMove != effectivePlayerSide) {
                     requestEngineMove()
                 }
             }
@@ -257,7 +281,6 @@ class ChessBoardViewModel(
             try {
                 val legalMoves = gameManager.board.legalMoves()
                 val move = legalMoves.firstOrNull { it.toString().lowercase() == uciMove.lowercase() }
-                
                 if (move != null) {
                     val result = gameManager.executeMove(move)
                     if (result is MoveResult.Success) {
@@ -267,14 +290,12 @@ class ChessBoardViewModel(
                         startTimer(gameManager.board.sideToMove)
                     }
                 }
-            } catch (e: Exception) {
-                // Error procesando movimiento del motor
-            }
+            } catch (e: Exception) { }
         }
     }
 
     private fun onTimeExpired(side: Side) {
-        _uiState.value = _uiState.value.copy(gameStatus = GameStatus.DRAW_REPETITION) // Placeholder
+        _uiState.value = _uiState.value.copy(gameStatus = GameStatus.DRAW_REPETITION)
     }
 
     private fun startTimer(side: Side) {
@@ -294,15 +315,12 @@ class ChessBoardViewModel(
 
     private fun updateBoardDisplay() {
         val newPieces = Array(64) { idx -> boardPieceAt(idx) }
-        val newStatus = when (gameManager.board) {
-            gameManager.board -> when {
-                gameManager.board.isMated -> {
-                    if (gameManager.board.sideToMove == playerSide) GameStatus.BLACK_WINS else GameStatus.WHITE_WINS
-                }
-                gameManager.board.isStaleMate -> GameStatus.DRAW_STALEMATE
-                gameManager.board.isDraw -> GameStatus.DRAW_REPETITION
-                else -> GameStatus.PLAYING
+        val newStatus = when {
+            gameManager.board.isMated -> {
+                if (gameManager.board.sideToMove == playerSide) GameStatus.BLACK_WINS else GameStatus.WHITE_WINS
             }
+            gameManager.board.isStaleMate -> GameStatus.DRAW_STALEMATE
+            gameManager.board.isDraw -> GameStatus.DRAW_REPETITION
             else -> GameStatus.PLAYING
         }
 
@@ -322,26 +340,10 @@ class ChessBoardViewModel(
     }
 
     private fun convertVisualToLogical(visual: Int): Int {
-        // Si el tablero está flipped, invertir
-        return if (_uiState.value.isFlipped) {
-            63 - visual
-        } else {
-            visual
-        }
+        return if (_uiState.value.isFlipped) 63 - visual else visual
     }
 
-    private fun playMoveSound(wasCapture: Boolean) {
-        // Este callback irá a Fragment
-    }
-
-    private fun moveToUci(move: com.github.bhlangonijr.chesslib.move.Move): String {
-        val from = move.from.toString().lowercase()
-        val to = move.to.toString().lowercase()
-        val promotion = if (move.promotion != com.github.bhlangonijr.chesslib.Piece.NONE) {
-            move.promotion.toString().lowercase().last().toString()
-        } else ""
-        return "$from$to$promotion"
-    }
+    private fun playMoveSound(wasCapture: Boolean) { }
 }
 
 class ChessBoardViewModelFactory(
@@ -349,7 +351,8 @@ class ChessBoardViewModelFactory(
     private val gameMode: GameMode,
     private val playerSide: Side,
     private val difficulty: Int,
-    private val titleArg: String
+    private val titleArg: String,
+    private val openingMoves: String = ""
 ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -358,7 +361,8 @@ class ChessBoardViewModelFactory(
             playerSide = playerSide,
             difficulty = difficulty,
             title = titleArg,
-            context = context
+            context = context,
+            openingMoves = openingMoves
         ) as T
     }
 }

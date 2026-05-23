@@ -89,9 +89,25 @@
             android:defaultValue="libre" />
 
         <argument
-            android:name="aperturaNombre"
+            android:name="titulo"
             app:argType="string"
             android:defaultValue="" />
+
+        <!-- CORREGIDO: antes era aperturaNombre y no se leía en el fragment -->
+        <argument
+            android:name="secuenciaMovimientos"
+            app:argType="string"
+            android:defaultValue="" />
+
+        <argument
+            android:name="side"
+            app:argType="string"
+            android:defaultValue="WHITE" />
+
+        <argument
+            android:name="difficulty"
+            app:argType="integer"
+            android:defaultValue="1" />
     </fragment>
 
     <!-- Fragmento de ajustes de la aplicación -->

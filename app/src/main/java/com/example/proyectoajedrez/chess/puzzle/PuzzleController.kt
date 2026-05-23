@@ -76,9 +76,20 @@ class PuzzleController(private val context: Context) {
             else -> 1
         }
 
+        // Guardar en SharedPreferences para que PuzzleDiarioFragment lea métricas rápidamente
+        val prefs = context.getSharedPreferences(com.example.proyectoajedrez.utils.PrefKeys.AJEDREZ_PREFS, Context.MODE_PRIVATE)
+        val totalSolved = prefs.getInt(com.example.proyectoajedrez.utils.PrefKeys.KEY_LOCAL_PUZZLES_SOLVED, current.totalSolved)
+
+        prefs.edit()
+            .putInt(com.example.proyectoajedrez.utils.PrefKeys.KEY_PUZZLE_STREAK_DAYS, newStreak)
+            .putInt(com.example.proyectoajedrez.utils.PrefKeys.KEY_LOCAL_PUZZLES_SOLVED, totalSolved + 1)
+            .putString("last_puzzle_date", today)
+            .apply()
+
+        // También actualizar Room (fuente canónica)
         dao.saveProgress(current.copy(
             currentStreak = newStreak,
-            totalSolved = current.totalSolved + 1,
+            totalSolved = totalSolved + 1,
             lastSolvedDate = today
         ))
     }

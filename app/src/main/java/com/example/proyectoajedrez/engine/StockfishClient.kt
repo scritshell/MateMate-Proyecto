@@ -21,54 +21,63 @@ class StockfishClient(private val context: Context) {
         private const val BINARY_NAME = "stockfish_binary"
     }
 
-    // 1. Inicialización: Copia el binario y prepara el proceso
+    // 1. Inicialización: usar nativeLibraryDir si el binario ya está empaquetado allí; si no, copiar desde assets a filesDir.
     suspend fun inicializar() = withContext(Dispatchers.IO) {
-        val stockfishFile = File(context.filesDir, BINARY_NAME)
+        val libDirCandidate = File(context.applicationInfo.nativeLibraryDir, BINARY_NAME)
+        val filesDirTarget = File(context.filesDir, BINARY_NAME)
 
-        // A. Copiar y dar permisos
-        try {
-            if (stockfishFile.exists()) {
-                stockfishFile.delete()
+        fun startBinary(execFile: File): Boolean {
+            Log.d(TAG, "Intentando ejecutar Stockfish desde: ${execFile.absolutePath}")
+            Log.d(TAG, "Path info: exists=${execFile.exists()} canExecute=${execFile.canExecute()} length=${execFile.length()}")
+            if (!execFile.exists()) return false
+            try {
+                if (!execFile.canExecute()) {
+                    execFile.setExecutable(true, false)
+                    Log.d(TAG, "setExecutable(true,false) aplicado a ${execFile.absolutePath}")
+                }
+                val processBuilder = ProcessBuilder(execFile.absolutePath)
+                processBuilder.redirectErrorStream(true)
+                process = processBuilder.start()
+                process?.let { proc ->
+                    reader = BufferedReader(InputStreamReader(proc.inputStream))
+                    writer = OutputStreamWriter(proc.outputStream)
+                    Log.d(TAG, "Stockfish arrancado desde ${execFile.absolutePath}")
+                    sendCommand("uci")
+                    return true
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error iniciando Stockfish desde ${execFile.absolutePath}", e)
+                Log.e(TAG, "Stockfish path info: exists=${execFile.exists()} canExecute=${execFile.canExecute()} length=${execFile.length()}")
             }
-            // Copia forzosa desde assets
+            return false
+        }
+
+        // Primero probar si el binario ya está disponible en nativeLibraryDir.
+        if (libDirCandidate.exists()) {
+            if (startBinary(libDirCandidate)) return@withContext
+        }
+
+        // Si no, copiar desde assets al filesDir y ejecutar.
+        try {
+            if (filesDirTarget.exists()) {
+                filesDirTarget.delete()
+            }
             context.assets.open(BINARY_NAME).use { inputStream ->
-                FileOutputStream(stockfishFile).use { outputStream ->
+                FileOutputStream(filesDirTarget).use { outputStream ->
                     inputStream.copyTo(outputStream)
                 }
             }
-
-            // Permisos de ejecución absolutos (Java)
-            stockfishFile.setExecutable(true, false)
-            stockfishFile.setReadable(true, false)
-            stockfishFile.setWritable(true, false)
-
-            Log.d(TAG, "Permisos de ejecución otorgados por Java")
-
-            // Permisos de ejecución absolutos (Linux)
-            Runtime.getRuntime().exec("chmod 777 ${stockfishFile.absolutePath}").waitFor()
-
+            filesDirTarget.setReadable(true, false)
+            filesDirTarget.setWritable(true, false)
+            filesDirTarget.setExecutable(true, false)
+            Runtime.getRuntime().exec("chmod 755 ${filesDirTarget.absolutePath}").waitFor()
+            Log.d(TAG, "Stockfish copiado a filesDir: ${filesDirTarget.absolutePath} length=${filesDirTarget.length()} exists=${filesDirTarget.exists()} canExecute=${filesDirTarget.canExecute()}")
         } catch (e: Exception) {
-            Log.e(TAG, "Error copiando Stockfish", e)
+            Log.e(TAG, "Error copiando Stockfish a filesDir", e)
         }
 
-        // B. Arrancar el proceso
-        try {
-            val processBuilder = ProcessBuilder(stockfishFile.absolutePath)
-            processBuilder.redirectErrorStream(true) // Unificar errores y salida estándar
-
-            process = processBuilder.start()
-
-            // Configuramos los canales de comunicación
-            process?.let { proc ->
-                reader = BufferedReader(InputStreamReader(proc.inputStream))
-                writer = OutputStreamWriter(proc.outputStream)
-
-                Log.d(TAG, "¡MOTOR STOCKFISH ARRANCADO!")
-                sendCommand("uci")
-                Log.e(TAG, "Error: El objeto Process es nulo")
-            }
-        } catch (e: Exception) {
-            Log.e(TAG, "Error iniciando el proceso", e)
+        if (!startBinary(filesDirTarget)) {
+            Log.e(TAG, "No se ha podido arrancar Stockfish desde ninguna ubicación. Si el emulador usa SELinux, coloque el binario en nativeLibraryDir o revise la política de ejecución.")
         }
     }
 
