@@ -55,6 +55,7 @@ class ChessBoardFragment : Fragment() {
         val difficulty = arguments?.getInt("difficulty", 1) ?: 1
         val title = arguments?.getString("titulo") ?: getString(R.string.titulo_tablero)
         val openingMoves = arguments?.getString("secuenciaMovimientos") ?: ""
+        val timeIndex = arguments?.getInt("timeIndex", 3) ?: 3
 
         ChessBoardViewModelFactory(
             requireContext(),
@@ -62,7 +63,8 @@ class ChessBoardFragment : Fragment() {
             playerSide,
             difficulty,
             title,
-            openingMoves
+            openingMoves,
+            timeIndex
         )
     }
 

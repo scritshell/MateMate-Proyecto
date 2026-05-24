@@ -108,6 +108,11 @@
             android:name="difficulty"
             app:argType="integer"
             android:defaultValue="1" />
+
+        <argument
+            android:name="timeIndex"
+            app:argType="integer"
+            android:defaultValue="3" />
     </fragment>
 
     <!-- Fragmento de ajustes de la aplicación -->

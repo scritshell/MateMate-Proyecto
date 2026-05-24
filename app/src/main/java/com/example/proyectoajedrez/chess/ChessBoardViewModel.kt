@@ -30,7 +30,8 @@ class ChessBoardViewModel(
     private val difficulty: Int,
     private val title: String,
     private val context: Context,
-    private val openingMoves: String = ""
+    private val openingMoves: String = "",
+    private val timeIndex: Int = 3
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ChessGameUiState())
@@ -71,7 +72,15 @@ class ChessBoardViewModel(
     private fun initializeGame() {
         val timeMinutes = when {
             gameMode in listOf(GameMode.APERTURA, GameMode.DAILY_PUZZLE) -> -1
-            else -> 5
+            else -> when (timeIndex) {
+                0 -> -1   // Sin límite
+                1 -> 1    // Bullet
+                2 -> 3    // Blitz 3
+                3 -> 5    // Blitz 5
+                4 -> 10   // Rápida
+                5 -> 30   // Clásica
+                else -> -1
+            }
         }
         timerController.configure(timeMinutes)
 
@@ -386,7 +395,8 @@ class ChessBoardViewModelFactory(
     private val playerSide: Side,
     private val difficulty: Int,
     private val titleArg: String,
-    private val openingMoves: String = ""
+    private val openingMoves: String = "",
+    private val timeIndex: Int = 3
 ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -396,7 +406,8 @@ class ChessBoardViewModelFactory(
             difficulty = difficulty,
             title = titleArg,
             context = context,
-            openingMoves = openingMoves
+            openingMoves = openingMoves,
+            timeIndex = timeIndex
         ) as T
     }
 }
