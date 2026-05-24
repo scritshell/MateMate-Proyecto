@@ -21,10 +21,6 @@
     <color name="tab_inactive">#E0E0E0</color>
     <color name="divider_color">#E0E0E0</color>
     <color name="text_secondary">#757575</color>
-    <color name="explorer_bar_track">#DDDDDD</color>
-    <color name="explorer_bar_white">#F0F0F0</color>
-    <color name="explorer_bar_draw">#999999</color>
-    <color name="explorer_bar_black">#333333</color>
     <color name="note_delete_tint">#F44336</color>
     <color name="popup_menu_surface">#FFFFFFFF</color>
     <color name="popup_menu_text">#FF000000</color>

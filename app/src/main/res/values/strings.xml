@@ -64,11 +64,6 @@
     <string name="default_time">05:00</string>
 
     <string name="tab_history">HISTORIAL</string>
-    <string name="tab_explorer">EXPLORADOR</string>
-    <string name="explorer_label_loading">Cargando datos de maestros...</string>
-    <string name="explorer_label_empty">Realiza una jugada para ver datos.</string>
-    <string name="explorer_label_error">Error al conectar con Lichess.</string>
-    <string name="explorer_book_end">Fin del libro.\n\n%1$s\n(%2$s)</string>
 
     <string name="label_tiempo">Tiempo: </string>
     <string name="label_dificultad_ia">Nivel Stockfish: %1$d</string>

@@ -111,19 +111,6 @@
                     style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"/>
-
-                <Button
-                    android:id="@+id/btnTabExplorer"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="@string/tab_explorer"
-                    android:textSize="11sp"
-                    android:backgroundTint="@color/tab_inactive"
-                    android:textColor="?attr/colorOnSurface"
-                    style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-                    android:insetTop="0dp"
-                    android:insetBottom="0dp"/>
             </LinearLayout>
 
             <FrameLayout
@@ -137,23 +124,6 @@
                     android:layout_height="match_parent"
                     android:visibility="visible"
                     android:scrollbars="vertical"/>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerExplorer"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:visibility="gone"
-                    android:scrollbars="vertical"/>
-
-                <TextView
-                    android:id="@+id/tvExplorerStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="@string/explorer_label_empty"
-                    android:textColor="@color/text_secondary"
-                    android:gravity="center"
-                    android:visibility="gone"/>
             </FrameLayout>
         </LinearLayout>
 

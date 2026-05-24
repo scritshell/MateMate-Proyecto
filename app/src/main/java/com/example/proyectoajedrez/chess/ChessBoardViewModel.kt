@@ -47,7 +47,7 @@ class ChessBoardViewModel(
     private var selectedSquareIdx: Int? = null
     private var moveHistoryList = mutableListOf<String>()
 
-    // FIX 1: lado efectivo actualizable tras cargar el puzzle
+    // Lado efectivo actualizable tras cargar el puzzle
     private var effectivePlayerSide: Side = playerSide
 
     init {
@@ -59,7 +59,9 @@ class ChessBoardViewModel(
         stockfishController = StockfishController(
             context, viewModelScope,
             onMoveReady = { moveStr -> onEngineMove(moveStr) },
-            onThinkingChanged = { isThinking -> _uiState.value = _uiState.value.copy(isEngineThinking = isThinking) }
+            onThinkingChanged = { isThinking ->
+                _uiState.value = _uiState.value.copy(isEngineThinking = isThinking)
+            }
         )
         puzzleController = PuzzleController(context)
 
@@ -92,7 +94,6 @@ class ChessBoardViewModel(
                 val result = puzzleController.loadDailyPuzzle(gameManager.board)
                 when (result) {
                     is com.example.proyectoajedrez.chess.puzzle.PuzzleLoadResult.Success -> {
-                        // FIX 2: actualizar el lado real del puzzle Y voltear el tablero
                         effectivePlayerSide = result.playerSide
                         _uiState.value = _uiState.value.copy(
                             title = "Puzzle Diario (${result.rating})",
@@ -141,7 +142,6 @@ class ChessBoardViewModel(
         if (_uiState.value.isEngineThinking) return
         if (gameMode == GameMode.APERTURA) return
 
-        // FIX 3: usar effectivePlayerSide en lugar de playerSide
         if ((gameMode == GameMode.LIBRE || gameMode == GameMode.DAILY_PUZZLE)
             && gameManager.board.sideToMove != effectivePlayerSide) return
 
@@ -202,6 +202,7 @@ class ChessBoardViewModel(
                             viewModelScope.launch { _uiEvents.emit(ChessUiEvent.IncorrectPuzzleMove) }
                             return
                         }
+
                         is PuzzleMoveResult.CorrectContinue -> {
                             moveHistoryList.add(moveResult.historyEntry)
                             playMoveSound(moveResult.wasCapture)
@@ -210,8 +211,20 @@ class ChessBoardViewModel(
                             startTimer(gameManager.board.sideToMove)
                             viewModelScope.launch {
                                 delay(600)
-                                val engineSan = puzzleResult.nextEngineMove
-                                val engineMoveObj = ChessUtils.sanToMove(engineSan, gameManager.board)
+                                // ──────────────────────────────────────────────────
+                                // FIX BUG 1: La solución de Lichess usa formato UCI
+                                // (e.g. "g1f3"), NO SAN.
+                                // ChessUtils.sanToMove() espera SAN → siempre retorna
+                                // null con UCI → el rival nunca movía → puzzle bloqueado.
+                                //
+                                // Solución: buscar el movimiento legal cuya
+                                // representación UCI coincida directamente.
+                                // ──────────────────────────────────────────────────
+                                val uciMove = puzzleResult.nextEngineMove
+                                val legalMoves = gameManager.board.legalMoves()
+                                val engineMoveObj = legalMoves.firstOrNull {
+                                    it.toString().lowercase() == uciMove.lowercase()
+                                }
                                 if (engineMoveObj != null) {
                                     gameManager.executeMove(engineMoveObj)
                                     puzzleController.consumeEngineMove()
@@ -220,28 +233,46 @@ class ChessBoardViewModel(
                             }
                             return
                         }
+
                         PuzzleMoveResult.Solved -> {
+                            // ──────────────────────────────────────────────────────
+                            // FIX BUG 3: Antes se llamaba updateBoardDisplay() antes
+                            // de setear PUZZLE_SOLVED. Si el tablero estaba en jaque
+                            // mate, updateBoardDisplay() emitía WHITE_WINS/BLACK_WINS,
+                            // generando dos estados no-PLAYING → dos popups.
+                            //
+                            // Solución: una sola emisión de estado con PUZZLE_SOLVED
+                            // directamente, sin pasar por updateBoardDisplay().
+                            // ──────────────────────────────────────────────────────
                             moveHistoryList.add(moveResult.historyEntry)
                             playMoveSound(moveResult.wasCapture)
-                            deselectSquare()
-                            updateBoardDisplay()
+                            selectedSquareIdx = null   // Limpiar selección sin emitir
+                            val solvedPieces = Array(64) { idx -> boardPieceAt(idx) }
+                            _uiState.value = _uiState.value.copy(
+                                pieces = solvedPieces,
+                                moveHistory = moveHistoryList.toList(),
+                                selectedSquare = null,
+                                legalMoveSquares = emptyList(),
+                                currentTurn = gameManager.board.sideToMove,
+                                gameStatus = GameStatus.PUZZLE_SOLVED,
+                                isInReviewMode = gameManager.isInReviewMode
+                            )
                             viewModelScope.launch {
                                 puzzleController.saveProgress()
                                 _uiEvents.emit(ChessUiEvent.PuzzleSolved)
                             }
-                            _uiState.value = _uiState.value.copy(gameStatus = GameStatus.PUZZLE_SOLVED)
                             return
                         }
                     }
                 }
 
+                // ── Modo no-puzzle (LIBRE / LOCAL_2P / APERTURA) ──
                 moveHistoryList.add(moveResult.historyEntry)
                 playMoveSound(moveResult.wasCapture)
                 deselectSquare()
                 updateBoardDisplay()
                 startTimer(gameManager.board.sideToMove)
 
-                // FIX 4: en LOCAL_2P, voltear el tablero tras cada movimiento
                 if (gameMode == GameMode.LOCAL_2P) {
                     _uiState.value = _uiState.value.copy(
                         isFlipped = gameManager.board.sideToMove == Side.BLACK
@@ -280,7 +311,9 @@ class ChessBoardViewModel(
         viewModelScope.launch {
             try {
                 val legalMoves = gameManager.board.legalMoves()
-                val move = legalMoves.firstOrNull { it.toString().lowercase() == uciMove.lowercase() }
+                val move = legalMoves.firstOrNull {
+                    it.toString().lowercase() == uciMove.lowercase()
+                }
                 if (move != null) {
                     val result = gameManager.executeMove(move)
                     if (result is MoveResult.Success) {
@@ -317,7 +350,8 @@ class ChessBoardViewModel(
         val newPieces = Array(64) { idx -> boardPieceAt(idx) }
         val newStatus = when {
             gameManager.board.isMated -> {
-                if (gameManager.board.sideToMove == playerSide) GameStatus.BLACK_WINS else GameStatus.WHITE_WINS
+                if (gameManager.board.sideToMove == playerSide) GameStatus.BLACK_WINS
+                else GameStatus.WHITE_WINS
             }
             gameManager.board.isStaleMate -> GameStatus.DRAW_STALEMATE
             gameManager.board.isDraw -> GameStatus.DRAW_REPETITION

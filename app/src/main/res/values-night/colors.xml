@@ -13,10 +13,6 @@
     <color name="tab_inactive">#455A64</color>
     <color name="divider_color">#37474F</color>
     <color name="text_secondary">#B0BEC5</color>
-    <color name="explorer_bar_track">#455A64</color>
-    <color name="explorer_bar_white">#ECEFF1</color>
-    <color name="explorer_bar_draw">#78909C</color>
-    <color name="explorer_bar_black">#263238</color>
     <color name="note_delete_tint">#EF5350</color>
     <color name="popup_menu_surface">#1E1E1E</color>
     <color name="popup_menu_text">#FFFFFFFF</color>
