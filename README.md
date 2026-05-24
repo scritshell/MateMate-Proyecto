@@ -21,7 +21,7 @@ Aplicación Android nativa completa para aprender, practicar y disfrutar del aje
 1. Descarga el APK desde [Releases](https://github.com/scritshell/MateMate-Proyecto)
 2. Instálalo en tu dispositivo Android 9+
 
-## 📦 Dependencias Principales
+## Dependencias Principales
 
 El proyecto utiliza las siguientes librerías (incluidas automáticamente):
 
