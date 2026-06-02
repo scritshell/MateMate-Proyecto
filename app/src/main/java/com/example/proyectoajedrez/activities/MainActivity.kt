@@ -45,7 +45,6 @@ class MainActivity : AppCompatActivity() {
 
         // Configurar Toolbar personalizada como ActionBar
         setSupportActionBar(binding.toolbar)
-
         // Inicializar gestor de sesión
         session = SessionManager(this)
 

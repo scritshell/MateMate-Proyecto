@@ -26,6 +26,9 @@ data class ChessGameUiState(
     val isTimerVisible: Boolean = false,
     val activeTimer: Side = Side.WHITE,
 
+    // Disponibilidad del motor
+    val isEngineAvailable: Boolean = true,
+
     // Título y modo
     val title: String = "Tablero de Ajedrez",
 )

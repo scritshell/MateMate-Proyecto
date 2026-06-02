@@ -192,6 +192,8 @@
     <string name="dialog_vincular_lichess_titulo">Vincular Cuenta Lichess</string>
     <string name="dialog_vincular_lichess_mensaje">Introduce tu usuario para ver tu ELO real y estadísticas.</string>
     <string name="dialog_partida_finalizada">Partida Finalizada</string>
+    <string name="dialog_engine_unavailable_title">Motor no disponible</string>
+    <string name="dialog_engine_unavailable_message">El motor de ajedrez no pudo iniciarse en este dispositivo. Puedes jugar en modo 2 jugadores.</string>
     <string name="dialog_btn_aceptar">Aceptar</string>
     <string name="dialog_nueva_nota">Nueva Nota</string>
     <string name="dialog_editar_nota">Editar Nota</string>

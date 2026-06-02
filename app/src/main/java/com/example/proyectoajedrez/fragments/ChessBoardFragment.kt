@@ -202,6 +202,14 @@ class ChessBoardFragment : Fragment() {
                             if (isAdded) findNavController().popBackStack()
                         }
                     }
+
+                    ChessUiEvent.EngineUnavailable -> {
+                        MaterialAlertDialogBuilder(requireContext())
+                            .setTitle(getString(R.string.dialog_engine_unavailable_title))
+                            .setMessage(getString(R.string.dialog_engine_unavailable_message))
+                            .setPositiveButton(getString(R.string.dialog_btn_aceptar), null)
+                            .show()
+                    }
                 }
             }
         }

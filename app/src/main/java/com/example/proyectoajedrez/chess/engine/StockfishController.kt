@@ -19,6 +19,10 @@ class StockfishController(
     private var depth = 1
     private var activeScope: CoroutineScope = scope ?: GlobalScope
 
+    // Delegar disponibilidad del cliente para que el ViewModel pueda consultarlo
+    val isAvailable: Boolean
+        get() = client.isAvailable
+
     fun setScope(newScope: CoroutineScope) {
         this.activeScope = newScope
     }
@@ -39,6 +43,11 @@ class StockfishController(
     }
 
     fun requestMove(board: Board) {
+        if (!isAvailable) {
+            onThinkingChanged(false)
+            return
+        }
+
         onThinkingChanged(true)
         activeScope.launch(Dispatchers.IO) {
             delay((500..1200).random().toLong())

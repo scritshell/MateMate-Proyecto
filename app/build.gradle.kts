@@ -31,6 +31,17 @@ android {
 
         manifestPlaceholders["MAPS_API_KEY"] = localProperties.getProperty("MAPS_API_KEY") ?: ""
 
+        // --- AÑADIDO PARA STOCKFISH: Declarar ABIs soportados ---
+        ndk {
+            abiFilters += listOf("arm64-v8a", "x86_64")
+        }
+    }
+
+    // --- AÑADIDO PARA STOCKFISH: Forzar extracción de binarios nativos a disco ---
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging = true
+        }
     }
 
     buildTypes {

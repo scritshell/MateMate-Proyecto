@@ -191,6 +191,8 @@
     <!-- Dialogs and alerts -->
     <string name="dialog_vincular_lichess_titulo">Link Lichess Account</string>
     <string name="dialog_vincular_lichess_mensaje">Enter your username to see your real ELO and statistics.</string>
+    <string name="dialog_engine_unavailable_title">Engine unavailable</string>
+    <string name="dialog_engine_unavailable_message">The chess engine could not start on this device. You can play in 2-player mode.</string>
     <string name="dialog_partida_finalizada">Game Over</string>
     <string name="dialog_btn_aceptar">OK</string>
     <string name="dialog_nueva_nota">New Note</string>

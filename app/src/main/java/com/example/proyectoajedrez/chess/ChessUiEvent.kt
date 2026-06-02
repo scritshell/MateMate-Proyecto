@@ -6,4 +6,5 @@ package com.example.proyectoajedrez.chess
 sealed class ChessUiEvent {
     object IncorrectPuzzleMove : ChessUiEvent()
     object PuzzleSolved : ChessUiEvent()
+    object EngineUnavailable : ChessUiEvent()
 }

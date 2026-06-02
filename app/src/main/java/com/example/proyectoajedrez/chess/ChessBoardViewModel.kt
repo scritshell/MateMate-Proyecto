@@ -22,6 +22,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ChessBoardViewModel(
@@ -92,7 +93,11 @@ class ChessBoardViewModel(
             viewModelScope.launch {
                 stockfishController.initialize()
                 stockfishController.setDifficulty(difficulty)
-                if (gameMode == GameMode.LIBRE && playerSide == Side.BLACK) {
+
+                if (!stockfishController.isAvailable && gameMode == GameMode.LIBRE) {
+                    _uiState.update { it.copy(isEngineAvailable = false) }
+                    _uiEvents.emit(ChessUiEvent.EngineUnavailable)
+                } else if (gameMode == GameMode.LIBRE && playerSide == Side.BLACK) {
                     requestEngineMove()
                 }
             }

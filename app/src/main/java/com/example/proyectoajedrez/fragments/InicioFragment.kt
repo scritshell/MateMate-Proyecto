@@ -181,7 +181,6 @@ class InicioFragment : Fragment() {
                         return@withContext
                     }
 
-                    // 🔥 FILTRO REAL DE AJEDREZ (mucho más estricto)
                     val keywords = listOf(
                         "chess",
                         "ajedrez",

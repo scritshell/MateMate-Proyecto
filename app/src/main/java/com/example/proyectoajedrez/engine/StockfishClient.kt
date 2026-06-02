@@ -6,108 +6,117 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.BufferedReader
 import java.io.File
-import java.io.FileOutputStream
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 
 class StockfishClient(private val context: Context) {
 
-    private var process: Process? = null           // Proceso nativo del motor Stockfish
-    private var reader: BufferedReader? = null     // Lector de salida del proceso
-    private var writer: OutputStreamWriter? = null // Escritor de entrada del proceso
+    private var process: Process? = null
+    private var reader: BufferedReader? = null
+    private var writer: OutputStreamWriter? = null
+    private var isRunning = false
 
     companion object {
         private const val TAG = "StockfishClient"
-        private const val BINARY_NAME = "stockfish_binary"
+        // El nombre DEBE coincidir con jniLibs/ABI/libstockfish.so
+        private const val LIBRARY_NAME = "libstockfish.so"
     }
 
-    // 1. Inicialización: usar nativeLibraryDir si el binario ya está empaquetado allí; si no, copiar desde assets a filesDir.
+    private fun logNativeLibraryDir() {
+        val nativeDir = File(context.applicationInfo.nativeLibraryDir)
+        Log.d(TAG, "nativeLibraryDir=${nativeDir.absolutePath} exists=${nativeDir.exists()} canRead=${nativeDir.canRead()}")
+        nativeDir.listFiles()?.forEach { file ->
+            Log.d(TAG, "  ${file.name} (${file.length()} bytes, canExecute=${file.canExecute()})")
+        }
+    }
+
+    /**
+     * Inicializa Stockfish.
+     * El binario DEBE estar en jniLibs/<ABI>/libstockfish.so para que
+     * Android lo extraiga automáticamente a nativeLibraryDir, que es la
+     * única partición con permisos de ejecución en Android 10+.
+     */
     suspend fun inicializar() = withContext(Dispatchers.IO) {
-        val libDirCandidate = File(context.applicationInfo.nativeLibraryDir, BINARY_NAME)
-        val filesDirTarget = File(context.filesDir, BINARY_NAME)
-
-        fun startBinary(execFile: File): Boolean {
-            Log.d(TAG, "Intentando ejecutar Stockfish desde: ${execFile.absolutePath}")
-            Log.d(TAG, "Path info: exists=${execFile.exists()} canExecute=${execFile.canExecute()} length=${execFile.length()}")
-            if (!execFile.exists()) return false
-            try {
-                if (!execFile.canExecute()) {
-                    execFile.setExecutable(true, false)
-                    Log.d(TAG, "setExecutable(true,false) aplicado a ${execFile.absolutePath}")
-                }
-                val processBuilder = ProcessBuilder(execFile.absolutePath)
-                processBuilder.redirectErrorStream(true)
-                process = processBuilder.start()
-                process?.let { proc ->
-                    reader = BufferedReader(InputStreamReader(proc.inputStream))
-                    writer = OutputStreamWriter(proc.outputStream)
-                    Log.d(TAG, "Stockfish arrancado desde ${execFile.absolutePath}")
-                    sendCommand("uci")
-                    return true
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, "Error iniciando Stockfish desde ${execFile.absolutePath}", e)
-                Log.e(TAG, "Stockfish path info: exists=${execFile.exists()} canExecute=${execFile.canExecute()} length=${execFile.length()}")
-            }
-            return false
+        if (isRunning) {
+            Log.d(TAG, "Stockfish ya está en ejecución")
+            return@withContext
         }
 
-        // Primero probar si el binario ya está disponible en nativeLibraryDir.
-        if (libDirCandidate.exists()) {
-            if (startBinary(libDirCandidate)) return@withContext
+        logNativeLibraryDir()
+
+        val stockfishBinary = File(context.applicationInfo.nativeLibraryDir, LIBRARY_NAME)
+
+        Log.d(TAG, "Buscando Stockfish en: ${stockfishBinary.absolutePath}")
+        Log.d(TAG, "exists=${stockfishBinary.exists()} " +
+                "canExecute=${stockfishBinary.canExecute()} " +
+                "length=${stockfishBinary.length()}")
+
+        if (!stockfishBinary.exists()) {
+            Log.e(TAG, """
+                Stockfish no encontrado en nativeLibraryDir.
+                
+                SOLUCIÓN: Coloca el binario en:
+                app/src/main/jniLibs/arm64-v8a/libstockfish.so
+                (y x86_64/libstockfish.so para el emulador)
+                
+                NO uses assets/ ni filesDir: SELinux bloquea la ejecución
+                de archivos escritos en filesDir desde Android 10.
+            """.trimIndent())
+            return@withContext
         }
 
-        // Si no, copiar desde assets al filesDir y ejecutar.
         try {
-            if (filesDirTarget.exists()) {
-                filesDirTarget.delete()
-            }
-            context.assets.open(BINARY_NAME).use { inputStream ->
-                FileOutputStream(filesDirTarget).use { outputStream ->
-                    inputStream.copyTo(outputStream)
-                }
-            }
-            filesDirTarget.setReadable(true, false)
-            filesDirTarget.setWritable(true, false)
-            filesDirTarget.setExecutable(true, false)
-            Runtime.getRuntime().exec("chmod 755 ${filesDirTarget.absolutePath}").waitFor()
-            Log.d(TAG, "Stockfish copiado a filesDir: ${filesDirTarget.absolutePath} length=${filesDirTarget.length()} exists=${filesDirTarget.exists()} canExecute=${filesDirTarget.canExecute()}")
-        } catch (e: Exception) {
-            Log.e(TAG, "Error copiando Stockfish a filesDir", e)
-        }
+            process = ProcessBuilder(stockfishBinary.absolutePath)
+                .redirectErrorStream(true)
+                .start()
 
-        if (!startBinary(filesDirTarget)) {
-            Log.e(TAG, "No se ha podido arrancar Stockfish desde ninguna ubicación. Si el emulador usa SELinux, coloque el binario en nativeLibraryDir o revise la política de ejecución.")
+            process?.let { proc ->
+                reader = BufferedReader(InputStreamReader(proc.inputStream))
+                writer = OutputStreamWriter(proc.outputStream)
+                isRunning = true
+                Log.d(TAG, "Stockfish iniciado correctamente")
+                sendCommand("uci")
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error iniciando Stockfish: ${e.message}", e)
+            isRunning = false
         }
     }
 
-    // 2. Enviar comandos al motor
     fun sendCommand(command: String) {
+        if (!isRunning) {
+            Log.w(TAG, "Ignorando comando '$command': Stockfish no está activo")
+            return
+        }
         try {
             writer?.write("$command\n")
             writer?.flush()
-            Log.d(TAG, "Comando enviado: $command")
         } catch (e: Exception) {
-            Log.e(TAG, "Error enviando comando", e)
+            Log.e(TAG, "Error enviando comando '$command': ${e.message}")
+            isRunning = false
         }
     }
 
-    // 3. Leer respuesta del motor
     fun readOutput(onLineReceived: (String) -> Unit) {
         Thread {
             try {
                 var line: String?
                 while (reader?.readLine().also { line = it } != null) {
-                    Log.d("STOCKFISH_LOG", "Recibido: $line")
                     line?.let { onLineReceived(it) }
                 }
             } catch (e: Exception) {
-                Log.e("STOCKFISH_LOG", "Error leyendo output", e)
+                Log.e(TAG, "Error leyendo output de Stockfish: ${e.message}")
+            } finally {
+                isRunning = false
             }
-        }.start()
+        }.apply {
+            isDaemon = true  // No bloquear el cierre de la app
+            start()
+        }
     }
 
-    // 4. Limpieza
+    val isAvailable: Boolean get() = isRunning
+
     fun close() {
         try {
             sendCommand("quit")
@@ -115,12 +124,9 @@ class StockfishClient(private val context: Context) {
             reader?.close()
             process?.destroy()
         } catch (e: Exception) {
-            Log.e(TAG, "Error cerrando Stockfish", e)
+            Log.e(TAG, "Error cerrando Stockfish: ${e.message}")
+        } finally {
+            isRunning = false
         }
     }
 }
-
-/*
-* TODO: Quitar todos esos logs cuando termine de testear a Stockfish
-*
-* */
